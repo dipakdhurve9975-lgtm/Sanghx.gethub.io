@@ -1,13 +1,155 @@
-<script type="module">
-  // ✅ Firebase Imports
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-  import {
-    getFirestore,
-    collection,
-    onSnapshot
-  } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SANGHX Food</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  // ✅ Your Firebase Config
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Poppins',sans-serif;background:#fff7f5;color:#1c1c1c;}
+
+    .header{
+      background: linear-gradient(135deg, #e23744, #ff5a5f);
+      color:white;
+      padding:16px;
+      text-align:center;
+      font-size:22px;
+      font-weight:600;
+      position:sticky;
+      top:0;
+      z-index:999;
+    }
+
+    .container{padding:16px;padding-bottom:180px;}
+    .shop-title{font-size:18px;font-weight:600;margin:20px 0 10px;}
+
+    .food-scroll{
+      display:flex;
+      gap:12px;
+      overflow-x:auto;
+      padding-bottom:8px;
+    }
+    .food-scroll::-webkit-scrollbar{display:none}
+
+    .food-card{
+      min-width:160px;
+      background:white;
+      border-radius:16px;
+      overflow:hidden;
+      box-shadow:0 10px 25px rgba(0,0,0,0.08);
+    }
+
+    .food-card img{width:100%;height:110px;object-fit:cover;}
+    .food-info{padding:10px;}
+    .food-info h4{font-size:14px;font-weight:600;margin-bottom:4px;}
+    .food-info p{font-size:13px;margin-bottom:8px;opacity:0.8;}
+
+    button{
+      width:100%;
+      background: linear-gradient(135deg, #ff7a18, #ff9f45);
+      border:none;
+      color:white;
+      padding:8px;
+      border-radius:12px;
+      font-weight:600;
+      cursor:pointer;
+    }
+
+    .cart-bar{
+      position:fixed;
+      bottom:0;
+      left:0;
+      right:0;
+      background:white;
+      border-top:1px solid #eee;
+      padding:14px;
+      box-shadow:0 -10px 30px rgba(0,0,0,0.1);
+      font-size:14px;
+      transform: translateY(120%);
+      transition: 0.3s ease;
+    }
+    .cart-bar.show{transform: translateY(0%);}
+
+    .cart-item{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin:6px 0;
+    }
+
+    .qty{display:flex;align-items:center;gap:6px;}
+    .qty button{
+      width:auto;
+      padding:4px 10px;
+      border-radius:8px;
+      background:black;
+    }
+
+    .checkout-btn{
+      background: linear-gradient(135deg, #25D366, #1ebe5d);
+      width:100%;
+      padding:12px;
+      margin-top:10px;
+      font-weight:700;
+      border-radius:14px;
+      font-size:16px;
+    }
+
+    .food-slider{
+      display:flex;
+      gap:12px;
+      overflow-x:auto;
+      scroll-snap-type:x mandatory;
+      padding:12px;
+    }
+    .food-slider::-webkit-scrollbar{display:none}
+    .food-slider img{
+      flex:0 0 85%;
+      max-width:85%;
+      height:180px;
+      border-radius:16px;
+      object-fit:cover;
+      scroll-snap-align:center;
+      box-shadow:0 6px 14px rgba(0,0,0,0.15);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header">🍽 SANGHX</div>
+
+  <div class="food-slider">
+    <img src="2.png">
+    <img src="3.png">
+    <img src="1.png">
+  </div>
+
+  <div class="container">
+    <h3>Menu</h3>
+
+    <div class="shop-title">Makhan Foods</div>
+    <div class="food-scroll" id="store-MAKHAN"></div>
+
+    <div class="shop-title">AB Foods</div>
+    <div class="food-scroll" id="store-AB"></div>
+
+    <div class="shop-title">AS Foods</div>
+    <div class="food-scroll" id="store-AS"></div>
+  </div>
+
+  <div class="cart-bar" id="cartBar">
+    <div id="cartItems"></div>
+    <div>Subtotal: ₹<span id="subtotal">0</span></div>
+    <div>Delivery: ₹<span id="delivery">0</span></div>
+    <div><b>Total: ₹<span id="total">0</span></b></div>
+    <button class="checkout-btn" onclick="goCheckout()">Checkout</button>
+  </div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+  import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
   const firebaseConfig = {
     apiKey: "AIzaSyAAmJk-W24u-3sz1oUu72dMRmCvNBXvT4o",
     authDomain: "sanghx-e7a47.firebaseapp.com",
@@ -17,27 +159,24 @@
     appId: "1:858079145503:web:677fbe8796bbff006fef2a"
   };
 
-  // ✅ Init Firebase
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
   const DELIVERY_CHARGE = 25;
-
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-  // ✅ Render Store Function
-  function renderStore(containerId, storeName, menu) {
+  function renderStore(containerId, storeName, menu){
     const div = document.getElementById("store-" + containerId);
     div.innerHTML = "";
 
     const filtered = menu.filter(item => item.storeName === storeName);
 
-    if (filtered.length === 0) {
+    if(filtered.length === 0){
       div.innerHTML = `<p style="opacity:0.6;font-size:13px;">No items added yet</p>`;
       return;
     }
 
-    filtered.forEach(item => {
+    filtered.forEach(item=>{
       div.innerHTML += `
         <div class="food-card">
           <img src="${item.img}">
@@ -51,51 +190,35 @@
     });
   }
 
-  // ✅ Render All Stores
-  function renderAllStores(menu) {
-    renderStore("MAKHAN", "Makhan Foods", menu);
-    renderStore("AB", "AB Foods", menu);
-    renderStore("AS", "AS Foods", menu);
-  }
-
-  // ✅ Cart Functions
-  function saveCart() {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }
-
-  window.addItem = function (name, price, storeName) {
+  window.addItem = function(name, price, storeName){
     const found = cart.find(i => i.name === name && i.storeName === storeName);
-
-    if (found) found.qty++;
-    else cart.push({ name, price, qty: 1, storeName });
-
-    saveCart();
+    if(found) found.qty++;
+    else cart.push({name, price, qty:1, storeName});
+    localStorage.setItem("cart", JSON.stringify(cart));
     renderCart();
-  };
+  }
 
-  window.changeQty = function (name, storeName, delta) {
+  window.changeQty = function(name, storeName, delta){
     const item = cart.find(i => i.name === name && i.storeName === storeName);
-    if (!item) return;
-
+    if(!item) return;
     item.qty += delta;
-    if (item.qty <= 0) {
+    if(item.qty <= 0){
       cart = cart.filter(i => !(i.name === name && i.storeName === storeName));
     }
-
-    saveCart();
+    localStorage.setItem("cart", JSON.stringify(cart));
     renderCart();
-  };
+  }
 
-  function renderCart() {
+  function renderCart(){
     const cartDiv = document.getElementById("cartItems");
     const cartBar = document.getElementById("cartBar");
 
-    if (cart.length === 0) cartBar.classList.remove("show");
+    if(cart.length === 0) cartBar.classList.remove("show");
     else cartBar.classList.add("show");
 
     cartDiv.innerHTML = "";
 
-    cart.forEach(item => {
+    cart.forEach(item=>{
       cartDiv.innerHTML += `
         <div class="cart-item">
           <div>
@@ -111,20 +234,21 @@
       `;
     });
 
-    let subtotal = cart.reduce((t, i) => t + i.price * i.qty, 0);
-
+    let subtotal = cart.reduce((t,i)=>t+i.price*i.qty,0);
     document.getElementById("subtotal").innerText = subtotal;
     document.getElementById("delivery").innerText = cart.length ? DELIVERY_CHARGE : 0;
     document.getElementById("total").innerText = subtotal + (cart.length ? DELIVERY_CHARGE : 0);
   }
 
-  window.goCheckout = function () {
-    if (cart.length === 0) {
+  window.goCheckout = function(){
+    if(cart.length === 0){
       alert("Cart is empty");
       return;
     }
     window.location.href = "checkout.html";
-  };
+  }
+
+  renderCart();
 
   // ✅ LIVE MENU FROM FIRESTORE
   onSnapshot(collection(db, "menu"), (snapshot) => {
@@ -133,8 +257,12 @@
       menu.push({ id: doc.id, ...doc.data() });
     });
 
-    renderAllStores(menu);
+    renderStore("MAKHAN", "Makhan Foods", menu);
+    renderStore("AB", "AB Foods", menu);
+    renderStore("AS", "AS Foods", menu);
   });
 
-  renderCart();
 </script>
+
+</body>
+</html>
