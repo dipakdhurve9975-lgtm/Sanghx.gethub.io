@@ -10,7 +10,7 @@
       margin:0;
       padding:0;
       box-sizing:border-box;
-      font-family: Arial, sans-serif;
+      font-family: 'Poppins', sans-serif;
     }
 
     body{
@@ -18,71 +18,220 @@
       display:flex;
       justify-content:center;
       align-items:center;
-      background:black;
+      background:#050505;
+      overflow:hidden;
+      position:relative;
+    }
+
+    /* 🔥 Background glow blobs */
+    .blob{
+      position:absolute;
+      width:350px;
+      height:350px;
+      border-radius:50%;
+      filter: blur(120px);
+      opacity:0.45;
+      animation: float 6s ease-in-out infinite;
+    }
+    .blob.one{
+      background:#e23744;
+      top:-80px;
+      left:-80px;
+    }
+    .blob.two{
+      background:#ff7a18;
+      bottom:-120px;
+      right:-80px;
+      animation-delay: 2s;
+    }
+
+    @keyframes float{
+      0%,100%{transform: translateY(0px) translateX(0px);}
+      50%{transform: translateY(40px) translateX(25px);}
+    }
+
+    /* 🔥 Center card */
+    .loader-card{
+      position:relative;
+      width:320px;
+      padding:40px 28px;
+      border-radius:22px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+      text-align:center;
       overflow:hidden;
     }
 
+    /* 🔥 Shiny moving highlight */
+    .loader-card::before{
+      content:"";
+      position:absolute;
+      top:0;
+      left:-60%;
+      width:60%;
+      height:100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
+      transform: skewX(-18deg);
+      animation: shine 2.2s infinite;
+    }
+
+    @keyframes shine{
+      0%{left:-60%;}
+      100%{left:140%;}
+    }
+
+    /* 🔥 Logo text animation */
     .logo{
-      font-size:60px;
-      font-weight:800;
-      color:white;
+      font-size:42px;
+      font-weight:900;
       letter-spacing:4px;
+      color:white;
+      display:inline-block;
       position:relative;
-      animation: zoomIn 1.2s ease forwards;
+      overflow:hidden;
+      line-height:1.1;
     }
 
     .logo span{
       color:#e23744;
+      text-shadow: 0 0 18px rgba(226,55,68,0.6);
     }
 
-    /* Loading line */
-    .line{
-      position:absolute;
-      bottom:-25px;
-      left:50%;
-      transform:translateX(-50%);
-      width:120px;
-      height:4px;
-      background:#222;
-      border-radius:10px;
+    /* typing reveal */
+    .reveal{
+      display:inline-block;
+      width:0;
+      white-space:nowrap;
       overflow:hidden;
+      border-right: 2px solid rgba(255,255,255,0.6);
+      animation: typing 1.3s steps(12) forwards, blink 0.55s infinite;
     }
 
-    .line::before{
-      content:"";
-      position:absolute;
-      left:-50%;
-      top:0;
-      width:50%;
+    @keyframes typing{
+      from{width:0;}
+      to{width:100%;}
+    }
+    @keyframes blink{
+      0%,100%{border-color:transparent;}
+      50%{border-color:rgba(255,255,255,0.7);}
+    }
+
+    /* 🔥 tagline */
+    .tagline{
+      margin-top:12px;
+      font-size:13px;
+      color:rgba(255,255,255,0.75);
+      letter-spacing:1px;
+      animation: fadeUp 1.2s ease forwards;
+      opacity:0;
+      transform: translateY(12px);
+      animation-delay: 1.2s;
+    }
+
+    @keyframes fadeUp{
+      to{
+        opacity:1;
+        transform: translateY(0);
+      }
+    }
+
+    /* 🔥 Loading bar */
+    .bar{
+      margin-top:26px;
+      width:100%;
+      height:7px;
+      background: rgba(255,255,255,0.12);
+      border-radius:99px;
+      overflow:hidden;
+      position:relative;
+    }
+
+    .bar .fill{
       height:100%;
-      background:#e23744;
-      animation: loading 1.2s infinite;
+      width:0%;
+      border-radius:99px;
+      background: linear-gradient(90deg, #e23744, #ff7a18);
+      box-shadow: 0 0 18px rgba(226,55,68,0.45);
+      animation: loadFill 2.4s ease forwards;
     }
 
-    @keyframes zoomIn{
-      0%{transform:scale(0.4); opacity:0;}
-      100%{transform:scale(1); opacity:1;}
+    @keyframes loadFill{
+      0%{width:0%;}
+      100%{width:100%;}
     }
 
-    @keyframes loading{
-      0%{left:-50%;}
-      100%{left:100%;}
+    /* 🔥 dots loading */
+    .dots{
+      margin-top:14px;
+      font-size:14px;
+      color:rgba(255,255,255,0.75);
+      letter-spacing:2px;
+    }
+
+    .dots span{
+      display:inline-block;
+      animation: bounce 1s infinite;
+    }
+    .dots span:nth-child(2){animation-delay:0.15s;}
+    .dots span:nth-child(3){animation-delay:0.3s;}
+
+    @keyframes bounce{
+      0%,100%{transform: translateY(0); opacity:0.4;}
+      50%{transform: translateY(-6px); opacity:1;}
+    }
+
+    /* 🔥 subtle scanline effect */
+    .scanline{
+      position:absolute;
+      top:-30%;
+      left:0;
+      width:100%;
+      height:60px;
+      background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.08), transparent);
+      animation: scan 2.5s linear infinite;
+      opacity:0.4;
+    }
+
+    @keyframes scan{
+      0%{top:-30%;}
+      100%{top:130%;}
     }
   </style>
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800;900&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
-  <div class="logo">
-    SA<span>NGHX</span>
-    <div class="line"></div>
+  <div class="blob one"></div>
+  <div class="blob two"></div>
+
+  <div class="loader-card">
+    <div class="scanline"></div>
+
+    <div class="logo">
+      <span class="reveal">SANG<span>HX</span></span>
+    </div>
+
+    <div class="tagline">FOOD • FAST • TRUSTED</div>
+
+    <div class="bar">
+      <div class="fill"></div>
+    </div>
+
+    <div class="dots">
+      Loading<span>.</span><span>.</span><span>.</span>
+    </div>
   </div>
 
   <script>
-    // Redirect after 2.5 seconds
+    // Redirect after animation ends
     setTimeout(() => {
-      window.location.href = "page2.html"; // change this if needed
-    }, 2500);
+      window.location.href = "index.html"; // change target page
+    }, 2600);
   </script>
 
 </body>
