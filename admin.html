@@ -169,29 +169,29 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  // ✅ CLOUDINARY SETTINGS
+  // ✅ CLOUDINARY SETTINGS (CORRECT)
   const CLOUD_NAME = "dvbaqh8ja";
   const UPLOAD_PRESET = "SANGHX";
 
   const statusText = document.getElementById("statusText");
   const menuList = document.getElementById("menuList");
 
-  // ✅ UPLOAD IMAGE TO CLOUDINARY
+  // ✅ UPLOAD IMAGE TO CLOUDINARY (FIXED)
   async function uploadToCloudinary(file){
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("upload_preset",SANGHX);
+    formData.append("upload_preset", UPLOAD_PRESET); // ✅ FIXED
 
-    const res = await fetch(`https://api.cloudinary.com/v1_1/${dvbaqh8ja}/image/upload`, {
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, { // ✅ FIXED
       method: "POST",
       body: formData
     });
 
     const data = await res.json();
 
-    if(!data.secure_url){
+    if(data.error){
       console.log("Cloudinary error:", data);
-      throw new Error("Cloudinary upload failed!");
+      throw new Error(data.error.message);
     }
 
     return data.secure_url;
@@ -283,4 +283,3 @@
 
 </body>
 </html>
-
