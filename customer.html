@@ -220,131 +220,157 @@
   </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+  import {
+    getFirestore,
+    collection,
+    onSnapshot
+  } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAAmJk-W24u-3sz1oUu72dMRmCvNBXvT4o",
-  authDomain: "sanghx-e7a47.firebaseapp.com",
-  projectId: "sanghx-e7a47",
-  storageBucket: "sanghx-e7a47.firebasestorage.app",
-  messagingSenderId: "858079145503",
-  appId: "1:858079145503:web:677fbe8796bbff006fef2a"
-};
+  // 🔥 Your Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyAAmJk-W24u-3sz1oUu72dMRmCvNBXvT4o",
+    authDomain: "sanghx-e7a47.firebaseapp.com",
+    projectId: "sanghx-e7a47",
+    storageBucket: "sanghx-e7a47.firebasestorage.app",
+    messagingSenderId: "858079145503",
+    appId: "1:858079145503:web:677fbe8796bbff006fef2a"
+  };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-const DELIVERY_CHARGE = 25;
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const DELIVERY_CHARGE = 25;
 
-function renderStore(containerId, storeName, menu){
-  const div = document.getElementById("store-" + containerId);
-  div.innerHTML = "";
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-  const filtered = menu.filter(item => item.storeName === storeName);
-
-  if(filtered.length === 0){
-    div.innerHTML = `<p style="opacity:0.6;font-size:13px;">No items added yet</p>`;
-    return;
+  // -------------------------
+  // RENDER STORES
+  // -------------------------
+  function renderAllStores(menu){
+    renderStore("MAKHAN", "makhan Foods", menu);
+    renderStore("AB", "Ab Foods", menu);
+    renderStore("AS", "AS FOODS", menu);
   }
 
-  filtered.forEach(item=>{
-    div.innerHTML += `
-      <div class="food-card">
-        <img src="${item.img}">
-        <div class="food-info">
-          <h4>${item.name}</h4>
-          <p>₹${item.price}</p>
-          <button onclick="addItem('${item.name}', ${item.price}, '${item.storeName}')">Add</button>
+  function renderStore(containerId, storeName, menu){
+    const div = document.getElementById("store-" + containerId);
+    div.innerHTML = "";
+
+    const filtered = menu.filter(item => item.storeName === storeName);
+
+    if(filtered.length === 0){
+      div.innerHTML = `<p style="opacity:0.6;font-size:13px;">No items added yet</p>`;
+      return;
+    }
+
+    filtered.forEach(item=>{
+      div.innerHTML += `
+        <div class="food-card">
+          <img src="${item.img}">
+          <div class="food-info">
+            <h4>${item.name}</h4>
+            <p>₹${item.price}</p>
+            <button onclick="window.addItem('${item.name}', ${item.price}, '${item.storeName}')">Add</button>
+          </div>
         </div>
-      </div>
-    `;
+      `;
+    });
+  }
+
+  // -------------------------
+  // CART FUNCTIONS
+  // -------------------------
+  window.addItem = function(name, price, storeName){
+    const found = cart.find(i => i.name === name && i.storeName === storeName);
+
+    if(found){
+      found.qty++;
+    } else {
+      cart.push({name, price, qty:1, storeName});
+    }
+
+    saveCart();
+    renderCart();
+  }
+
+  window.changeQty = function(name, storeName, delta){
+    const item = cart.find(i => i.name === name && i.storeName === storeName);
+    if(!item) return;
+
+    item.qty += delta;
+
+    if(item.qty <= 0){
+      cart = cart.filter(i => !(i.name === name && i.storeName === storeName));
+    }
+
+    saveCart();
+    renderCart();
+  }
+
+  function saveCart(){
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }
+
+  function renderCart(){
+    const cartDiv = document.getElementById("cartItems");
+    const cartBar = document.getElementById("cartBar");
+
+    if(cart.length === 0){
+      cartBar.classList.remove("show");
+    } else {
+      cartBar.classList.add("show");
+    }
+
+    cartDiv.innerHTML = "";
+
+    cart.forEach(item=>{
+      cartDiv.innerHTML += `
+        <div class="cart-item">
+          <div>
+            <b>${item.name}</b><br>
+            <small style="opacity:0.7;">🏪 ${item.storeName}</small>
+          </div>
+
+          <div class="qty">
+            <button onclick="changeQty('${item.name}','${item.storeName}',-1)">-</button>
+            ${item.qty}
+            <button onclick="changeQty('${item.name}','${item.storeName}',1)">+</button>
+          </div>
+        </div>
+      `;
+    });
+
+    let subtotal = cart.reduce((t,i)=>t+i.price*i.qty,0);
+    document.getElementById("subtotal").innerText = subtotal;
+    document.getElementById("delivery").innerText = cart.length ? DELIVERY_CHARGE : 0;
+    document.getElementById("total").innerText = subtotal + (cart.length ? DELIVERY_CHARGE : 0);
+  }
+
+  window.goCheckout = function(){
+    if(cart.length === 0){
+      alert("Cart is empty");
+      return;
+    }
+    window.location.href = "checkout.html";
+  }
+
+  // -------------------------
+  // 🔥 FIREBASE MENU LIVE FETCH
+  // -------------------------
+  onSnapshot(collection(db, "menu"), (snapshot) => {
+    let menu = [];
+    snapshot.forEach((doc) => {
+      menu.push({ id: doc.id, ...doc.data() });
+    });
+
+    renderAllStores(menu);
   });
-}
 
-function renderAllStores(menu){
-  renderStore("MAKHAN", "Makhan Foods", menu);
-  renderStore("AB", "AB Foods", menu);
-  renderStore("AS", "AS Foods", menu);
-}
-
-window.addItem = function(name, price, storeName){
-  const found = cart.find(i => i.name === name && i.storeName === storeName);
-  if(found) found.qty++;
-  else cart.push({name, price, qty:1, storeName});
-
-  localStorage.setItem("cart", JSON.stringify(cart));
   renderCart();
-}
-
-window.changeQty = function(name, storeName, delta){
-  const item = cart.find(i => i.name === name && i.storeName === storeName);
-  if(!item) return;
-
-  item.qty += delta;
-  if(item.qty <= 0){
-    cart = cart.filter(i => !(i.name === name && i.storeName === storeName));
-  }
-
-  localStorage.setItem("cart", JSON.stringify(cart));
-  renderCart();
-}
-
-function renderCart(){
-  const cartDiv = document.getElementById("cartItems");
-  const cartBar = document.getElementById("cartBar");
-
-  if(cart.length === 0) cartBar.classList.remove("show");
-  else cartBar.classList.add("show");
-
-  cartDiv.innerHTML = "";
-
-  cart.forEach(item=>{
-    cartDiv.innerHTML += `
-      <div class="cart-item">
-        <div>
-          <b>${item.name}</b><br>
-          <small style="opacity:0.7;">🏪 ${item.storeName}</small>
-        </div>
-
-        <div class="qty">
-          <button onclick="changeQty('${item.name}','${item.storeName}',-1)">-</button>
-          ${item.qty}
-          <button onclick="changeQty('${item.name}','${item.storeName}',1)">+</button>
-        </div>
-      </div>
-    `;
-  });
-
-  let subtotal = cart.reduce((t,i)=>t+i.price*i.qty,0);
-  document.getElementById("subtotal").innerText = subtotal;
-  document.getElementById("delivery").innerText = cart.length ? DELIVERY_CHARGE : 0;
-  document.getElementById("total").innerText = subtotal + (cart.length ? DELIVERY_CHARGE : 0);
-}
-
-window.goCheckout = function(){
-  if(cart.length === 0){
-    alert("Cart is empty");
-    return;
-  }
-  window.location.href = "checkout.html";
-}
-
-renderCart();
-
-// 🔥 LIVE MENU FROM FIRESTORE
-onSnapshot(collection(db, "menu"), (snapshot) => {
-  let menu = [];
-  snapshot.forEach((doc) => {
-    menu.push(doc.data());
-  });
-
-  console.log("🔥 Menu Loaded:", menu);
-  renderAllStores(menu);
-});
 </script>
 
 </body>
 </html>
+
 
