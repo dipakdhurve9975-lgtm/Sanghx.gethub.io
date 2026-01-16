@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SANGHX Checkout</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{
+      font-family:'Poppins',sans-serif;
+      background:#fff7f5;
+      padding:16px;
+    }
+
+    .box{
+      background:white;
+      border-radius:16px;
+      padding:16px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.08);
+      max-width:420px;
+      margin:auto;
+    }
+
+    h2{margin-bottom:10px}
+    input, textarea, select{
+      width:100%;
+      padding:10px;
+      border-radius:10px;
+      border:1px solid #ddd;
+      margin:8px 0;
+      font-family:inherit;
+      outline:none;
+    }
+
+    button{
+      width:100%;
+      padding:12px;
+      border:none;
+      border-radius:12px;
+      font-weight:700;
+      cursor:pointer;
+      margin-top:10px;
+      transition:0.2s;
+    }
+
+    button:active{
+      transform:scale(0.98);
+    }
+
+    .btn-black{background:#111;color:white}
+    .btn-wa{background:#25D366;color:white}
+    .btn-back{background:#f2f2f2;color:#111}
+
+    .items{
+      font-size:14px;
+      margin:10px 0;
+      padding:10px;
+      background:#f8f8f8;
+      border-radius:12px;
+      line-height:1.6;
+    }
+
+    .small{font-size:12px;opacity:0.7}
+
+    #locationStatus{
+      font-size:12px;
+      margin-top:6px;
+      text-align:center;
+      font-weight:600;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="box">
+    <h2>Checkout 🧾</h2>
+
+    <div class="small">Your Order</div>
+    <div class="items" id="orderItems">Loading...</div>
+
+    <p style="margin-top:8px;"><b>Total:</b> ₹<span id="totalAmount">0</span></p>
+
+    <input id="custName" placeholder="Your Name">
+    <input id="custMobile" placeholder="Mobile Number">
+    <textarea id="custAddress" placeholder="Delivery Address"></textarea>
+
+    <select id="paymentMode">
+      <option value="COD">Cash on Delivery</option>
+      <option value="UPI">UPI</option>
+    </select>
+
+    <!-- Location button -->
+    <button id="locBtn" class="btn-black" onclick="getLocation()">
+      📍 Share Live Location
+    </button>
+
+    <!-- status text -->
+    <p id="locationStatus"></p>
+
+    <!-- WhatsApp button -->
+    <button id="sendBtn" class="btn-wa" onclick="sendWhatsAppOrder()" disabled style="opacity:0.5;cursor:not-allowed;">
+      Send Order on WhatsApp
+    </button>
+
+    <button class="btn-back" onclick="goBack()">⬅ Back to Menu</button>
+  </div>
+
+<script>
+  const DELIVERY_CHARGE = 25;
+
+  let userLocation = "";
+  let locationAdded = false;
+
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+  function renderCheckout(){
+    const div = document.getElementById("orderItems");
+
+    if(cart.length === 0){
+      div.innerHTML = "Cart is empty 😔<br><span class='small'>Go back and add some food.</span>";
+      document.getElementById("totalAmount").innerText = 0;
+      return;
+    }
+
+    // Show items with store name
+    div.innerHTML = "";
+    cart.forEach(i=>{
+      div.innerHTML += `✅ <b>${i.name}</b> x${i.qty} = ₹${i.price*i.qty} <br><span class="small">🏪 ${i.storeName}</span><br><br>`;
+    });
+
+    const subtotal = cart.reduce((t,i)=>t+i.price*i.qty,0);
+    const total = subtotal + DELIVERY_CHARGE;
+
+    document.getElementById("totalAmount").innerText = total;
+  }
+
+  function getLocation() {
+    if (!navigator.geolocation) {
+      alert("Location not supported on this device");
+      return;
+    }
+
+    const locBtn = document.getElementById("locBtn");
+    const status = document.getElementById("locationStatus");
+
+    status.style.color = "#111";
+    status.innerText = "⏳ Please wait... getting your live location...";
+
+    locBtn.innerText = "⏳ Getting Location...";
+    locBtn.style.background = "#111";
+    locBtn.disabled = true;
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+
+        userLocation = `https://maps.google.com/?q=${lat},${lng}`;
+        locationAdded = true;
+
+        // Success UI
+        status.style.color = "green";
+        status.innerText = "✅ Live location added successfully";
+
+        locBtn.innerText = "✅ Location Added";
+        locBtn.style.background = "#25D366";
+        locBtn.style.color = "white";
+        locBtn.disabled = true;
+
+        // enable whatsapp button
+        const sendBtn = document.getElementById("sendBtn");
+        sendBtn.disabled = false;
+        sendBtn.style.opacity = "1";
+        sendBtn.style.cursor = "pointer";
+      },
+      () => {
+        status.style.color = "red";
+        status.innerText = "❌ Location permission denied";
+
+        locBtn.innerText = "📍 Share Live Location";
+        locBtn.style.background = "#111";
+        locBtn.disabled = false;
+
+        locationAdded = false;
+        userLocation = "";
+      }
+    );
+  }
+
+  function sendWhatsAppOrder() {
+    if (!locationAdded || userLocation === "") {
+      alert("📍 Please share live location first!");
+      return;
+    }
+
+    const name = document.getElementById("custName").value.trim();
+    const mobile = document.getElementById("custMobile").value.trim();
+    const address = document.getElementById("custAddress").value.trim();
+    const paymentMode = document.getElementById("paymentMode").value;
+
+    if(!name || !mobile || !address){
+      alert("Please fill all details");
+      return;
+    }
+
+    if(cart.length === 0){
+      alert("Cart is empty");
+      return;
+    }
+
+    const totalAmount = cart.reduce((sum, i) => sum + i.price * i.qty, 0) + DELIVERY_CHARGE;
+
+    // Save order for admin
+    const order = {
+      customerName: name,
+      customerMobile: mobile,
+      customerAddress: address,
+      paymentMode: paymentMode,
+      items: cart,
+      total: totalAmount,
+      status: "New",
+      time: new Date().toLocaleString(),
+      location: userLocation
+    };
+
+    let orders = JSON.parse(localStorage.getItem("orders")) || [];
+    orders.push(order);
+    localStorage.setItem("orders", JSON.stringify(orders));
+
+    // WhatsApp message
+    let itemsText = cart.map(i => `• ${i.name} x${i.qty} (₹${i.price}) - ${i.storeName}`).join("\n");
+
+    const message = `
+🛒 New Order – SANGHX
+
+👤 Name: ${name}
+📞 Mobile: ${mobile}
+🏠 Address: ${address}
+💳 Payment: ${paymentMode}
+
+📦 Items:
+${itemsText}
+
+🚚 Delivery: ₹${DELIVERY_CHARGE}
+💰 Total: ₹${totalAmount}
+
+📍 Live Location:
+${userLocation}
+`;
+
+    window.open(`https://wa.me/919322586177?text=${encodeURIComponent(message)}`, "_blank");
+
+    // Clear cart after order
+    localStorage.removeItem("cart");
+    cart = [];
+
+    // Redirect back
+    setTimeout(() => {
+      window.location.href = "customer.html";
+    }, 600);
+  }
+
+  function goBack(){
+    window.location.href = "customer.html";
+  }
+
+  renderCheckout();
+</script>
+
+</body>
+</html>

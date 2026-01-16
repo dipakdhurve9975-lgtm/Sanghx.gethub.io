@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SANGHX Loading...</title>
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body{
+      height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      background:black;
+      overflow:hidden;
+    }
+
+    .logo{
+      font-size:60px;
+      font-weight:800;
+      color:white;
+      letter-spacing:4px;
+      position:relative;
+      animation: zoomIn 1.2s ease forwards;
+    }
+
+    .logo span{
+      color:#e23744;
+    }
+
+    /* Loading line */
+    .line{
+      position:absolute;
+      bottom:-25px;
+      left:50%;
+      transform:translateX(-50%);
+      width:120px;
+      height:4px;
+      background:#222;
+      border-radius:10px;
+      overflow:hidden;
+    }
+
+    .line::before{
+      content:"";
+      position:absolute;
+      left:-50%;
+      top:0;
+      width:50%;
+      height:100%;
+      background:#e23744;
+      animation: loading 1.2s infinite;
+    }
+
+    @keyframes zoomIn{
+      0%{transform:scale(0.4); opacity:0;}
+      100%{transform:scale(1); opacity:1;}
+    }
+
+    @keyframes loading{
+      0%{left:-50%;}
+      100%{left:100%;}
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="logo">
+    SA<span>NGHX</span>
+    <div class="line"></div>
+  </div>
+
+  <script>
+    // Redirect after 2.5 seconds
+    setTimeout(() => {
+      window.location.href = "page2.html"; // change this if needed
+    }, 2500);
+  </script>
+
+</body>
+</html>

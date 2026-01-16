@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SANGHX</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="bg"></div>
+
+  <div class="container">
+    <div class="card fade-in">
+      <h1 class="logo">SANGHX</h1>
+
+      <p class="greeting">नमस्कार!</p>
+
+      <p class="description">
+        चव, सोय आणि विश्वास — सगळं एका ठिकाणी.<br>
+        <span>तुमची चव, आमची जबाबदारी.</span>
+      </p>
+
+      <p class="question">तुम्ही कोण आहात?</p>
+
+      <div class="buttons">
+        <a href="customer.html" class="btn">🍽️ ग्राहक</a>
+        <a href="" class="btn">🏪COMMING SOON</a>
+        <a href="" class="btn">🚴‍♂️COMMING SOON</a>
+      </div>
+    </div>
+  </div>
+</body>
+<script type="module" src="firebase.js">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDTKzm0tLUXThxXCP90-qbkjTgtTPgrZVE",
+    authDomain: "sangax-food-web.firebaseapp.com",
+    projectId: "sangax-food-web",
+    storageBucket: "sangax-food-web.firebasestorage.app",
+    messagingSenderId: "964457681175",
+    appId: "1:964457681175:web:440b3e498c7328990de752"
+  };
+
+export const app = initializeApp(firebaseConfig);
+export const db = getFirestore(app);
+export const auth = getAuth(app);
+</script>
+</html>

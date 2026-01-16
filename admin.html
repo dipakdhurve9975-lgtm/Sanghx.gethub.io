@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SANGHX Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body{font-family:Arial;background:#f4f4f4;margin:0}
+    .header{background:black;color:white;padding:15px;text-align:center;font-weight:bold}
+    .container{padding:15px}
+    .card{background:white;padding:15px;border-radius:12px;margin-bottom:15px}
+    input,select,button{width:100%;padding:10px;margin:6px 0;border-radius:8px;border:1px solid #ccc}
+    button{background:#e23744;color:white;border:none;font-weight:bold;cursor:pointer}
+    img{width:100%;border-radius:10px;margin-top:5px}
+    .small{font-size:12px;opacity:0.7}
+  </style>
+</head>
+<body>
+
+<script>
+  const password = "admin123";
+  const entered = prompt("Enter Admin Password:");
+  if(entered !== password){
+    alert("Wrong password");
+    document.body.innerHTML = "";
+  }
+</script>
+
+<div class="header">🛠 SANGHX Admin</div>
+
+<div class="container">
+
+  <div class="card">
+    <h3>Add Menu Item</h3>
+    <input id="name" placeholder="Food name">
+    <input id="price" placeholder="Price" type="number">
+    <input type="file" id="img">
+
+    <select id="storeName" required>
+      <option value="">Select Store</option>
+      <option value="makhan Foods">Makhan Foods</option>
+      <option value="Ab Foods">AB Foods</option>
+      <option value="AS FOODS">AS Foods</option>
+    </select>
+
+    <button onclick="addMenu()">Add</button>
+  </div>
+
+  <div class="card">
+    <h3>Current Menu</h3>
+    <div id="menuList"></div>
+  </div>
+
+  <div class="card">
+    <h3>Orders</h3>
+    <div id="orders"></div>
+  </div>
+
+</div>
+
+<script>
+  let menu = JSON.parse(localStorage.getItem("menu")) || [];
+  let orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+  const menuList = document.getElementById("menuList");
+  const ordersDiv = document.getElementById("orders");
+
+  function addMenu(){
+    const name = document.getElementById("name").value.trim();
+    const price = document.getElementById("price").value.trim();
+    const storeName = document.getElementById("storeName").value;
+    const file = document.getElementById("img").files[0];
+
+    if(!name || !price || !storeName || !file){
+      alert("Fill all fields");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(){
+      menu.push({
+        name,
+        price: Number(price),
+        storeName,
+        img: reader.result
+      });
+
+      localStorage.setItem("menu", JSON.stringify(menu));
+      renderMenu();
+
+      document.getElementById("name").value = "";
+      document.getElementById("price").value = "";
+      document.getElementById("img").value = "";
+      document.getElementById("storeName").value = "";
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function renderMenu(){
+    menuList.innerHTML = "";
+    if(menu.length === 0){
+      menuList.innerHTML = "<p class='small'>No items added yet</p>";
+      return;
+    }
+
+    menu.forEach((item, index)=>{
+      menuList.innerHTML += `
+        <div style="border:1px solid #ddd;padding:10px;margin:10px 0;border-radius:10px">
+          <img src="${item.img}">
+          <h4>${item.name}</h4>
+          <p>₹${item.price}</p>
+          <small>Store: ${item.storeName}</small><br><br>
+          <button onclick="deleteMenu(${index})" style="background:black;">Delete</button>
+        </div>
+      `;
+    });
+  }
+
+  function deleteMenu(index){
+    if(confirm("Delete this item?")){
+      menu.splice(index, 1);
+      localStorage.setItem("menu", JSON.stringify(menu));
+      renderMenu();
+    }
+  }
+
+  function renderOrders(){
+    ordersDiv.innerHTML = "";
+    if(orders.length === 0){
+      ordersDiv.innerHTML = "<p class='small'>No orders yet</p>";
+      return;
+    }
+
+    orders.forEach((o)=>{
+      ordersDiv.innerHTML += `
+        <div style="border:1px solid #ddd;padding:12px;margin:10px 0;border-radius:10px;background:#fff">
+          <b>🏪 Store:</b> ${o.storeName}<br>
+          <b>👤 Name:</b> ${o.customerName}<br>
+          <b>📞 Mobile:</b> ${o.customerMobile}<br>
+          <b>🏠 Address:</b> ${o.customerAddress}<br>
+          <b>💳 Payment:</b> ${o.paymentMode}<br>
+          <b>📍 Location:</b> <a href="${o.location}" target="_blank">${o.location}</a><br><br>
+
+          <b>📦 Items:</b><br>${o.items}<br><br>
+          <b>💰 Total:</b> ₹${o.total}<br>
+          <b>Status:</b> ${o.status}<br>
+          <small>${o.time || ""}</small>
+        </div>
+      `;
+    });
+  }
+
+  renderMenu();
+  renderOrders();
+
+  window.addEventListener("storage", ()=>{
+    menu = JSON.parse(localStorage.getItem("menu")) || [];
+    orders = JSON.parse(localStorage.getItem("orders")) || [];
+    renderMenu();
+    renderOrders();
+  });
+
+  // Firebase
+  async function addMenu(){
+  const name = document.getElementById("name").value;
+  const price = document.getElementById("price").value;
+  const storeName = document.getElementById("storeName").value;
+  const file = document.getElementById("img").files[0];
+
+  if(!name || !price || !storeName || !file){
+    alert("Fill all fields");
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = async function(){
+    await addDoc(collection(db, "menu"), {
+      name: name,
+      price: Number(price),
+      storeName: storeName,
+      img: reader.result
+    });
+
+    alert("✅ Item Added!");
+    document.getElementById("name").value = "";
+    document.getElementById("price").value = "";
+    document.getElementById("img").value = "";
+  };
+
+  reader.readAsDataURL(file);
+}
+
+// Step2
+onSnapshot(collection(db, "orders"), (snapshot) => {
+  ordersDiv.innerHTML = "";
+
+  snapshot.forEach((docSnap) => {
+    const o = docSnap.data();
+
+    ordersDiv.innerHTML += `
+      <div class="card">
+        <b>👤 ${o.customerName}</b><br>
+        📞 ${o.customerMobile}<br>
+        🏠 ${o.customerAddress}<br><br>
+
+        <b>Items:</b><br>
+        ${o.items.map(i => `${i.name} x${i.qty} (${i.storeName})`).join("<br>")}
+        <br><br>
+
+        <b>Total:</b> ₹${o.total}<br>
+        <b>Status:</b> ${o.status}<br>
+        <small>${o.time}</small>
+      </div>
+    `;
+  });
+});
+// cloud storage 
+async function addMenu() {
+  const name = document.getElementById("name").value;
+  const price = document.getElementById("price").value;
+  const storeName = document.getElementById("storeName").value;
+  const file = document.getElementById("img").files[0];
+
+  if (!name || !price || !storeName || !file) {
+    alert("Fill all fields");
+    return;
+  }
+
+  // ✅ Cloudinary Upload
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", "SANGHX");
+
+  try {
+    const res = await fetch("https://api.cloudinary.com/v1_1/dvbaqh8ja/image/upload", {
+      method: "POST",
+      body: formData
+    });
+
+    const data = await res.json();
+
+    if (!data.secure_url) {
+      alert("Image upload failed!");
+      return;
+    }
+
+    // ✅ Save item with Cloudinary Image URL
+    menu.push({
+      name: name,
+      price: Number(price),
+      storeName: storeName,
+      img: data.secure_url
+    });
+
+    localStorage.setItem("menu", JSON.stringify(menu));
+    renderMenu();
+
+    // clear inputs
+    document.getElementById("name").value = "";
+    document.getElementById("price").value = "";
+    document.getElementById("img").value = "";
+    document.getElementById("storeName").value = "";
+
+    alert("✅ Item Added Successfully!");
+  } catch (err) {
+    console.log(err);
+    alert("❌ Upload error, check internet or preset settings");
+  }
+}
+</script>
+
+</body>
+</html>
