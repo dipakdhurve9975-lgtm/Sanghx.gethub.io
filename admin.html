@@ -145,29 +145,20 @@
 
 <script type="module">
   // ✅ FIREBASE IMPORTS
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-  import {
-    getFirestore,
-    collection,
-    addDoc,
-    onSnapshot,
-    deleteDoc,
-    doc,
-    getDocs
-  } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-  // ✅ YOUR FIREBASE CONFIG
-  const firebaseConfig = {
-    apiKey: "AIzaSyAAmJk-W24u-3sz1oUu72dMRmCvNBXvT4o",
-    authDomain: "sanghx-e7a47.firebaseapp.com",
-    projectId: "sanghx-e7a47",
-    storageBucket: "sanghx-e7a47.firebasestorage.app",
-    messagingSenderId: "858079145503",
-    appId: "1:858079145503:web:677fbe8796bbff006fef2a"
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyC-igyzVwdH_4Jt1r64TtHSfYxIMw8UfzM",
+  authDomain: "sanghx-foods.firebaseapp.com",
+  projectId: "sanghx-foods",
+  storageBucket: "sanghx-foods.firebasestorage.app",
+  messagingSenderId: "491353757911",
+  appId: "1:491353757911:web:40752459b5b0049c71f892"
+};
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);  // ✅ THIS LINE MUST BE THERE
 
   // ✅ CLOUDINARY SETTINGS (CORRECT)
   const CLOUD_NAME = "dvbaqh8ja";
@@ -217,13 +208,12 @@
       statusText.innerText = "Saving menu to Firestore...";
 
       await addDoc(collection(db, "menu"), {
-        name: name,
-        price: price,
-        storeName: storeName,
-        img: imgUrl,
-        time: new Date().toLocaleString()
-      });
-
+  name: foodName,
+  price: price,
+  image: imageUrl,
+  store: storeName,
+  createdAt: Date.now()
+});
       statusText.innerText = "✅ Item Added Successfully!";
 
       document.getElementById("foodName").value = "";
@@ -283,3 +273,4 @@
 
 </body>
 </html>
+
