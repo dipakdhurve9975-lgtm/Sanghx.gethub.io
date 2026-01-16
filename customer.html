@@ -169,9 +169,7 @@
     const div = document.getElementById("store-" + containerId);
     div.innerHTML = "";
 
-   const filtered = menu.filter(item => 
-  item.storeName?.toLowerCase().trim() === storeName.toLowerCase().trim()
-);
+    const filtered = menu.filter(item => item.storeName === storeName);
 
     if(filtered.length === 0){
       div.innerHTML = `<p style="opacity:0.6;font-size:13px;">No items added yet</p>`;
@@ -263,9 +261,7 @@
     renderStore("AB", "AB Foods", menu);
     renderStore("AS", "AS Foods", menu);
   });
-
 </script>
 
 </body>
 </html>
-
