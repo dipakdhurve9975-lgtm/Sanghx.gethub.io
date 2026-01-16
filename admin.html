@@ -58,7 +58,8 @@
     .status{
       margin-top:10px;
       font-size:13px;
-      opacity:0.8;
+      opacity:0.85;
+      min-height:18px;
     }
 
     .menu-title{
@@ -145,35 +146,44 @@
 
 <script type="module">
   // ✅ FIREBASE IMPORTS
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import {
+    getFirestore,
+    collection,
+    addDoc,
+    getDocs,
+    deleteDoc,
+    doc,
+    onSnapshot
+  } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyC-igyzVwdH_4Jt1r64TtHSfYxIMw8UfzM",
-  authDomain: "sanghx-foods.firebaseapp.com",
-  projectId: "sanghx-foods",
-  storageBucket: "sanghx-foods.firebasestorage.app",
-  messagingSenderId: "491353757911",
-  appId: "1:491353757911:web:40752459b5b0049c71f892"
-};
+  // ✅ YOUR FIREBASE CONFIG (sanghx-foods)
+  const firebaseConfig = {
+    apiKey: "AIzaSyC-igyzVwdH_4Jt1r64TtHSfYxIMw8UfzM",
+    authDomain: "sanghx-foods.firebaseapp.com",
+    projectId: "sanghx-foods",
+    storageBucket: "sanghx-foods.firebasestorage.app",
+    messagingSenderId: "491353757911",
+    appId: "1:491353757911:web:40752459b5b0049c71f892"
+  };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);  // ✅ THIS LINE MUST BE THERE
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-  // ✅ CLOUDINARY SETTINGS (CORRECT)
+  // ✅ CLOUDINARY SETTINGS
   const CLOUD_NAME = "dvbaqh8ja";
   const UPLOAD_PRESET = "SANGHX";
 
   const statusText = document.getElementById("statusText");
   const menuList = document.getElementById("menuList");
 
-  // ✅ UPLOAD IMAGE TO CLOUDINARY (FIXED)
+  // ✅ Upload image to Cloudinary
   async function uploadToCloudinary(file){
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("upload_preset", UPLOAD_PRESET); // ✅ FIXED
+    formData.append("upload_preset", UPLOAD_PRESET);
 
-    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, { // ✅ FIXED
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
       method: "POST",
       body: formData
     });
@@ -188,7 +198,7 @@ const db = getFirestore(app);  // ✅ THIS LINE MUST BE THERE
     return data.secure_url;
   }
 
-  // ✅ ADD MENU ITEM
+  // ✅ ADD MENU ITEM (FIXED)
   window.addMenuItem = async function(){
     try{
       const name = document.getElementById("foodName").value.trim();
@@ -202,17 +212,17 @@ const db = getFirestore(app);  // ✅ THIS LINE MUST BE THERE
       }
 
       statusText.innerText = "Uploading image to Cloudinary...";
-
       const imgUrl = await uploadToCloudinary(file);
 
       statusText.innerText = "Saving menu to Firestore...";
-await addDoc(collection(db, "menu"), {
-  name: name,
-  price: price,
-  img: imgUrl,
-  storeName: storeName,
-  createdAt: Date.now()
-});
+
+      await addDoc(collection(db, "menu"), {
+        name: name,
+        price: price,
+        img: imgUrl,
+        storeName: storeName,
+        createdAt: Date.now()
+      });
 
       statusText.innerText = "✅ Item Added Successfully!";
 
@@ -225,9 +235,9 @@ await addDoc(collection(db, "menu"), {
       statusText.innerText = "❌ Error: " + err.message;
       alert("Error: " + err.message);
     }
-  }
+  };
 
-  // ✅ LIVE MENU LIST
+  // ✅ LIVE MENU LIST (FIXED)
   onSnapshot(collection(db, "menu"), (snapshot) => {
     menuList.innerHTML = "";
 
@@ -256,22 +266,20 @@ await addDoc(collection(db, "menu"), {
   window.deleteItem = async function(id){
     if(!confirm("Delete this item?")) return;
     await deleteDoc(doc(db, "menu", id));
-  }
+  };
 
   // ✅ CLEAR ALL MENU
   window.clearAllMenu = async function(){
     if(!confirm("Are you sure you want to delete ALL menu?")) return;
 
     const snap = await getDocs(collection(db, "menu"));
-    snap.forEach(async (d) => {
+    for(const d of snap.docs){
       await deleteDoc(doc(db, "menu", d.id));
-    });
+    }
 
     alert("All menu cleared!");
-  }
+  };
 </script>
 
 </body>
 </html>
-
-
