@@ -7,65 +7,64 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
 
-    *{margin:0;padding:0;box-sizing:border-box}
-    body{
-      font-family:'Poppins',sans-serif;
-      background:#fff7f5;
-      color:#1c1c1c;
-      padding:16px;
-    }
-
-    .header{
-      background: linear-gradient(135deg, #e23744, #ff5a5f);
-      color:white;
-      padding:16px;
-      text-align:center;
-      font-size:22px;
-      font-weight:600;
-      border-radius:14px;
-      margin-bottom:18px;
-    }
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+    body{background:#fff7f5;padding:16px;}
 
     .card{
+      max-width:450px;
+      margin:auto;
       background:white;
-      border-radius:16px;
-      padding:16px;
+      padding:18px;
+      border-radius:18px;
       box-shadow:0 10px 25px rgba(0,0,0,0.08);
-      margin-bottom:18px;
     }
 
     h2{
-      font-size:18px;
-      margin-bottom:12px;
+      text-align:center;
+      background:linear-gradient(135deg,#e23744,#ff5a5f);
+      color:white;
+      padding:14px;
+      border-radius:14px;
+      margin-bottom:16px;
+      font-size:20px;
     }
 
     input, select{
       width:100%;
       padding:12px;
+      margin:10px 0;
       border-radius:12px;
-      border:1px solid #eee;
-      margin-bottom:10px;
-      font-size:14px;
+      border:1px solid #ddd;
       outline:none;
+      font-size:14px;
     }
 
     button{
       width:100%;
-      background: linear-gradient(135deg, #ff7a18, #ff9f45);
-      border:none;
-      color:white;
       padding:12px;
+      border:none;
       border-radius:14px;
       font-weight:700;
       cursor:pointer;
       font-size:15px;
     }
 
-    .menu-list{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
+    .btn-add{
+      background:linear-gradient(135deg,#ff7a18,#ff9f45);
+      color:white;
       margin-top:10px;
+    }
+
+    .status{
+      margin-top:10px;
+      font-size:13px;
+      opacity:0.8;
+    }
+
+    .menu-title{
+      margin-top:18px;
+      font-size:18px;
+      font-weight:700;
     }
 
     .menu-item{
@@ -74,78 +73,78 @@
       align-items:center;
       background:#fff;
       border:1px solid #eee;
-      border-radius:14px;
       padding:10px;
+      margin-top:10px;
+      border-radius:14px;
     }
 
     .menu-item img{
-      width:70px;
+      width:60px;
       height:60px;
-      object-fit:cover;
       border-radius:12px;
+      object-fit:cover;
     }
 
     .menu-info{
       flex:1;
     }
 
-    .menu-info h4{
+    .menu-info b{
       font-size:14px;
-      margin-bottom:2px;
     }
 
-    .menu-info p{
-      font-size:12px;
+    .menu-info small{
       opacity:0.7;
-    }
-
-    .small{
       font-size:12px;
-      opacity:0.7;
-      margin-top:6px;
     }
 
-    .danger{
-      background: linear-gradient(135deg,#111,#444);
-      margin-top:8px;
+    .btn-delete{
+      background:#ff3b3b;
+      color:white;
+      padding:8px 12px;
+      width:auto;
+      border-radius:12px;
+      font-size:13px;
+    }
+
+    .btn-clear{
+      background:black;
+      color:white;
+      margin-top:14px;
     }
   </style>
 </head>
 
 <body>
 
-  <div class="header">⚙️ SANGHX Admin</div>
-
   <div class="card">
-    <h2>Add Menu Item</h2>
+    <h2>⚙️ SANGHX Admin</h2>
 
-    <input type="text" id="foodName" placeholder="Food Name (eg: Burger)">
-    <input type="number" id="foodPrice" placeholder="Price (eg: 120)">
+    <h3>Add Menu Item</h3>
 
-    <input type="file" id="foodImg">
+    <input type="text" id="foodName" placeholder="Food Name (e.g. Burger)">
+    <input type="number" id="foodPrice" placeholder="Price (e.g. 100)">
 
-    <select id="foodStore">
-      <option value="">Select Store</option>
+    <input type="file" id="foodImg" accept="image/*">
+
+    <select id="storeName">
       <option value="Makhan Foods">Makhan Foods</option>
       <option value="AB Foods">AB Foods</option>
       <option value="AS Foods">AS Foods</option>
     </select>
 
-    <button onclick="addMenuItem()">Add</button>
+    <button class="btn-add" onclick="addMenuItem()">Add</button>
 
-    <p class="small" id="statusText"></p>
+    <div class="status" id="statusText"></div>
+
+    <div class="menu-title">Current Menu</div>
+    <div id="menuList"></div>
+
+    <button class="btn-clear" onclick="clearAllMenu()">Clear All Menu (Danger)</button>
   </div>
-
-  <div class="card">
-    <h2>Current Menu</h2>
-    <div class="menu-list" id="menuList"></div>
-
-    <button class="danger" onclick="clearMenu()">Clear All Menu (Danger)</button>
-  </div>
-
 
 <script type="module">
-  // ✅ Firebase Imports
+  // ✅ FIREBASE IMPORTS
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
   import {
     getFirestore,
@@ -157,7 +156,7 @@
     getDocs
   } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
 
-  // ✅ Firebase Config
+  // ✅ YOUR FIREBASE CONFIG
   const firebaseConfig = {
     apiKey: "AIzaSyAAmJk-W24u-3sz1oUu72dMRmCvNBXvT4o",
     authDomain: "sanghx-e7a47.firebaseapp.com",
@@ -170,13 +169,14 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  const menuRef = collection(db, "menu");
-
-  // ✅ Cloudinary Settings
+  // ✅ CLOUDINARY SETTINGS
   const CLOUD_NAME = "dvbaqh8ja";
   const UPLOAD_PRESET = "SANGHX";
 
-  // ---------- Cloudinary Upload Function ----------
+  const statusText = document.getElementById("statusText");
+  const menuList = document.getElementById("menuList");
+
+  // ✅ UPLOAD IMAGE TO CLOUDINARY
   async function uploadToCloudinary(file){
     const formData = new FormData();
     formData.append("file", file);
@@ -189,100 +189,96 @@
 
     const data = await res.json();
 
-    if(data.error){
-      throw new Error(data.error.message);
+    if(!data.secure_url){
+      console.log("Cloudinary error:", data);
+      throw new Error("Cloudinary upload failed!");
     }
 
     return data.secure_url;
   }
 
-  // ---------- Add Menu Item ----------
+  // ✅ ADD MENU ITEM
   window.addMenuItem = async function(){
-    const name = document.getElementById("foodName").value.trim();
-    const price = document.getElementById("foodPrice").value.trim();
-    const storeName = document.getElementById("foodStore").value;
-    const file = document.getElementById("foodImg").files[0];
-    const statusText = document.getElementById("statusText");
-
-    if(!name || !price || !storeName || !file){
-      alert("Fill all fields + select image");
-      return;
-    }
-
     try{
-      statusText.innerText = "Uploading image...";
+      const name = document.getElementById("foodName").value.trim();
+      const price = Number(document.getElementById("foodPrice").value);
+      const storeName = document.getElementById("storeName").value;
+      const file = document.getElementById("foodImg").files[0];
+
+      if(!name || !price || !file){
+        alert("Please fill all fields and select image");
+        return;
+      }
+
+      statusText.innerText = "Uploading image to Cloudinary...";
+
       const imgUrl = await uploadToCloudinary(file);
 
       statusText.innerText = "Saving menu to Firestore...";
 
-      await addDoc(menuRef, {
+      await addDoc(collection(db, "menu"), {
         name: name,
-        price: Number(price),
+        price: price,
         storeName: storeName,
         img: imgUrl,
-        createdAt: new Date().toLocaleString()
+        time: new Date().toLocaleString()
       });
 
       statusText.innerText = "✅ Item Added Successfully!";
 
       document.getElementById("foodName").value = "";
       document.getElementById("foodPrice").value = "";
-      document.getElementById("foodStore").value = "";
       document.getElementById("foodImg").value = "";
 
     } catch(err){
-      console.error(err);
-      alert("❌ Error: " + err.message);
-      statusText.innerText = "❌ Failed: " + err.message;
+      console.log(err);
+      statusText.innerText = "❌ Error: " + err.message;
+      alert("Error: " + err.message);
     }
   }
 
-  // ---------- Render Menu Live ----------
-  const menuList = document.getElementById("menuList");
-
-  onSnapshot(menuRef, (snapshot)=>{
+  // ✅ LIVE MENU LIST
+  onSnapshot(collection(db, "menu"), (snapshot) => {
     menuList.innerHTML = "";
 
     if(snapshot.empty){
-      menuList.innerHTML = `<p style="opacity:0.6;font-size:13px;">No menu items yet</p>`;
+      menuList.innerHTML = "<p style='opacity:0.7;margin-top:10px;'>No items added yet</p>";
       return;
     }
 
-    snapshot.forEach((docSnap)=>{
-      const item = docSnap.data();
+    snapshot.forEach((d) => {
+      const item = d.data();
 
       menuList.innerHTML += `
         <div class="menu-item">
-          <img src="${item.img}">
+          <img src="${item.img}" alt="food">
           <div class="menu-info">
-            <h4>${item.name} - ₹${item.price}</h4>
-            <p>🏪 ${item.storeName}</p>
+            <b>${item.name} - ₹${item.price}</b><br>
+            <small>🏪 ${item.storeName}</small>
           </div>
-          <button style="width:auto;padding:8px 12px;border-radius:10px;background:#e23744"
-            onclick="deleteItem('${docSnap.id}')">Delete</button>
+          <button class="btn-delete" onclick="deleteItem('${d.id}')">Delete</button>
         </div>
       `;
     });
   });
 
-  // ---------- Delete Single Item ----------
+  // ✅ DELETE ITEM
   window.deleteItem = async function(id){
     if(!confirm("Delete this item?")) return;
     await deleteDoc(doc(db, "menu", id));
   }
 
-  // ---------- Clear All Menu ----------
-  window.clearMenu = async function(){
-    if(!confirm("⚠️ Are you sure you want to delete ALL menu items?")) return;
+  // ✅ CLEAR ALL MENU
+  window.clearAllMenu = async function(){
+    if(!confirm("Are you sure you want to delete ALL menu?")) return;
 
-    const snapshot = await getDocs(menuRef);
-    snapshot.forEach(async (d)=>{
+    const snap = await getDocs(collection(db, "menu"));
+    snap.forEach(async (d) => {
       await deleteDoc(doc(db, "menu", d.id));
     });
 
-    alert("✅ All menu cleared");
+    alert("All menu cleared!");
   }
-
 </script>
 
 </body>
