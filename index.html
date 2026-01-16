@@ -3,147 +3,206 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SANGHX Loading...</title>
+  <title>SANGHX Intro</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800;900&display=swap" rel="stylesheet">
 
   <style>
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
-      font-family: 'Poppins', sans-serif;
-    }
-
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
     body{
       height:100vh;
+      background:#050507;
+      overflow:hidden;
       display:flex;
       justify-content:center;
       align-items:center;
-      background:#050505;
-      overflow:hidden;
       position:relative;
-    }
-
-    /* 🔥 Background glow blobs */
-    .blob{
-      position:absolute;
-      width:350px;
-      height:350px;
-      border-radius:50%;
-      filter: blur(120px);
-      opacity:0.45;
-      animation: float 6s ease-in-out infinite;
-    }
-    .blob.one{
-      background:#e23744;
-      top:-80px;
-      left:-80px;
-    }
-    .blob.two{
-      background:#ff7a18;
-      bottom:-120px;
-      right:-80px;
-      animation-delay: 2s;
-    }
-
-    @keyframes float{
-      0%,100%{transform: translateY(0px) translateX(0px);}
-      50%{transform: translateY(40px) translateX(25px);}
-    }
-
-    /* 🔥 Center card */
-    .loader-card{
-      position:relative;
-      width:320px;
-      padding:40px 28px;
-      border-radius:22px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.08);
-      backdrop-filter: blur(18px);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-      text-align:center;
-      overflow:hidden;
-    }
-
-    /* 🔥 Shiny moving highlight */
-    .loader-card::before{
-      content:"";
-      position:absolute;
-      top:0;
-      left:-60%;
-      width:60%;
-      height:100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
-      transform: skewX(-18deg);
-      animation: shine 2.2s infinite;
-    }
-
-    @keyframes shine{
-      0%{left:-60%;}
-      100%{left:140%;}
-    }
-
-    /* 🔥 Logo text animation */
-    .logo{
-      font-size:42px;
-      font-weight:900;
-      letter-spacing:4px;
       color:white;
-      display:inline-block;
+    }
+
+    /* 🔥 Animated gradient background */
+    .bg{
+      position:absolute;
+      inset:0;
+      background: radial-gradient(circle at 20% 20%, rgba(226,55,68,0.25), transparent 45%),
+                  radial-gradient(circle at 80% 80%, rgba(255,122,24,0.25), transparent 50%),
+                  radial-gradient(circle at 50% 50%, rgba(255,255,255,0.06), transparent 60%);
+      animation: bgMove 6s ease-in-out infinite alternate;
+      filter: blur(0px);
+      transform: scale(1.1);
+    }
+
+    @keyframes bgMove{
+      0%{transform: scale(1.05) translate(0,0);}
+      100%{transform: scale(1.15) translate(-20px, 20px);}
+    }
+
+    /* 🔥 Floating particles */
+    .particles{
+      position:absolute;
+      inset:0;
+      overflow:hidden;
+      pointer-events:none;
+    }
+
+    .p{
+      position:absolute;
+      width:6px;
+      height:6px;
+      border-radius:50%;
+      background: rgba(255,255,255,0.15);
+      box-shadow: 0 0 20px rgba(226,55,68,0.15);
+      animation: floatUp linear infinite;
+    }
+
+    @keyframes floatUp{
+      from{transform: translateY(120vh) scale(0.6); opacity:0;}
+      10%{opacity:1;}
+      to{transform: translateY(-20vh) scale(1.2); opacity:0;}
+    }
+
+    /* 🔥 Cinematic card */
+    .wrap{
       position:relative;
+      width:min(420px, 92vw);
+      padding:42px 28px;
+      border-radius:28px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.10);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.7);
       overflow:hidden;
-      line-height:1.1;
     }
 
-    .logo span{
+    /* 🔥 Scanline overlay */
+    .scan{
+      position:absolute;
+      inset:-40%;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.05) 0px,
+        rgba(255,255,255,0.05) 1px,
+        transparent 3px,
+        transparent 7px
+      );
+      animation: scanMove 1.8s linear infinite;
+      opacity:0.15;
+      pointer-events:none;
+    }
+
+    @keyframes scanMove{
+      0%{transform: translateY(0);}
+      100%{transform: translateY(120px);}
+    }
+
+    /* 🔥 Shock pulse ring */
+    .pulse-ring{
+      position:absolute;
+      width:260px;
+      height:260px;
+      border-radius:50%;
+      border:2px solid rgba(226,55,68,0.45);
+      top:50%;
+      left:50%;
+      transform: translate(-50%,-50%) scale(0.4);
+      opacity:0;
+      animation: pulse 1.8s ease-out forwards;
+    }
+
+    @keyframes pulse{
+      0%{opacity:0; transform: translate(-50%,-50%) scale(0.4);}
+      20%{opacity:1;}
+      100%{opacity:0; transform: translate(-50%,-50%) scale(1.4);}
+    }
+
+    /* 🔥 Logo build animation */
+    .logo{
+      font-size:48px;
+      font-weight:900;
+      letter-spacing:6px;
+      text-align:center;
+      position:relative;
+      line-height:1;
+      margin-top:8px;
+    }
+
+    .logo .hx{
       color:#e23744;
-      text-shadow: 0 0 18px rgba(226,55,68,0.6);
+      text-shadow: 0 0 25px rgba(226,55,68,0.7);
     }
 
-    /* typing reveal */
-    .reveal{
+    /* glitch layers */
+    .glitch{
+      position:relative;
       display:inline-block;
-      width:0;
-      white-space:nowrap;
+      animation: popIn 1.2s cubic-bezier(.2,1.2,.2,1) forwards;
+      transform: scale(0.7);
+      opacity:0;
+    }
+
+    @keyframes popIn{
+      0%{transform: scale(0.6); opacity:0;}
+      60%{transform: scale(1.08); opacity:1;}
+      100%{transform: scale(1); opacity:1;}
+    }
+
+    .glitch::before,
+    .glitch::after{
+      content: attr(data-text);
+      position:absolute;
+      left:0;
+      top:0;
+      width:100%;
       overflow:hidden;
-      border-right: 2px solid rgba(255,255,255,0.6);
-      animation: typing 1.3s steps(12) forwards, blink 0.55s infinite;
+      opacity:0.6;
     }
 
-    @keyframes typing{
-      from{width:0;}
-      to{width:100%;}
-    }
-    @keyframes blink{
-      0%,100%{border-color:transparent;}
-      50%{border-color:rgba(255,255,255,0.7);}
+    .glitch::before{
+      color: rgba(255,122,24,0.9);
+      transform: translate(2px, -2px);
+      clip-path: inset(0 0 55% 0);
+      animation: glitch 1.3s infinite;
     }
 
-    /* 🔥 tagline */
-    .tagline{
-      margin-top:12px;
+    .glitch::after{
+      color: rgba(226,55,68,0.9);
+      transform: translate(-2px, 2px);
+      clip-path: inset(45% 0 0 0);
+      animation: glitch 1.1s infinite;
+    }
+
+    @keyframes glitch{
+      0%{transform: translate(0,0);}
+      20%{transform: translate(2px,-2px);}
+      40%{transform: translate(-2px,2px);}
+      60%{transform: translate(3px,1px);}
+      80%{transform: translate(-3px,-1px);}
+      100%{transform: translate(0,0);}
+    }
+
+    /* 🔥 Tagline reveal */
+    .tag{
+      margin-top:14px;
+      text-align:center;
       font-size:13px;
-      color:rgba(255,255,255,0.75);
-      letter-spacing:1px;
-      animation: fadeUp 1.2s ease forwards;
+      letter-spacing:2px;
+      color: rgba(255,255,255,0.75);
       opacity:0;
       transform: translateY(12px);
-      animation-delay: 1.2s;
+      animation: tagIn 1s ease forwards;
+      animation-delay: 0.8s;
     }
 
-    @keyframes fadeUp{
-      to{
-        opacity:1;
-        transform: translateY(0);
-      }
+    @keyframes tagIn{
+      to{opacity:1; transform: translateY(0);}
     }
 
-    /* 🔥 Loading bar */
+    /* 🔥 Loading bar (neon) */
     .bar{
       margin-top:26px;
-      width:100%;
-      height:7px;
+      height:10px;
+      border-radius:999px;
       background: rgba(255,255,255,0.12);
-      border-radius:99px;
       overflow:hidden;
       position:relative;
     }
@@ -151,88 +210,126 @@
     .bar .fill{
       height:100%;
       width:0%;
-      border-radius:99px;
-      background: linear-gradient(90deg, #e23744, #ff7a18);
-      box-shadow: 0 0 18px rgba(226,55,68,0.45);
-      animation: loadFill 2.4s ease forwards;
+      border-radius:999px;
+      background: linear-gradient(90deg, #e23744, #ff7a18, #e23744);
+      box-shadow: 0 0 25px rgba(226,55,68,0.55);
+      animation: fill 2.7s ease forwards;
     }
 
-    @keyframes loadFill{
+    @keyframes fill{
       0%{width:0%;}
       100%{width:100%;}
     }
 
-    /* 🔥 dots loading */
-    .dots{
-      margin-top:14px;
-      font-size:14px;
-      color:rgba(255,255,255,0.75);
-      letter-spacing:2px;
-    }
-
-    .dots span{
-      display:inline-block;
-      animation: bounce 1s infinite;
-    }
-    .dots span:nth-child(2){animation-delay:0.15s;}
-    .dots span:nth-child(3){animation-delay:0.3s;}
-
-    @keyframes bounce{
-      0%,100%{transform: translateY(0); opacity:0.4;}
-      50%{transform: translateY(-6px); opacity:1;}
-    }
-
-    /* 🔥 subtle scanline effect */
-    .scanline{
+    /* 🔥 “spark” traveling light */
+    .spark{
       position:absolute;
-      top:-30%;
-      left:0;
-      width:100%;
-      height:60px;
-      background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.08), transparent);
-      animation: scan 2.5s linear infinite;
-      opacity:0.4;
+      top:0;
+      left:-40px;
+      width:40px;
+      height:100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.7), transparent);
+      filter: blur(1px);
+      animation: sparkMove 1.2s linear infinite;
+      opacity:0.6;
     }
 
-    @keyframes scan{
-      0%{top:-30%;}
-      100%{top:130%;}
+    @keyframes sparkMove{
+      0%{left:-40px;}
+      100%{left:110%;}
+    }
+
+    /* 🔥 Button that appears at end */
+    .enter{
+      margin-top:22px;
+      width:100%;
+      padding:12px;
+      border:none;
+      border-radius:18px;
+      font-weight:800;
+      letter-spacing:1px;
+      cursor:pointer;
+      color:white;
+      background: linear-gradient(135deg, #e23744, #ff7a18);
+      box-shadow: 0 15px 40px rgba(226,55,68,0.35);
+      opacity:0;
+      transform: translateY(14px);
+      animation: btnIn 0.9s ease forwards;
+      animation-delay: 2.1s;
+    }
+
+    @keyframes btnIn{
+      to{opacity:1; transform: translateY(0);}
+    }
+
+    .enter:active{
+      transform: scale(0.98);
+    }
+
+    /* 🔥 Small footer text */
+    .foot{
+      margin-top:10px;
+      text-align:center;
+      font-size:11px;
+      color: rgba(255,255,255,0.55);
+      opacity:0;
+      animation: fadeIn 1s ease forwards;
+      animation-delay: 2.2s;
+    }
+
+    @keyframes fadeIn{
+      to{opacity:1;}
     }
   </style>
-
-  <!-- Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800;900&display=swap" rel="stylesheet">
 </head>
 
 <body>
+  <div class="bg"></div>
 
-  <div class="blob one"></div>
-  <div class="blob two"></div>
+  <div class="particles" id="particles"></div>
 
-  <div class="loader-card">
-    <div class="scanline"></div>
+  <div class="wrap">
+    <div class="scan"></div>
+    <div class="pulse-ring"></div>
 
     <div class="logo">
-      <span class="reveal">SANG<span>HX</span></span>
+      <span class="glitch" data-text="SANGHX">SANG<span class="hx">HX</span></span>
     </div>
 
-    <div class="tagline">FOOD • FAST • TRUSTED</div>
+    <div class="tag">SMALL CITY • BIG ENERGY • REAL DELIVERY</div>
 
     <div class="bar">
-      <div class="fill"></div>
+      <div class="fill">
+        <div class="spark"></div>
+      </div>
     </div>
 
-    <div class="dots">
-      Loading<span>.</span><span>.</span><span>.</span>
-    </div>
+    <button class="enter" onclick="goNext()">ENTER SANGHX</button>
+    <div class="foot">⚡ Built in public • Day by Day</div>
   </div>
 
   <script>
-    // Redirect after animation ends
-    setTimeout(() => {
-      window.location.href = "index.html"; // change target page
-    }, 2600);
-  </script>
+    // create particles
+    const container = document.getElementById("particles");
+    for(let i=0;i<18;i++){
+      const dot = document.createElement("div");
+      dot.className = "p";
+      dot.style.left = Math.random()*100 + "%";
+      dot.style.animationDuration = (3 + Math.random()*4) + "s";
+      dot.style.animationDelay = (Math.random()*2) + "s";
+      dot.style.width = (4 + Math.random()*5) + "px";
+      dot.style.height = dot.style.width;
+      container.appendChild(dot);
+    }
 
+    function goNext(){
+      window.location.href = "index.html"; // change to customer.html if you want
+    }
+
+    // auto redirect after 3 seconds (optional)
+    setTimeout(() => {
+      // window.location.href = "index.html";
+    }, 3200);
+  </script>
 </body>
 </html>
