@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>SANGHX Intro</title>
+<title>SANGHX</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800;900&display=swap" rel="stylesheet">
 
@@ -12,251 +12,137 @@
   body{
     height:100vh;
     background:#050505;
-    overflow:hidden;
     display:flex;
-    align-items:center;
     justify-content:center;
-    color:#fff;
-    position:relative;
-  }
-
-  /* 🔥 background energy */
-  .bg{
-    position:absolute;
-    inset:0;
-    background:
-      radial-gradient(circle at 15% 20%, rgba(226,55,68,0.35), transparent 45%),
-      radial-gradient(circle at 85% 80%, rgba(255,122,24,0.30), transparent 50%),
-      radial-gradient(circle at 50% 50%, rgba(255,255,255,0.06), transparent 55%);
-    animation: bgPulse 2.8s ease-in-out infinite alternate;
-    filter: saturate(120%);
-  }
-
-  @keyframes bgPulse{
-    0%{transform: scale(1.05);}
-    100%{transform: scale(1.18);}
-  }
-
-  /* 🔥 cinematic flash */
-  .flash{
-    position:absolute;
-    inset:0;
-    background:white;
-    opacity:0;
-    animation: flash 2.8s ease forwards;
-    pointer-events:none;
-  }
-  @keyframes flash{
-    0%{opacity:0;}
-    55%{opacity:0;}
-    62%{opacity:0.9;}
-    70%{opacity:0;}
-    100%{opacity:0;}
-  }
-
-  /* 🔥 center stage */
-  .stage{
-    position:relative;
-    width:min(520px, 92vw);
-    height:360px;
-    border-radius:28px;
-    background: rgba(255,255,255,0.06);
-    border:1px solid rgba(255,255,255,0.10);
-    backdrop-filter: blur(18px);
-    box-shadow: 0 30px 90px rgba(0,0,0,0.75);
+    align-items:center;
     overflow:hidden;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    flex-direction:column;
+    color:white;
   }
 
-  /* 🔥 energy ring */
-  .ring{
-    position:absolute;
-    width:280px;
-    height:280px;
-    border-radius:50%;
-    border:2px solid rgba(226,55,68,0.35);
-    box-shadow: 0 0 40px rgba(226,55,68,0.25);
-    animation: ring 2.8s ease forwards;
-    opacity:0;
-  }
-  @keyframes ring{
-    0%{transform: scale(0.2); opacity:0;}
-    25%{opacity:1;}
-    60%{transform: scale(1); opacity:1;}
-    100%{transform: scale(1.35); opacity:0;}
-  }
-
-  /* 🔥 abstract "hands" = 2 energy arms */
-  .arm{
-    position:absolute;
-    width:220px;
-    height:14px;
-    border-radius:999px;
-    filter: blur(0.2px);
-    opacity:0;
-  }
-
-  .arm.left{
-    left:-30%;
-    top:46%;
-    background: linear-gradient(90deg, transparent, rgba(226,55,68,1), rgba(255,122,24,1));
-    animation: armLeft 2.8s ease forwards;
-  }
-
-  .arm.right{
-    right:-30%;
-    top:54%;
-    background: linear-gradient(90deg, rgba(255,122,24,1), rgba(226,55,68,1), transparent);
-    animation: armRight 2.8s ease forwards;
-  }
-
-  @keyframes armLeft{
-    0%{transform: translateX(0); opacity:0;}
-    25%{opacity:1;}
-    55%{transform: translateX(58%); opacity:1;}
-    62%{transform: translateX(58%) scaleX(1.2); opacity:1;}
-    100%{transform: translateX(58%) scaleX(1.2); opacity:0;}
-  }
-
-  @keyframes armRight{
-    0%{transform: translateX(0); opacity:0;}
-    25%{opacity:1;}
-    55%{transform: translateX(-58%); opacity:1;}
-    62%{transform: translateX(-58%) scaleX(1.2); opacity:1;}
-    100%{transform: translateX(-58%) scaleX(1.2); opacity:0;}
-  }
-
-  /* 🔥 core spark */
-  .spark{
-    position:absolute;
-    width:12px;
-    height:12px;
-    border-radius:50%;
-    background: white;
-    box-shadow:
-      0 0 25px rgba(255,255,255,0.8),
-      0 0 60px rgba(226,55,68,0.6),
-      0 0 90px rgba(255,122,24,0.55);
-    opacity:0;
-    animation: spark 2.8s ease forwards;
-  }
-
-  @keyframes spark{
-    0%{transform: scale(0.2); opacity:0;}
-    45%{opacity:0;}
-    55%{opacity:1; transform: scale(1.1);}
-    62%{opacity:1; transform: scale(4.2);}
-    70%{opacity:0; transform: scale(8);}
-    100%{opacity:0;}
-  }
-
-  /* 🔥 logo reveal after spark */
-  .logo{
-    font-size:52px;
-    font-weight:900;
-    letter-spacing:7px;
-    opacity:0;
-    transform: translateY(18px) scale(0.96);
-    animation: logoIn 2.8s ease forwards;
+  .wrap{
     text-align:center;
+    position:relative;
   }
+
+  /* Minimal logo */
+  .logo{
+    font-size:60px;
+    font-weight:900;
+    letter-spacing:8px;
+    position:relative;
+    display:inline-block;
+    line-height:1;
+    color:white;
+  }
+
   .logo span{
     color:#e23744;
-    text-shadow: 0 0 18px rgba(226,55,68,0.6);
   }
 
-  @keyframes logoIn{
-    0%{opacity:0;}
-    65%{opacity:0;}
-    78%{opacity:1; transform: translateY(0) scale(1.03);}
-    100%{opacity:1; transform: translateY(0) scale(1);}
+  /* CRAZY SLICE EFFECT */
+  .logo::before{
+    content:"";
+    position:absolute;
+    left:-20%;
+    top:50%;
+    width:140%;
+    height:10px;
+    background:#e23744;
+    transform: translateY(-50%) rotate(-10deg);
+    filter: blur(0.4px);
+    animation: slice 1.2s ease forwards;
+  }
+
+  @keyframes slice{
+    0%{transform: translateY(-50%) rotate(-10deg) translateX(-120%); opacity:0;}
+    40%{opacity:1;}
+    70%{transform: translateY(-50%) rotate(-10deg) translateX(0%); opacity:1;}
+    100%{transform: translateY(-50%) rotate(-10deg) translateX(140%); opacity:0;}
+  }
+
+  /* Text reveal */
+  .reveal{
+    display:inline-block;
+    overflow:hidden;
+    white-space:nowrap;
+    width:0;
+    animation: type 1.2s steps(10) forwards;
+  }
+
+  @keyframes type{
+    from{width:0;}
+    to{width:100%;}
+  }
+
+  /* Loading bar minimal but premium */
+  .bar{
+    margin:22px auto 0;
+    width:220px;
+    height:6px;
+    border-radius:999px;
+    background:rgba(255,255,255,0.12);
+    overflow:hidden;
+    position:relative;
+  }
+
+  .bar .fill{
+    width:0%;
+    height:100%;
+    background:#e23744;
+    border-radius:999px;
+    animation: fill 2.2s ease forwards;
+  }
+
+  @keyframes fill{
+    0%{width:0%;}
+    100%{width:100%;}
   }
 
   .tag{
-    margin-top:10px;
+    margin-top:12px;
     font-size:12px;
     letter-spacing:2px;
-    color: rgba(255,255,255,0.72);
-    opacity:0;
-    animation: tagIn 2.8s ease forwards;
-    text-align:center;
+    opacity:0.65;
   }
 
-  @keyframes tagIn{
-    0%{opacity:0;}
-    78%{opacity:0;}
-    100%{opacity:1;}
+  /* Fade out transition */
+  .fadeOut{
+    animation: fadeOut 0.6s ease forwards;
   }
 
-  /* 🔥 progress dots */
-  .dots{
-    margin-top:18px;
-    display:flex;
-    gap:8px;
-    opacity:0;
-    animation: tagIn 2.8s ease forwards;
-  }
-  .dot{
-    width:8px;height:8px;border-radius:50%;
-    background: rgba(255,255,255,0.22);
-    animation: dot 0.9s infinite;
-  }
-  .dot:nth-child(2){animation-delay:0.15s;}
-  .dot:nth-child(3){animation-delay:0.3s;}
-  @keyframes dot{
-    0%,100%{transform: translateY(0); opacity:0.4;}
-    50%{transform: translateY(-6px); opacity:1;}
-  }
-
-  /* 🔥 exit animation to next page */
-  .exit{
-    animation: exit 0.7s ease forwards;
-  }
-  @keyframes exit{
-    to{
-      transform: scale(1.15);
-      opacity:0;
-      filter: blur(8px);
-    }
+  @keyframes fadeOut{
+    to{opacity:0; transform: scale(1.06); filter: blur(6px);}
   }
 </style>
 </head>
 
 <body>
-  <div class="bg"></div>
-  <div class="flash"></div>
 
-  <div class="stage" id="stage">
-    <div class="ring"></div>
-    <div class="arm left"></div>
-    <div class="arm right"></div>
-    <div class="spark"></div>
-
-    <div class="logo">SANG<span>HX</span></div>
-    <div class="tag">SANGH ENERGY • FOOD DELIVERY • SMALL CITY FIRST</div>
-
-    <div class="dots">
-      <div class="dot"></div>
-      <div class="dot"></div>
-      <div class="dot"></div>
-    </div>
+<div class="wrap" id="wrap">
+  <div class="logo">
+    <span class="reveal">SANG<span>HX</span></span>
   </div>
 
+  <div class="bar">
+    <div class="fill"></div>
+  </div>
+
+  <div class="tag">minimal. fast. local.</div>
+</div>
+
 <script>
-  // Auto go next after 3.2 sec
+  // 👇 change this to your real next page name
+  const NEXT_PAGE = "customer.html";
+
+  // fade out before redirect
   setTimeout(() => {
-    const stage = document.getElementById("stage");
-    stage.classList.add("exit");
-  }, 3200);
+    document.getElementById("wrap").classList.add("fadeOut");
+  }, 2300);
 
   setTimeout(() => {
-    window.location.href = "page2.html"; // change to customer.html if you want
-  }, 3800);
+    window.location.href = NEXT_PAGE;
+  }, 2800);
 </script>
 
 </body>
 </html>
-
