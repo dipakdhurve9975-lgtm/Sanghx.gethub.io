@@ -206,14 +206,14 @@ const db = getFirestore(app);  // ✅ THIS LINE MUST BE THERE
       const imgUrl = await uploadToCloudinary(file);
 
       statusText.innerText = "Saving menu to Firestore...";
-
-      await addDoc(collection(db, "menu"), {
-  name: foodName,
+await addDoc(collection(db, "menu"), {
+  name: name,
   price: price,
-  image: imageUrl,
-  store: storeName,
+  img: imgUrl,
+  storeName: storeName,
   createdAt: Date.now()
 });
+
       statusText.innerText = "✅ Item Added Successfully!";
 
       document.getElementById("foodName").value = "";
@@ -273,4 +273,5 @@ const db = getFirestore(app);  // ✅ THIS LINE MUST BE THERE
 
 </body>
 </html>
+
 
