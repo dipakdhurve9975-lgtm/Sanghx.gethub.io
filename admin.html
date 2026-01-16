@@ -33,7 +33,7 @@
     <h3>Add Menu Item</h3>
     <input id="name" placeholder="Food name">
     <input id="price" placeholder="Price" type="number">
-    <input type="file" id="img">
+    <input type="file" id="img" accept="image/*">
 
     <select id="storeName" required>
       <option value="">Select Store</option>
@@ -64,35 +64,65 @@
   const menuList = document.getElementById("menuList");
   const ordersDiv = document.getElementById("orders");
 
-  function addMenu(){
+  // ✅ ONLY ONE addMenu() FUNCTION (Cloudinary)
+  async function addMenu() {
     const name = document.getElementById("name").value.trim();
     const price = document.getElementById("price").value.trim();
     const storeName = document.getElementById("storeName").value;
     const file = document.getElementById("img").files[0];
 
-    if(!name || !price || !storeName || !file){
+    if (!name || !price || !storeName || !file) {
       alert("Fill all fields");
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = function(){
+    // ✅ Cloudinary Upload
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "SANGHX"); // must be UNSIGNED preset
+
+    try {
+      const res = await fetch("https://api.cloudinary.com/v1_1/dvbaqh8ja/image/upload", {
+        method: "POST",
+        body: formData
+      });
+
+      const data = await res.json();
+      console.log("Cloudinary Response:", data);
+
+      if (data.error) {
+        alert("Cloudinary Error: " + data.error.message);
+        return;
+      }
+
+      if (!data.secure_url) {
+        alert("Upload failed, no secure_url received");
+        return;
+      }
+
+      // ✅ Save item in localStorage with Cloudinary URL
       menu.push({
-        name,
+        name: name,
         price: Number(price),
-        storeName,
-        img: reader.result
+        storeName: storeName,
+        img: data.secure_url
       });
 
       localStorage.setItem("menu", JSON.stringify(menu));
       renderMenu();
 
+      // clear inputs
       document.getElementById("name").value = "";
       document.getElementById("price").value = "";
       document.getElementById("img").value = "";
       document.getElementById("storeName").value = "";
-    };
-    reader.readAsDataURL(file);
+
+      alert("✅ Item Added Successfully!");
+
+    } catch (err) {
+      console.log(err);
+      alert("❌ Upload error, check internet / preset settings");
+    }
   }
 
   function renderMenu(){
@@ -133,16 +163,16 @@
     orders.forEach((o)=>{
       ordersDiv.innerHTML += `
         <div style="border:1px solid #ddd;padding:12px;margin:10px 0;border-radius:10px;background:#fff">
-          <b>🏪 Store:</b> ${o.storeName}<br>
-          <b>👤 Name:</b> ${o.customerName}<br>
-          <b>📞 Mobile:</b> ${o.customerMobile}<br>
-          <b>🏠 Address:</b> ${o.customerAddress}<br>
-          <b>💳 Payment:</b> ${o.paymentMode}<br>
-          <b>📍 Location:</b> <a href="${o.location}" target="_blank">${o.location}</a><br><br>
+          <b>👤 ${o.customerName || ""}</b><br>
+          📞 ${o.customerMobile || ""}<br>
+          🏠 ${o.customerAddress || ""}<br><br>
 
-          <b>📦 Items:</b><br>${o.items}<br><br>
-          <b>💰 Total:</b> ₹${o.total}<br>
-          <b>Status:</b> ${o.status}<br>
+          <b>Items:</b><br>
+          ${(o.items || []).map(i => `${i.name} x${i.qty} (${i.storeName})`).join("<br>")}
+          <br><br>
+
+          <b>Total:</b> ₹${o.total || 0}<br>
+          <b>Status:</b> ${o.status || "New"}<br>
           <small>${o.time || ""}</small>
         </div>
       `;
@@ -158,120 +188,6 @@
     renderMenu();
     renderOrders();
   });
-
-  // Firebase
-  async function addMenu(){
-  const name = document.getElementById("name").value;
-  const price = document.getElementById("price").value;
-  const storeName = document.getElementById("storeName").value;
-  const file = document.getElementById("img").files[0];
-
-  if(!name || !price || !storeName || !file){
-    alert("Fill all fields");
-    return;
-  }
-
-  const reader = new FileReader();
-  reader.onload = async function(){
-    await addDoc(collection(db, "menu"), {
-      name: name,
-      price: Number(price),
-      storeName: storeName,
-      img: reader.result
-    });
-
-    alert("✅ Item Added!");
-    document.getElementById("name").value = "";
-    document.getElementById("price").value = "";
-    document.getElementById("img").value = "";
-  };
-
-  reader.readAsDataURL(file);
-}
-
-// Step2
-onSnapshot(collection(db, "orders"), (snapshot) => {
-  ordersDiv.innerHTML = "";
-
-  snapshot.forEach((docSnap) => {
-    const o = docSnap.data();
-
-    ordersDiv.innerHTML += `
-      <div class="card">
-        <b>👤 ${o.customerName}</b><br>
-        📞 ${o.customerMobile}<br>
-        🏠 ${o.customerAddress}<br><br>
-
-        <b>Items:</b><br>
-        ${o.items.map(i => `${i.name} x${i.qty} (${i.storeName})`).join("<br>")}
-        <br><br>
-
-        <b>Total:</b> ₹${o.total}<br>
-        <b>Status:</b> ${o.status}<br>
-        <small>${o.time}</small>
-      </div>
-    `;
-  });
-});
-// cloud storage 
-async function addMenu() {
-  const name = document.getElementById("name").value;
-  const price = document.getElementById("price").value;
-  const storeName = document.getElementById("storeName").value;
-  const file = document.getElementById("img").files[0];
-
-  if (!name || !price || !storeName || !file) {
-    alert("Fill all fields");
-    return;
-  }
-
-  // ✅ Cloudinary Upload
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("upload_preset", "SANGHX");
-
-  try {
-    const res = await fetch("https://api.cloudinary.com/v1_1/dvbaqh8ja/image/upload", {
-  method: "POST",
-  body: formData
-});
-
-const data = await res.json();
-console.log("Cloudinary Response:", data);
-
-if (data.error) {
-  alert("Cloudinary Error: " + data.error.message);
-  return;
-}
-
-if (!data.secure_url) {
-  alert("Upload failed, no secure_url received");
-  return;
-}
-
-    // ✅ Save item with Cloudinary Image URL
-    menu.push({
-      name: name,
-      price: Number(price),
-      storeName: storeName,
-      img: data.secure_url
-    });
-
-    localStorage.setItem("menu", JSON.stringify(menu));
-    renderMenu();
-
-    // clear inputs
-    document.getElementById("name").value = "";
-    document.getElementById("price").value = "";
-    document.getElementById("img").value = "";
-    document.getElementById("storeName").value = "";
-
-    alert("✅ Item Added Successfully!");
-  } catch (err) {
-    console.log(err);
-    alert("❌ Upload error, check internet or preset settings");
-  }
-}
 </script>
 
 </body>
