@@ -87,15 +87,22 @@
     }
 
     .cart-bar{
-      position:fixed;
-      bottom:0;
-      left:0;
-      right:0;
-      background:white;
-      border-top:1px solid #eee;
-      padding:14px;
-      box-shadow:0 -10px 30px rgba(0,0,0,0.1);
-      font-size:14px;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      border-top: 1px solid #eee;
+      padding: 14px;
+      font-size: 14px;
+      box-shadow: 0 -10px 30px rgba(0,0,0,0.1);
+
+      transform: translateY(120%);
+      transition: 0.3s ease;
+    }
+
+    .cart-bar.show{
+      transform: translateY(0%);
     }
 
     .cart-item{
@@ -128,118 +135,81 @@
       font-size:16px;
     }
 
-    .small{
-      font-size:12px;
-      opacity:0.7;
-      margin-bottom:6px;
+    .food-slider {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding: 12px;
     }
+
+    .food-slider::-webkit-scrollbar {
+      display: none;
+    }
+
+    .food-slider img {
+      flex: 0 0 85%;
+      max-width: 85%;
+      height: 180px;
+      border-radius: 16px;
+      object-fit: cover;
+      scroll-snap-align: center;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+    }
+
     .whatsapp-float {
-  position: fixed;
-  top: 69px;
-  right: 18px;
-  background: #25D366;
-  color: white;
-  font-size: 20px;
-  padding: 12px 16px;
-  border-radius: 50%;
-  text-decoration: none;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.2s;
-}
+      position: fixed;
+      top: 69px;
+      right: 18px;
+      background: #25D366;
+      color: white;
+      font-size: 20px;
+      padding: 12px 16px;
+      border-radius: 50%;
+      text-decoration: none;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s;
+    }
 
-.whatsapp-float:hover {
-  transform: scale(1.1);
-}
-.food-slider {
-  display: flex;
-  gap: 12px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  padding: 12px;
-}
-
-.food-slider::-webkit-scrollbar {
-  display: none; /* clean like Zomato */
-}
-
-.food-slider img {
-  flex: 0 0 85%;
-  max-width: 85%;
-  height: 180px;
-  border-radius: 16px;
-  object-fit: cover;
-  scroll-snap-align: center;
-  box-shadow: 0 6px 14px rgba(0,0,0,0.15);
-}
-.food-scroll::-webkit-scrollbar {
-  display: none;
-}
-.cart-bar{
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: white;
-  border-top: 1px solid #eee;
-  padding: 14px;
-  font-size: 14px;
-  box-shadow: 0 -10px 30px rgba(0,0,0,0.1);
-
-  /* 🔥 NEW */
-  transform: translateY(120%);
-  transition: 0.3s ease;
-}
-
-/* 🔥 show when cart has item */
-.cart-bar.show{
-  transform: translateY(0%);
-}
+    .whatsapp-float:hover {
+      transform: scale(1.1);
+    }
   </style>
 </head>
 <body>
 
   <div class="header">🍽 SANGHX</div>
-  <!-- WhatsApp Floating Button -->
+
   <a href="https://wa.me/918087762813?text=Hey,%20I’m%20facing%20some%20issues%20related%20to%20your%20App.%20Please%20help%20me."
-  target="_blank"
-  class="whatsapp-float
-  ">
-  💬
+     target="_blank"
+     class="whatsapp-float">
+    💬
   </a>
+
   <div class="food-slider">
-  
     <img src="2.png">
     <img src="3.png">
     <img src="1.png">
-    <!-- <img src="jj.png" alt="Food 4>
-    <img src="french.png" alt="Food 5">
-    <img src="images .png" alt="Food 6"> -->
-</div>
-  <div class="container">
+  </div>
 
+  <div class="container">
     <h3>Menu</h3>
 
-    <!-- SHOP 1 -->
     <div class="shop-title">Makhan Foods</div>
     <div class="food-scroll" id="store-MAKHAN"></div>
 
-    <!-- SHOP 2 -->
     <div class="shop-title">AB Foods</div>
     <div class="food-scroll" id="store-AB"></div>
 
-    <!-- SHOP 3 -->
     <div class="shop-title">AS Foods</div>
     <div class="food-scroll" id="store-AS"></div>
-
   </div>
 
-  <!-- CART -->
   <div class="cart-bar" id="cartBar">
-    <!-- <div class="small">🏪 Store: <b id="cartStoreText">None</b></div> -->
     <div id="cartItems"></div>
 
     <div>Subtotal: ₹<span id="subtotal">0</span></div>
@@ -249,24 +219,110 @@
     <button class="checkout-btn" onclick="goCheckout()">Checkout</button>
   </div>
 
-<script>
+<script type="module">
+  // ✅ Firebase imports
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+  import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
+  // ✅ Your Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyAAmJk-W24u-3sz1oUu72dMRmCvNBXvT4o",
+    authDomain: "sanghx-e7a47.firebaseapp.com",
+    projectId: "sanghx-e7a47",
+    storageBucket: "sanghx-e7a47.firebasestorage.app",
+    messagingSenderId: "858079145503",
+    appId: "1:858079145503:web:677fbe8796bbff006fef2a"
+  };
+
+  // ✅ Init Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // ---------------- CART ----------------
   const DELIVERY_CHARGE = 25;
 
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
-  let cartStore = localStorage.getItem("cartStore") || null;
 
-  function getMenu(){
-    return JSON.parse(localStorage.getItem("menu")) || [];
+  function saveCart(){
+    localStorage.setItem("cart", JSON.stringify(cart));
   }
 
-  function renderAllStores(){
-    const menu = getMenu();
+  function addItem(name, price, storeName){
+    const found = cart.find(i => i.name === name && i.storeName === storeName);
 
-    renderStore("MAKHAN", "makhan Foods", menu);
-    renderStore("AB", "Ab Foods", menu);
-    renderStore("AS", "AS FOODS", menu);
+    if(found){
+      found.qty++;
+    } else {
+      cart.push({name, price, qty:1, storeName});
+    }
+
+    saveCart();
+    renderCart();
   }
 
+  function changeQty(name, storeName, delta){
+    const item = cart.find(i => i.name === name && i.storeName === storeName);
+    if(!item) return;
+
+    item.qty += delta;
+
+    if(item.qty <= 0){
+      cart = cart.filter(i => !(i.name === name && i.storeName === storeName));
+    }
+
+    saveCart();
+    renderCart();
+  }
+
+  function renderCart(){
+    const cartDiv = document.getElementById("cartItems");
+    const cartBar = document.getElementById("cartBar");
+
+    if(cart.length === 0){
+      cartBar.classList.remove("show");
+    } else {
+      cartBar.classList.add("show");
+    }
+
+    cartDiv.innerHTML = "";
+
+    cart.forEach(item=>{
+      cartDiv.innerHTML += `
+        <div class="cart-item">
+          <div>
+            <b>${item.name}</b><br>
+            <small style="opacity:0.7;">🏪 ${item.storeName}</small>
+          </div>
+
+          <div class="qty">
+            <button onclick="window.changeQty('${item.name}','${item.storeName}',-1)">-</button>
+            ${item.qty}
+            <button onclick="window.changeQty('${item.name}','${item.storeName}',1)">+</button>
+          </div>
+        </div>
+      `;
+    });
+
+    let subtotal = cart.reduce((t,i)=>t+i.price*i.qty,0);
+    document.getElementById("subtotal").innerText = subtotal;
+    document.getElementById("delivery").innerText = cart.length ? DELIVERY_CHARGE : 0;
+    document.getElementById("total").innerText = subtotal + (cart.length ? DELIVERY_CHARGE : 0);
+  }
+
+  function goCheckout(){
+    if(cart.length === 0){
+      alert("Cart is empty");
+      return;
+    }
+    window.location.href = "checkout.html";
+  }
+
+  // expose functions to HTML onclick
+  window.addItem = addItem;
+  window.changeQty = changeQty;
+  window.goCheckout = goCheckout;
+
+  // ---------------- MENU (FIREBASE) ----------------
   function renderStore(containerId, storeName, menu){
     const div = document.getElementById("store-" + containerId);
     div.innerHTML = "";
@@ -285,125 +341,30 @@
           <div class="food-info">
             <h4>${item.name}</h4>
             <p>₹${item.price}</p>
-            <button onclick="addItem('${item.name}', ${item.price}, '${item.storeName}')">Add</button>
+            <button onclick="window.addItem('${item.name}', ${item.price}, '${item.storeName}')">Add</button>
           </div>
         </div>
       `;
     });
   }
-function addItem(name, price, storeName){
-  const found = cart.find(i => i.name === name && i.storeName === storeName);
 
-  if(found){
-    found.qty++;
-  } else {
-    cart.push({name, price, qty:1, storeName});
+  function renderAllStores(menu){
+    renderStore("MAKHAN", "makhan Foods", menu);
+    renderStore("AB", "Ab Foods", menu);
+    renderStore("AS", "AS FOODS", menu);
   }
 
-  saveCart();
-  renderCart();
-}
+  // ✅ LIVE menu updates from Firebase
+  onSnapshot(collection(db, "menu"), (snapshot) => {
+    let menu = [];
+    snapshot.forEach((doc) => {
+      menu.push(doc.data());
+    });
 
-  //   const found = cart.find(i => i.name === name);
-  //   if(found){
-  //     found.qty++;
-  //   } else {
-  //     cart.push({name, price, qty:1, storeName});
-  //   }
-
-  //   saveCart();
-  //   renderCart();
-  // }
-
- function changeQty(name, storeName, delta){
-  const item = cart.find(i => i.name === name && i.storeName === storeName);
-  if(!item) return;
-
-  item.qty += delta;
-
-  if(item.qty <= 0){
-    cart = cart.filter(i => !(i.name === name && i.storeName === storeName));
-  }
-
-  saveCart();
-  renderCart();
-}
-  function saveCart(){
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }
-
- function renderCart(){
-  const cartDiv = document.getElementById("cartItems");
-  const cartBar = document.getElementById("cartBar");
-
-  // show/hide cart bar
-  if(cart.length === 0){
-    cartBar.classList.remove("show");
-  } else {
-    cartBar.classList.add("show");
-  }
-
-  cartDiv.innerHTML = "";
-
-  cart.forEach(item=>{
-    cartDiv.innerHTML += `
-      <div class="cart-item">
-        <div>
-          <b>${item.name}</b><br>
-          <small style="opacity:0.7;">🏪 ${item.storeName}</small>
-        </div>
-
-        <div class="qty">
-          <button onclick="changeQty('${item.name}','${item.storeName}',-1)">-</button>
-          ${item.qty}
-          <button onclick="changeQty('${item.name}','${item.storeName}',1)">+</button>
-        </div>
-      </div>
-    `;
+    renderAllStores(menu);
   });
 
-  let subtotal = cart.reduce((t,i)=>t+i.price*i.qty,0);
-  document.getElementById("subtotal").innerText = subtotal;
-  document.getElementById("delivery").innerText = cart.length ? DELIVERY_CHARGE : 0;
-  document.getElementById("total").innerText = subtotal + (cart.length ? DELIVERY_CHARGE : 0);
-}
-  function goCheckout(){
-    if(cart.length === 0){
-      alert("Cart is empty");
-      return;
-    }
-    window.location.href = "checkout.html";
-  }
-
-  renderAllStores();
   renderCart();
-
-  // auto refresh when admin adds new menu
-  window.addEventListener("storage", () => {
-    renderAllStores();
-  });
-  // Firebase
-onSnapshot(collection(db, "menu"), (snapshot) => {
-  let menu = [];
-  snapshot.forEach((doc) => {
-    menu.push({ id: doc.id, ...doc.data() });
-  });
-
-  renderAllStores(menu); // call your render function here
-});
-
-// Step2
-await addDoc(collection(db, "orders"), {
-  customerName: name,
-  customerMobile: mobile,
-  customerAddress: address,
-  paymentMode: document.getElementById("paymentMode").value,
-  userLocation: userLocation,
-  items: cart,
-  total: totalAmount,
-  status: "New",
-  time: new Date().toLocaleString()
-});
 </script>
 
 </body>
