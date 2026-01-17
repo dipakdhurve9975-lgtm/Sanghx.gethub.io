@@ -266,15 +266,14 @@
 
   <div class="container">
     <h3>Menu</h3>
+<div class="shop-title">Makhan Foods</div>
+    <div class="food-scroll" id="store-MAKHAN"></div>
 
-    <div class="shop-title">MAKHAN FOODS</div>
-    <div class="food-scroll" id="store-MAKHAN FOODS"></div>
+    <div class="shop-title">AB Foods</div>
+    <div class="food-scroll" id="store-AB"></div>
 
-    <div class="shop-title">AB FOODS</div>
-    <div class="food-scroll" id="store-AB FOODS"></div>
-
-    <div class="shop-title">AS FOODS</div>
-    <div class="food-scroll" id="store-AS FOODS"></div>
+    <div class="shop-title">AS Foods</div>
+    <div class="food-scroll" id="store-AS"></div>
     
    <div class="shop-title">RAM CAFE</div>
    <div class="food-scroll" id="store-RAM CAFE"></div>
@@ -447,9 +446,9 @@
       menu.push({ id: doc.id, ...doc.data() });
     });
 
-    renderStore("MAKHAN FOODS", "Makhan FOODS", menu);
-    renderStore("AB FOODS", "AB FOODS", menu);
-    renderStore("AS FOODS", "AS FOODS", menu);
+   renderStore("MAKHAN", "Makhan Foods", menu);
+    renderStore("AB", "AB Foods", menu);
+    renderStore("AS", "AS Foods", menu);
     renderStore("RAM CAFE", "RAM CAFE", menu);
     renderStore("MAULI RESTUARANT", "MAULI RESTUARANT", menu);
     renderStore("HOTEL NAGZIRA", "HOTEL NAGZIRA", menu);
@@ -476,6 +475,7 @@
 
 </body>
 </html>
+
 
 
 
