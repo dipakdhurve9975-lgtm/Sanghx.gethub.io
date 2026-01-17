@@ -21,7 +21,7 @@
       z-index:999;
     }
 
-    /* ALERT BAR */
+    /* ✅ ALERT BAR */
     .alert-bar{
       background:#111;
       color:white;
@@ -72,6 +72,7 @@
     }
     .whatsapp-float:hover { transform: scale(1.1); }
 
+    /* Container */
     .container{padding:16px;padding-bottom:190px;}
 
     .shop-title{
@@ -80,6 +81,7 @@
       margin:22px 0 10px;
     }
 
+    /* Store scroll row */
     .food-scroll{
       display:flex;
       gap:12px;
@@ -89,6 +91,7 @@
     }
     .food-scroll::-webkit-scrollbar{display:none}
 
+    /* Food card */
     .food-card{
       min-width:160px;
       background:white;
@@ -129,6 +132,7 @@
       cursor:pointer;
     }
 
+    /* Cart bar */
     .cart-bar{
       position:fixed;
       bottom:0;
@@ -170,7 +174,7 @@
       font-size:16px;
     }
 
-    /* Slider */
+    /* ✅ AUTO SLIDER */
     .food-slider{
       display:flex;
       gap:12px;
@@ -189,6 +193,49 @@
       scroll-snap-align:center;
       box-shadow:0 6px 14px rgba(0,0,0,0.15);
     }
+
+    /* ✅ TOAST */
+    .toast{
+      position: fixed;
+      bottom: 90px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(20,20,20,0.95);
+      color: white;
+      padding: 12px 18px;
+      border-radius: 14px;
+      font-size: 14px;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 99999;
+      transition: 0.3s ease;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+    }
+    .toast.show{
+      opacity: 1;
+      transform: translateX(-50%) translateY(-10px);
+    }
+
+    /* ✅ SPARK */
+    .spark{
+      position: fixed;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #ffcc00, #ff7a18, transparent);
+      pointer-events: none;
+      opacity: 0;
+      z-index: 99999;
+    }
+    .spark.show{
+      animation: sparkPop 0.6s ease forwards;
+    }
+    @keyframes sparkPop{
+      0%{transform: scale(0.3); opacity: 0.9;}
+      60%{transform: scale(2.2); opacity: 0.6;}
+      100%{transform: scale(3.2); opacity: 0;}
+    }
   </style>
 </head>
 
@@ -196,6 +243,7 @@
 
   <div class="header">🍽 SANGHX</div>
 
+  <!-- ✅ ALERT BAR -->
   <div class="alert-bar">
     <div class="alert-track">
       <span>⚡आयुष्यात पैशापेक्षा विश्वास जास्त महत्त्वाचा आहे भावा ❤️</span>
@@ -204,10 +252,12 @@
     </div>
   </div>
 
+  <!-- WhatsApp floating -->
   <a href="https://wa.me/918087762813?text=Hey,%20I’m%20facing%20some%20issues%20related%20to%20your%20Site.%20Please%20help%20me."
      target="_blank"
      class="whatsapp-float">💬</a>
 
+  <!-- ✅ Slider -->
   <div class="food-slider" id="bannerSlider">
     <img src="2.png">
     <img src="3.png">
@@ -227,6 +277,7 @@
     <div class="food-scroll" id="store-AS"></div>
   </div>
 
+  <!-- CART -->
   <div class="cart-bar" id="cartBar">
     <div id="cartItems"></div>
     <div>Subtotal: ₹<span id="subtotal">0</span></div>
@@ -234,6 +285,10 @@
     <div><b>Total: ₹<span id="total">0</span></b></div>
     <button class="checkout-btn" onclick="goCheckout()">Checkout</button>
   </div>
+
+  <!-- ✅ TOAST + SPARK -->
+  <div id="toast" class="toast"></div>
+  <div id="spark" class="spark"></div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
@@ -251,8 +306,29 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  const DELIVERY_CHARGE = 0;
+  const DELIVERY_CHARGE = 25;
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+  // ✅ Toast
+  function showToast(msg){
+    const toast = document.getElementById("toast");
+    toast.innerText = msg;
+    toast.classList.add("show");
+    setTimeout(()=> toast.classList.remove("show"), 1600);
+  }
+
+  // ✅ Spark
+  function sparkEffect(x, y){
+    const spark = document.getElementById("spark");
+    spark.style.left = (x - 9) + "px";
+    spark.style.top = (y - 9) + "px";
+    spark.classList.remove("show");
+    void spark.offsetWidth;
+    spark.classList.add("show");
+  }
+
+  // expose spark to onclick html
+  window.sparkEffect = sparkEffect;
 
   function renderStore(containerId, storeName, menu){
     const div = document.getElementById("store-" + containerId);
@@ -272,7 +348,9 @@
           <div class="food-info">
             <h4>${item.name}</h4>
             <p>₹${item.price}</p>
-            <button onclick="addItem('${item.name}', ${item.price}, '${item.storeName}')">Add</button>
+            <button onclick="addItem('${item.name}', ${item.price}, '${item.storeName}'); sparkEffect(event.clientX,event.clientY)">
+              Add
+            </button>
           </div>
         </div>
       `;
@@ -280,20 +358,31 @@
   }
 
   window.addItem = function(name, price, storeName){
+    const wasEmpty = cart.length === 0;
+
     const found = cart.find(i => i.name === name && i.storeName === storeName);
     if(found) found.qty++;
     else cart.push({name, price, qty:1, storeName});
+
     localStorage.setItem("cart", JSON.stringify(cart));
     renderCart();
+
+    if(wasEmpty){
+      showToast("🔥 First item added! Cart ready ✅");
+    } else {
+      showToast(`${name} added ✅`);
+    }
   }
 
   window.changeQty = function(name, storeName, delta){
     const item = cart.find(i => i.name === name && i.storeName === storeName);
     if(!item) return;
+
     item.qty += delta;
     if(item.qty <= 0){
       cart = cart.filter(i => !(i.name === name && i.storeName === storeName));
     }
+
     localStorage.setItem("cart", JSON.stringify(cart));
     renderCart();
   }
@@ -339,6 +428,7 @@
 
   renderCart();
 
+  // ✅ LIVE MENU FROM FIRESTORE
   onSnapshot(collection(db, "menu"), (snapshot) => {
     let menu = [];
     snapshot.forEach((doc) => {
@@ -350,7 +440,7 @@
     renderStore("AS", "AS Foods", menu);
   });
 
-  // Auto slider
+  // ✅ AUTO SLIDER MOVE
   const slider = document.getElementById("bannerSlider");
   let index = 0;
 
@@ -364,8 +454,8 @@
       behavior: "smooth"
     });
   }, 2500);
+
 </script>
 
 </body>
 </html>
-
