@@ -20,6 +20,16 @@
       top:0;
       z-index:999;
     }
+/* PAGE FLIP ANIMATION */
+.page-flip-out{
+  animation: flipOut 0.6s ease forwards;
+  transform-origin: left center;
+}
+
+@keyframes flipOut{
+  0%{transform: rotateY(0deg); opacity:1;}
+  100%{transform: rotateY(-90deg); opacity:0;}
+}
 
     /* ✅ ALERT BAR FIXED */
     .alert-bar{
@@ -373,11 +383,20 @@
       behavior: "smooth"
     });
   }, 2500);
+<script>
+  function flipGo(url){
+    document.body.classList.add("page-flip-out");
+    setTimeout(()=>{
+      window.location.href = url;
+    }, 550);
+  }
+
 
 </script>
 
 </body>
 </html>
+
 
 
 
