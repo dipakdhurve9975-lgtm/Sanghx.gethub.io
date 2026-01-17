@@ -53,5 +53,15 @@ const firebaseConfig = {
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
+  <script>
+  function flipGo(url){
+    document.body.classList.add("page-flip-out");
+    setTimeout(()=>{
+      window.location.href = url;
+    }, 550);
+  }
+
+
 </script>
 </html>
+
