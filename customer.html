@@ -275,17 +275,18 @@
     <div class="shop-title">AS Foods</div>
     <div class="food-scroll" id="store-AS"></div>
     
-   <div class="shop-title">RAM CAFE</div>
-   <div class="food-scroll" id="store-RAM CAFE"></div>
-    
-     <div class="shop-title">MAULI RESTUARANT</div>
-    <div class="food-scroll" id="store-MAULI RESTUARANT"></div>
-    
-     <div class="shop-title">HOTEL NAGZIRA</div>
-    <div class="food-scroll" id="store-HOTEL NAGZIRA"></div>
+ <div class="shop-title">RAM CAFE</div>
+<div class="food-scroll" id="store-RAM-CAFE"></div>
 
-     <div class="shop-title">HARYANA JALEBI</div>
-    <div class="food-scroll" id="store-HARYANA JALEBI"></div>
+<div class="shop-title">MAULI RESTUARANT</div>
+<div class="food-scroll" id="store-MAULI-RESTUARANT"></div>
+
+<div class="shop-title">HOTEL NAGZIRA</div>
+<div class="food-scroll" id="store-HOTEL-NAGZIRA"></div>
+
+<div class="shop-title">HARYANA JALEBI</div>
+<div class="food-scroll" id="store-HARYANA-JALEBI"></div>
+
   </div>
 
   <!-- CART -->
@@ -446,13 +447,15 @@
       menu.push({ id: doc.id, ...doc.data() });
     });
 
-   renderStore("MAKHAN", "Makhan Foods", menu);
-    renderStore("AB", "AB Foods", menu);
-    renderStore("AS", "AS Foods", menu);
-    renderStore("RAM CAFE", "RAM CAFE", menu);
-    renderStore("MAULI RESTUARANT", "MAULI RESTUARANT", menu);
-    renderStore("HOTEL NAGZIRA", "HOTEL NAGZIRA", menu);
-    renderStore("HARYANA JALEBI", "HARYANA JALEBI", menu);
+  renderStore("MAKHAN", "Makhan Foods", menu);
+renderStore("AB", "AB Foods", menu);
+renderStore("AS", "AS Foods", menu);
+
+renderStore("RAM-CAFE", "RAM CAFE", menu);
+renderStore("MAULI-RESTUARANT", "MAULI RESTUARANT", menu);
+renderStore("HOTEL-NAGZIRA", "HOTEL NAGZIRA", menu);
+renderStore("HARYANA-JALEBI", "HARYANA JALEBI", menu);
+
     
   });
 
@@ -475,6 +478,7 @@
 
 </body>
 </html>
+
 
 
 
