@@ -20,6 +20,24 @@
       top:0;
       z-index:999;
     }
+    /* aler quotes */
+    .alert-track {
+  display: inline-block;
+  white-space: nowrap;
+  animation: scroll-left 18s linear infinite;
+}
+
+.alert-track span {
+  display: inline-block;
+  padding: 8px 50px;
+  font-size: 17px;
+  font-weight: 500;
+}
+
+@keyframes scroll-left {
+  0%   { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
 .whatsapp-float {
   position: fixed;
   top: 69px;
@@ -138,6 +156,12 @@
 
 <body>
   <div class="header">🍽 SANGHX</div>
+  <div class="alert-bar">
+    <div class="alert-track">
+      <span>आयुष्यात पैशापेक्षा विश्वास जास्त महत्त्वाचा आहे भावा</span>
+      <span>आयुष्यात पैशापेक्षा विश्वास जास्त महत्त्वाचा आहे भावा</span>
+    </div>
+  </div>
 <a href="https://wa.me/918087762813?text=Hey,%20I’m%20facing%20some%20issues%20related%20to%20your%20App.%20Please%20help%20me."
   target="_blank"
   class="whatsapp-float
@@ -291,5 +315,6 @@
 
 </body>
 </html>
+
 
 
