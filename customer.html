@@ -20,7 +20,27 @@
       top:0;
       z-index:999;
     }
+.whatsapp-float {
+  position: fixed;
+  top: 69px;
+  right: 18px;
+  background: #25d348;
+  color: white;
+  font-size: 20px;
+  padding: 12px 16px;
+  border-radius: 50%;
+  text-decoration: none;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
 
+.whatsapp-float:hover {
+  transform: scale(1.1);
+}
     .container{padding:16px;padding-bottom:180px;}
     .shop-title{font-size:18px;font-weight:600;margin:20px 0 10px;}
 
@@ -118,7 +138,12 @@
 
 <body>
   <div class="header">🍽 SANGHX</div>
-
+<a href="https://wa.me/918087762813?text=Hey,%20I’m%20facing%20some%20issues%20related%20to%20your%20App.%20Please%20help%20me."
+  target="_blank"
+  class="whatsapp-float
+  ">
+  💬
+  </a>
   <div class="food-slider">
     <img src="2.png">
     <img src="3.png">
@@ -266,4 +291,5 @@
 
 </body>
 </html>
+
 
