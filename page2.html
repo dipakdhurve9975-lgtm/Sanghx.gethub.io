@@ -5,66 +5,107 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SANGHX</title>
 
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+    body{
+      min-height:100vh;
+      background:linear-gradient(135deg,#fff7f5,#ffe9e5);
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      padding:18px;
+    }
+
+    .card{
+      width:100%;
+      max-width:420px;
+      background:white;
+      border-radius:20px;
+      padding:22px;
+      box-shadow:0 12px 30px rgba(0,0,0,0.08);
+      text-align:center;
+      animation: fadeIn 0.6s ease;
+    }
+
+    @keyframes fadeIn{
+      from{opacity:0; transform: translateY(20px);}
+      to{opacity:1; transform: translateY(0px);}
+    }
+
+    .logo{
+      font-size:34px;
+      font-weight:800;
+      letter-spacing:2px;
+      color:#e23744;
+      margin-bottom:8px;
+    }
+
+    .greeting{
+      font-size:16px;
+      font-weight:600;
+      margin-bottom:6px;
+    }
+
+    .description{
+      font-size:14px;
+      opacity:0.8;
+      margin-bottom:14px;
+      line-height:1.5;
+    }
+
+    .question{
+      font-size:16px;
+      font-weight:700;
+      margin-bottom:14px;
+    }
+
+    .buttons{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .btn{
+      display:block;
+      text-decoration:none;
+      padding:12px;
+      border-radius:14px;
+      font-weight:700;
+      background:linear-gradient(135deg,#e23744,#ff5a5f);
+      color:white;
+      transition:0.2s;
+    }
+
+    .btn:active{ transform: scale(0.98); }
+
+    .btn.gray{
+      background:#111;
+    }
+  </style>
 </head>
+
 <body>
 
-  <div class="bg"></div>
+  <div class="card">
+    <h1 class="logo">SANGHX</h1>
 
-  <div class="container">
-    <div class="card fade-in">
-      <h1 class="logo">SANGHX</h1>
+    <p class="greeting">नमस्कार!</p>
 
-      <p class="greeting">नमस्कार!</p>
+    <p class="description">
+      चव, सोय आणि विश्वास — सगळं एका ठिकाणी.<br>
+      <b>तुमची चव, आमची जबाबदारी.</b>
+    </p>
 
-      <p class="description">
-        चव, सोय आणि विश्वास — सगळं एका ठिकाणी.<br>
-        <span>तुमची चव, आमची जबाबदारी.</span>
-      </p>
+    <p class="question">तुम्ही कोण आहात?</p>
 
-      <p class="question">तुम्ही कोण आहात?</p>
-
-      <div class="buttons">
-       <a href="#" class="btn" onclick="flipGo('customer.html')">🍽️ ग्राहक</a>
-
-        <a href="" class="btn">🏪COMMING SOON</a>
-        <a href="" class="btn">🚴‍♂️COMMING SOON</a>
-      </div>
+    <div class="buttons">
+      <a href="customer.html" class="btn">🍽️ ग्राहक</a>
+      <a href="#" class="btn gray" onclick="alert('🏪 Coming Soon')">🏪 COMMING SOON</a>
+      <a href="#" class="btn gray" onclick="alert('🚴‍♂️ Coming Soon')">🚴‍♂️ COMMING SOON</a>
     </div>
   </div>
+
 </body>
-<script type="module" src="firebase.js">
-
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyC-igyzVwdH_4Jt1r64TtHSfYxIMw8UfzM",
-  authDomain: "sanghx-foods.firebaseapp.com",
-  projectId: "sanghx-foods",
-  storageBucket: "sanghx-foods.firebasestorage.app",
-  messagingSenderId: "491353757911",
-  appId: "1:491353757911:web:40752459b5b0049c71f892"
-};
-
-export const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app);
-export const auth = getAuth(app);
-  <script>
-  function flipGo(url){
-    document.body.classList.add("page-flip-out");
-    setTimeout(()=>{
-      window.location.href = url;
-    }, 550);
-  }
-    </script>
-
-</script>
 </html>
-
-
-
