@@ -21,17 +21,7 @@
       z-index:999;
     }
 
-    /* ✅ PAGE FLIP ANIMATION */
-    .page-flip-out{
-      animation: flipOut 0.6s ease forwards;
-      transform-origin: left center;
-    }
-    @keyframes flipOut{
-      0%{transform: rotateY(0deg); opacity:1;}
-      100%{transform: rotateY(-90deg); opacity:0;}
-    }
-
-    /* ✅ ALERT BAR */
+    /* ALERT BAR */
     .alert-bar{
       background:#111;
       color:white;
@@ -82,25 +72,14 @@
     }
     .whatsapp-float:hover { transform: scale(1.1); }
 
-    /* Container */
     .container{padding:16px;padding-bottom:190px;}
 
     .shop-title{
       font-size:18px;
-      font-weight:700;
-      margin:22px 0 10px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-    }
-
-    .shop-title small{
-      font-size:12px;
-      opacity:0.65;
       font-weight:600;
+      margin:22px 0 10px;
     }
 
-    /* Store scroll row */
     .food-scroll{
       display:flex;
       gap:12px;
@@ -110,7 +89,6 @@
     }
     .food-scroll::-webkit-scrollbar{display:none}
 
-    /* Food card */
     .food-card{
       min-width:160px;
       background:white;
@@ -131,7 +109,7 @@
     .food-info{padding:10px;}
     .food-info h4{
       font-size:14px;
-      font-weight:700;
+      font-weight:600;
       margin-bottom:3px;
     }
     .food-info p{
@@ -140,62 +118,17 @@
       opacity:0.8;
     }
 
-    /* 🔥 PREMIUM BUTTON ANIMATION */
     button{
       width:100%;
+      background: linear-gradient(135deg, #ff7a18, #ff9f45);
       border:none;
       color:white;
-      padding:10px;
-      border-radius:14px;
-      font-weight:800;
+      padding:8px;
+      border-radius:12px;
+      font-weight:600;
       cursor:pointer;
-      position:relative;
-      overflow:hidden;
-      transition: 0.25s ease;
-      transform: translateZ(0);
-      user-select:none;
     }
 
-    button::before{
-      content:"";
-      position:absolute;
-      top:-40%;
-      left:-60%;
-      width:40%;
-      height:200%;
-      background:rgba(255,255,255,0.35);
-      transform: rotate(25deg);
-      transition:0.6s ease;
-    }
-
-    button:hover{
-      transform: translateY(-2px) scale(1.02);
-      box-shadow: 0 14px 35px rgba(0,0,0,0.18);
-    }
-    button:hover::before{
-      left:120%;
-    }
-
-    button:active{
-      transform: scale(0.94);
-    }
-
-    /* Add button */
-    .food-info button{
-      background: linear-gradient(135deg, #ff7a18, #ff9f45);
-    }
-
-    /* QTY Buttons */
-    .qty button{
-      background: linear-gradient(135deg, #111, #444);
-      width:auto;
-      padding:6px 12px;
-      border-radius:10px;
-      font-weight:900;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.18);
-    }
-
-    /* Cart bar */
     .cart-bar{
       position:fixed;
       bottom:0;
@@ -210,17 +143,7 @@
       transition: 0.3s ease;
       z-index:999;
     }
-
-    .cart-bar.show{
-      transform: translateY(0%);
-      animation: cartBounce 0.35s ease;
-    }
-
-    @keyframes cartBounce{
-      0%{transform:translateY(120%);}
-      70%{transform:translateY(-6%);}
-      100%{transform:translateY(0%);}
-    }
+    .cart-bar.show{transform: translateY(0%);}
 
     .cart-item{
       display:flex;
@@ -230,17 +153,21 @@
     }
 
     .qty{display:flex;align-items:center;gap:6px;}
+    .qty button{
+      width:auto;
+      padding:4px 10px;
+      border-radius:8px;
+      background:black;
+    }
 
-    /* Checkout button */
     .checkout-btn{
       background: linear-gradient(135deg, #25D366, #1ebe5d);
       width:100%;
-      padding:14px;
-      margin-top:12px;
-      font-weight:900;
-      border-radius:16px;
+      padding:12px;
+      margin-top:10px;
+      font-weight:700;
+      border-radius:14px;
       font-size:16px;
-      letter-spacing:0.3px;
     }
 
     /* Slider */
@@ -262,75 +189,6 @@
       scroll-snap-align:center;
       box-shadow:0 6px 14px rgba(0,0,0,0.15);
     }
-
-    /* ✅ TOAST */
-    .toast{
-      position:fixed;
-      bottom:92px;
-      left:50%;
-      transform:translateX(-50%) translateY(20px);
-      background:#111;
-      color:#fff;
-      padding:12px 14px;
-      border-radius:14px;
-      font-size:13px;
-      font-weight:600;
-      opacity:0;
-      pointer-events:none;
-      transition:0.3s ease;
-      box-shadow:0 16px 40px rgba(0,0,0,0.22);
-      z-index:99999;
-      max-width:92%;
-      text-align:center;
-    }
-    .toast.show{
-      opacity:1;
-      transform:translateX(-50%) translateY(0px);
-    }
-
-    /* ✅ SKELETON LOADER */
-    .skeleton-card{
-      min-width:160px;
-      background:white;
-      border-radius:16px;
-      overflow:hidden;
-      box-shadow:0 10px 25px rgba(0,0,0,0.06);
-      position:relative;
-    }
-
-    .sk-img{
-      height:110px;
-      background:#ececec;
-    }
-
-    .sk-body{
-      padding:10px;
-    }
-
-    .sk-line{
-      height:12px;
-      border-radius:10px;
-      background:#ececec;
-      margin-bottom:8px;
-    }
-
-    .sk-line.small{width:60%;}
-    .sk-line.big{width:90%;}
-
-    .shimmer::after{
-      content:"";
-      position:absolute;
-      top:0; left:-50%;
-      width:50%;
-      height:100%;
-      background:linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
-      animation: shimmer 1.1s infinite;
-    }
-
-    @keyframes shimmer{
-      0%{left:-50%;}
-      100%{left:120%;}
-    }
   </style>
 </head>
 
@@ -338,7 +196,6 @@
 
   <div class="header">🍽 SANGHX</div>
 
-  <!-- ALERT BAR -->
   <div class="alert-bar">
     <div class="alert-track">
       <span>⚡आयुष्यात पैशापेक्षा विश्वास जास्त महत्त्वाचा आहे भावा ❤️</span>
@@ -347,12 +204,10 @@
     </div>
   </div>
 
-  <!-- WhatsApp floating -->
   <a href="https://wa.me/918087762813?text=Hey,%20I’m%20facing%20some%20issues%20related%20to%20your%20Site.%20Please%20help%20me."
      target="_blank"
      class="whatsapp-float">💬</a>
 
-  <!-- Slider -->
   <div class="food-slider" id="bannerSlider">
     <img src="2.png">
     <img src="3.png">
@@ -362,17 +217,16 @@
   <div class="container">
     <h3>Menu</h3>
 
-    <div class="shop-title">Makhan Foods <small id="count-Makhan">loading...</small></div>
+    <div class="shop-title">Makhan Foods</div>
     <div class="food-scroll" id="store-MAKHAN"></div>
 
-    <div class="shop-title">AB Foods <small id="count-AB">loading...</small></div>
+    <div class="shop-title">AB Foods</div>
     <div class="food-scroll" id="store-AB"></div>
 
-    <div class="shop-title">AS Foods <small id="count-AS">loading...</small></div>
+    <div class="shop-title">AS Foods</div>
     <div class="food-scroll" id="store-AS"></div>
   </div>
 
-  <!-- CART -->
   <div class="cart-bar" id="cartBar">
     <div id="cartItems"></div>
     <div>Subtotal: ₹<span id="subtotal">0</span></div>
@@ -381,45 +235,6 @@
     <button class="checkout-btn" onclick="goCheckout()">Checkout</button>
   </div>
 
-  <!-- TOAST -->
-  <div class="toast" id="toast">Added ✅</div>
-
-<!-- NORMAL SCRIPT (FLIP + GROUP CART FOR CHECKOUT) -->
-<script>
-  function flipGo(url){
-    document.body.classList.add("page-flip-out");
-    setTimeout(()=>{
-      window.location.href = url;
-    }, 550);
-  }
-
-  // ✅ Group cart items by store for checkout page
-  function saveGroupedCartForCheckout(cart){
-    const grouped = {};
-
-    cart.forEach(item=>{
-      if(!grouped[item.storeName]) grouped[item.storeName] = [];
-      grouped[item.storeName].push(item);
-    });
-
-    localStorage.setItem("cartGrouped", JSON.stringify(grouped));
-  }
-
-  // ✅ Toast helper
-  let toastTimer = null;
-  function showToast(text){
-    const toast = document.getElementById("toast");
-    toast.innerText = text;
-    toast.classList.add("show");
-
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(()=>{
-      toast.classList.remove("show");
-    }, 1200);
-  }
-</script>
-
-<!-- FIREBASE SCRIPT -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
   import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
@@ -436,42 +251,14 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  const DELIVERY_CHARGE = 0;
+  const DELIVERY_CHARGE = 25;
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-  // ✅ Show skeleton loader before data loads
-  function showSkeleton(containerId){
-    const div = document.getElementById("store-" + containerId);
-    div.innerHTML = "";
-
-    for(let i=0;i<4;i++){
-      div.innerHTML += `
-        <div class="skeleton-card shimmer">
-          <div class="sk-img"></div>
-          <div class="sk-body">
-            <div class="sk-line big"></div>
-            <div class="sk-line small"></div>
-            <div class="sk-line big" style="height:34px;border-radius:14px;"></div>
-          </div>
-        </div>
-      `;
-    }
-  }
-
-  showSkeleton("MAKHAN");
-  showSkeleton("AB");
-  showSkeleton("AS");
 
   function renderStore(containerId, storeName, menu){
     const div = document.getElementById("store-" + containerId);
     div.innerHTML = "";
 
     const filtered = menu.filter(item => item.storeName === storeName);
-
-    // show count
-    if(storeName === "Makhan Foods") document.getElementById("count-Makhan").innerText = `${filtered.length} items`;
-    if(storeName === "AB Foods") document.getElementById("count-AB").innerText = `${filtered.length} items`;
-    if(storeName === "AS Foods") document.getElementById("count-AS").innerText = `${filtered.length} items`;
 
     if(filtered.length === 0){
       div.innerHTML = `<p style="opacity:0.6;font-size:13px;">No items added yet</p>`;
@@ -494,27 +281,19 @@
 
   window.addItem = function(name, price, storeName){
     const found = cart.find(i => i.name === name && i.storeName === storeName);
-
     if(found) found.qty++;
     else cart.push({name, price, qty:1, storeName});
-
     localStorage.setItem("cart", JSON.stringify(cart));
     renderCart();
-
-    // ✅ Toast
-    showToast(`${name} added ✅`);
   }
 
   window.changeQty = function(name, storeName, delta){
     const item = cart.find(i => i.name === name && i.storeName === storeName);
     if(!item) return;
-
     item.qty += delta;
-
     if(item.qty <= 0){
       cart = cart.filter(i => !(i.name === name && i.storeName === storeName));
     }
-
     localStorage.setItem("cart", JSON.stringify(cart));
     renderCart();
   }
@@ -555,16 +334,11 @@
       alert("Cart is empty");
       return;
     }
-
-    // ✅ Save grouped cart for checkout page
-    saveGroupedCartForCheckout(cart);
-
-    flipGo("checkout.html");
+    window.location.href = "checkout.html";
   }
 
   renderCart();
 
-  // LIVE MENU FROM FIRESTORE
   onSnapshot(collection(db, "menu"), (snapshot) => {
     let menu = [];
     snapshot.forEach((doc) => {
@@ -576,7 +350,7 @@
     renderStore("AS", "AS Foods", menu);
   });
 
-  // AUTO SLIDER MOVE
+  // Auto slider
   const slider = document.getElementById("bannerSlider");
   let index = 0;
 
@@ -594,4 +368,3 @@
 
 </body>
 </html>
-
