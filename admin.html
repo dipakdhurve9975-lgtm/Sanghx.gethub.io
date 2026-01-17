@@ -125,19 +125,17 @@
 
     <input type="text" id="foodName" placeholder="Food Name (e.g. Burger)">
     <input type="number" id="foodPrice" placeholder="Price (e.g. 100)">
-
     <input type="file" id="foodImg" accept="image/*">
 
+    <!-- ✅ FIXED STORE VALUES -->
     <select id="storeName">
-      <option value="makhan Foods">Makhan Foods</option>
-      <option value="Ab Foods">AB Foods</option>
-      <option value="AS FOODS">AS Foods</option>
+      <option value="Makhan Foods">Makhan Foods</option>
+      <option value="AB Foods">AB Foods</option>
+      <option value="AS Foods">AS Foods</option>
       <option value="RAM CAFE">RAM CAFE</option>
       <option value="MAULI RESTUARANT">MAULI RESTUARANT</option>
       <option value="HOTEL NAGZIRA">HOTEL NAGZIRA</option>
-      <option value="HARYANA JALEBI">HARYAN JALEBI</option>
-      
-      
+      <option value="HARYANA JALEBI">HARYANA JALEBI</option>
     </select>
 
     <button class="btn-add" onclick="addMenuItem()">Add</button>
@@ -151,7 +149,6 @@
   </div>
 
 <script type="module">
-  // ✅ FIREBASE IMPORTS
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
   import {
     getFirestore,
@@ -163,7 +160,6 @@
     onSnapshot
   } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-  // ✅ YOUR FIREBASE CONFIG (sanghx-foods)
   const firebaseConfig = {
     apiKey: "AIzaSyC-igyzVwdH_4Jt1r64TtHSfYxIMw8UfzM",
     authDomain: "sanghx-foods.firebaseapp.com",
@@ -176,14 +172,12 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  // ✅ CLOUDINARY SETTINGS
   const CLOUD_NAME = "dvbaqh8ja";
   const UPLOAD_PRESET = "SANGHX";
 
   const statusText = document.getElementById("statusText");
   const menuList = document.getElementById("menuList");
 
-  // ✅ Upload image to Cloudinary
   async function uploadToCloudinary(file){
     const formData = new FormData();
     formData.append("file", file);
@@ -197,14 +191,12 @@
     const data = await res.json();
 
     if(data.error){
-      console.log("Cloudinary error:", data);
       throw new Error(data.error.message);
     }
 
     return data.secure_url;
   }
 
-  // ✅ ADD MENU ITEM (FIXED)
   window.addMenuItem = async function(){
     try{
       const name = document.getElementById("foodName").value.trim();
@@ -223,10 +215,10 @@
       statusText.innerText = "Saving menu to Firestore...";
 
       await addDoc(collection(db, "menu"), {
-        name: name,
-        price: price,
+        name,
+        price,
         img: imgUrl,
-        storeName: storeName,
+        storeName,
         createdAt: Date.now()
       });
 
@@ -243,7 +235,6 @@
     }
   };
 
-  // ✅ LIVE MENU LIST (FIXED)
   onSnapshot(collection(db, "menu"), (snapshot) => {
     menuList.innerHTML = "";
 
@@ -268,13 +259,11 @@
     });
   });
 
-  // ✅ DELETE ITEM
   window.deleteItem = async function(id){
     if(!confirm("Delete this item?")) return;
     await deleteDoc(doc(db, "menu", id));
   };
 
-  // ✅ CLEAR ALL MENU
   window.clearAllMenu = async function(){
     if(!confirm("Are you sure you want to delete ALL menu?")) return;
 
@@ -289,5 +278,3 @@
 
 </body>
 </html>
-
-
