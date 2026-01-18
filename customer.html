@@ -304,7 +304,7 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  const DELIVERY_CHARGE = 25;
+  const DELIVERY_CHARGE = 0;
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
   function showToast(msg){
@@ -458,3 +458,4 @@
 
 </body>
 </html>
+
