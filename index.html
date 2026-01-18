@@ -65,16 +65,26 @@
       margin-bottom:10px;
     }
 
+    /* Logo container */
     .logoMark{
-      width:44px;
-      height:44px;
-      border-radius:14px;
-      background: linear-gradient(135deg, #ff7a18, #e23744);
+      width:54px;
+      height:54px;
+      border-radius:16px;
+      background: transparent;
       display:flex;
       align-items:center;
       justify-content:center;
-      font-weight:800;
       box-shadow: 0 10px 25px rgba(226,55,68,0.35);
+      overflow:hidden;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    /* Logo image */
+    .logoImg{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      border-radius:16px;
     }
 
     .title{
@@ -96,6 +106,7 @@
       margin-top:18px;
       font-size:15px;
       opacity:0.9;
+      line-height:1.5;
     }
 
     .timer{
@@ -212,7 +223,11 @@
 
   <div class="card" id="card">
     <div class="brand">
-      <div class="logoMark">S</div>
+      <!-- ✅ Your Logo Here -->
+      <div class="logoMark">
+        <img src="logo.png" alt="Sanghx Logo" class="logoImg">
+      </div>
+
       <div class="title">SAN<span>GHX</span></div>
     </div>
 
@@ -307,133 +322,3 @@
   </script>
 </body>
 </html>
-
-<!--its our main code   -->
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>SANGHX</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800;900&display=swap" rel="stylesheet">
-
-<style>
-  *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
-  body{
-    height:100vh;
-    background:#050505;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    overflow:hidden;
-    color:white;
-  }
-
-  .wrap{
-    text-align:center;
-    position:relative;
-  }
-
-  .logo{
-    font-size:60px;
-    font-weight:900;
-    letter-spacing:8px;
-    position:relative;
-    display:inline-block;
-    line-height:1;
-    color:white;
-  }
-
-  .logo span{
-    color:#e23744;
-  }
-
-  .logo::before{
-    content:"";
-    position:absolute;
-    left:-20%;
-    top:50%;
-    width:140%;
-    height:10px;
-    background:#e23744;
-    transform: translateY(-50%) rotate(-10deg);
-    filter: blur(0.4px);
-    animation: slice 1.2s ease forwards;
-  }
-
-  @keyframes slice{
-    0%{transform: translateY(-50%) rotate(-10deg) translateX(-120%); opacity:0;}
-    40%{opacity:1;}
-    70%{transform: translateY(-50%) rotate(-10deg) translateX(0%); opacity:1;}
-    100%{transform: translateY(-50%) rotate(-10deg) translateX(140%); opacity:0;}
-  }
-
-  .reveal{
-    display:inline-block;
-    overflow:hidden;
-    white-space:nowrap;
-    width:0;
-    animation: type 1.2s steps(10) forwards;
-  }
-
-  @keyframes type{
-    from{width:0;}
-    to{width:100%;}
-  }
-
-  .bar{
-    margin:22px auto 0;
-    width:220px;
-    height:6px;
-    border-radius:999px;
-    background:rgba(255,255,255,0.12);
-    overflow:hidden;
-    position:relative;
-  }
-
-  .bar .fill{
-    width:0%;
-    height:100%;
-    background:#e23744;
-    border-radius:999px;
-    animation: fill 2.2s ease forwards;
-  }
-
-  @keyframes fill{
-    0%{width:0%;}
-    100%{width:100%;}
-  }
-
-  .tag{
-    margin-top:12px;
-    font-size:12px;
-    letter-spacing:2px;
-    opacity:0.65;
-  }
-</style>
-</head>
-
-<body>
-
-<div class="wrap">
-  <div class="logo">
-    <span class="reveal">SANG<span>HX</span></span>
-  </div>
-
-  <div class="bar">
-    <div class="fill"></div>
-  </div>
-
-  <div class="tag">minimal. fast. local.</div>
-</div>
-
-<script>
-  setTimeout(() => {
-    window.location.href = "page2.html";
-  }, 2500);
-</script>
-
-</body>
-</html>
- -->
