@@ -70,7 +70,7 @@
     }
     .whatsapp-float:hover { transform: scale(1.1); }
 
-    .container{padding:16px;padding-bottom:190px;}
+    .container{padding:16px;padding-bottom:210px;}
 
     .shop-title{
       font-size:18px;
@@ -88,7 +88,7 @@
     .food-scroll::-webkit-scrollbar{display:none}
 
     .food-card{
-      min-width:160px;
+      min-width:170px;
       background:white;
       border-radius:16px;
       overflow:hidden;
@@ -113,7 +113,20 @@
     .food-info p{
       font-size:13px;
       margin-bottom:8px;
-      opacity:0.8;
+      opacity:0.85;
+      font-weight:700;
+    }
+
+    .variantSelect{
+      width:100%;
+      padding:8px 10px;
+      border-radius:12px;
+      border:1px solid #ddd;
+      outline:none;
+      font-size:13px;
+      background:white;
+      cursor:pointer;
+      margin-bottom:8px;
     }
 
     button{
@@ -121,9 +134,9 @@
       background: linear-gradient(135deg, #ff7a18, #ff9f45);
       border:none;
       color:white;
-      padding:8px;
+      padding:9px;
       border-radius:12px;
-      font-weight:600;
+      font-weight:800;
       cursor:pointer;
     }
 
@@ -148,6 +161,7 @@
       justify-content:space-between;
       align-items:center;
       margin:6px 0;
+      gap:10px;
     }
 
     .qty{display:flex;align-items:center;gap:6px;}
@@ -156,6 +170,7 @@
       padding:4px 10px;
       border-radius:8px;
       background:black;
+      font-weight:800;
     }
 
     .checkout-btn{
@@ -163,7 +178,7 @@
       width:100%;
       padding:12px;
       margin-top:10px;
-      font-weight:700;
+      font-weight:900;
       border-radius:14px;
       font-size:16px;
     }
@@ -197,7 +212,7 @@
       padding: 12px 18px;
       border-radius: 14px;
       font-size: 14px;
-      font-weight: 600;
+      font-weight: 800;
       opacity: 0;
       pointer-events: none;
       z-index: 99999;
@@ -207,25 +222,6 @@
     .toast.show{
       opacity: 1;
       transform: translateX(-50%) translateY(-10px);
-    }
-
-    .spark{
-      position: fixed;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: radial-gradient(circle, #ffcc00, #ff7a18, transparent);
-      pointer-events: none;
-      opacity: 0;
-      z-index: 99999;
-    }
-    .spark.show{
-      animation: sparkPop 0.6s ease forwards;
-    }
-    @keyframes sparkPop{
-      0%{transform: scale(0.3); opacity: 0.9;}
-      60%{transform: scale(2.2); opacity: 0.6;}
-      100%{transform: scale(3.2); opacity: 0;}
     }
   </style>
 </head>
@@ -257,16 +253,12 @@
 
     <div class="shop-title">HOTEL NAGZIRA</div>
     <div class="food-scroll" id="store-NAGZIRA"></div>
-    
+
     <div class="shop-title">AB Foods</div>
     <div class="food-scroll" id="store-AB"></div>
 
-    <!-- <div class="shop-title">AS Foods</div>
-    <div class="food-scroll" id="store-AS"></div> -->
-
-    <!-- <div class="shop-title">RAM CAFE</div>
-    <div class="food-scroll" id="store-RAMCAFE"></div> -->
-
+    <div class="shop-title">RAM CAFE</div>
+    <div class="food-scroll" id="store-RAMCAFE"></div>
 
     <div class="shop-title">HARYANA JALEBI</div>
     <div class="food-scroll" id="store-HARYANA"></div>
@@ -281,7 +273,6 @@
   </div>
 
   <div id="toast" class="toast"></div>
-  <div id="spark" class="spark"></div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -306,29 +297,22 @@
     const toast = document.getElementById("toast");
     toast.innerText = msg;
     toast.classList.add("show");
-    setTimeout(()=> toast.classList.remove("show"), 1600);
-  }
-
-  function sparkEffect(x, y){
-    const spark = document.getElementById("spark");
-    spark.style.left = (x - 9) + "px";
-    spark.style.top = (y - 9) + "px";
-    spark.classList.remove("show");
-    void spark.offsetWidth;
-    spark.classList.add("show");
+    setTimeout(()=> toast.classList.remove("show"), 1500);
   }
 
   function safeText(str){
-    return String(str).replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    return String(str || "").replace(/</g,"&lt;").replace(/>/g,"&gt;");
   }
 
   function renderStore(containerId, storeName, menu){
     const div = document.getElementById("store-" + containerId);
-    if(!div) return; // ✅ prevents error if section removed
+    if(!div) return;
 
     div.innerHTML = "";
 
-    const filtered = menu.filter(item => item.storeName === storeName);
+    const filtered = menu
+      .filter(item => item.storeName === storeName)
+      .sort((a,b)=> (a.priority || 9999) - (b.priority || 9999));
 
     if(filtered.length === 0){
       div.innerHTML = `<p style="opacity:0.6;font-size:13px;">No items added yet</p>`;
@@ -339,53 +323,68 @@
       const card = document.createElement("div");
       card.className = "food-card";
 
+      const variants = Array.isArray(item.variants) ? item.variants : [];
+      const defaultVar = variants[0] || { label:"Default", price:item.price || 0 };
+
       card.innerHTML = `
         <img src="${item.img || ""}" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
         <div class="food-info">
           <h4>${safeText(item.name)}</h4>
-          <p>₹${item.price}</p>
+          <p class="priceText">₹${defaultVar.price}</p>
+
+          <select class="variantSelect">
+            ${variants.map((v,i)=> `<option value="${i}">${safeText(v.label)} - ₹${v.price}</option>`).join("")}
+          </select>
+
           <button class="addBtn">Add</button>
         </div>
       `;
 
-      const btn = card.querySelector(".addBtn");
-      btn.addEventListener("click", (e)=>{
-        addItem(item.name, item.price, item.storeName, e);
+      const select = card.querySelector(".variantSelect");
+      const priceText = card.querySelector(".priceText");
+
+      select.addEventListener("change", ()=>{
+        const v = variants[Number(select.value)];
+        if(v) priceText.innerText = `₹${v.price}`;
+      });
+
+      card.querySelector(".addBtn").addEventListener("click", ()=>{
+        const v = variants[Number(select.value)];
+        if(!v){ alert("Variant missing"); return; }
+
+        addItem(item.id, item.name, item.storeName, v.label, v.price);
       });
 
       div.appendChild(card);
     });
   }
 
-  function addItem(name, price, storeName, event){
-    const wasEmpty = cart.length === 0;
+  function addItem(id, name, storeName, variantLabel, price){
+    const found = cart.find(i =>
+      i.id === id &&
+      i.storeName === storeName &&
+      i.variantLabel === variantLabel
+    );
 
-    const found = cart.find(i => i.name === name && i.storeName === storeName);
     if(found) found.qty++;
-    else cart.push({name, price, qty:1, storeName});
+    else cart.push({ id, name, storeName, variantLabel, price, qty:1 });
 
     localStorage.setItem("cart", JSON.stringify(cart));
     renderCart();
-
-    // ✅ mobile safe spark
-    const x = event?.clientX || (event?.touches?.[0]?.clientX) || window.innerWidth/2;
-    const y = event?.clientY || (event?.touches?.[0]?.clientY) || window.innerHeight/2;
-    sparkEffect(x, y);
-
-    if(wasEmpty){
-      showToast("🔥 First item added! Cart ready ✅");
-    } else {
-      showToast(`${name} added ✅`);
-    }
+    showToast(`${name} (${variantLabel}) added ✅`);
   }
 
-  window.changeQty = function(name, storeName, delta){
-    const item = cart.find(i => i.name === name && i.storeName === storeName);
+  window.changeQty = function(id, storeName, variantLabel, delta){
+    const item = cart.find(i =>
+      i.id === id &&
+      i.storeName === storeName &&
+      i.variantLabel === variantLabel
+    );
     if(!item) return;
 
     item.qty += delta;
     if(item.qty <= 0){
-      cart = cart.filter(i => !(i.name === name && i.storeName === storeName));
+      cart = cart.filter(i => !(i.id === id && i.storeName === storeName && i.variantLabel === variantLabel));
     }
 
     localStorage.setItem("cart", JSON.stringify(cart));
@@ -405,13 +404,13 @@
       cartDiv.innerHTML += `
         <div class="cart-item">
           <div>
-            <b>${safeText(item.name)}</b><br>
+            <b>${safeText(item.name)} (${safeText(item.variantLabel)})</b><br>
             <small style="opacity:0.7;">🏪 ${safeText(item.storeName)}</small>
           </div>
           <div class="qty">
-            <button onclick="changeQty('${item.name.replace(/'/g,"\\'")}','${item.storeName.replace(/'/g,"\\'")}',-1)">-</button>
+            <button onclick="changeQty('${item.id}','${item.storeName.replace(/'/g,"\\'")}','${item.variantLabel.replace(/'/g,"\\'")}',-1)">-</button>
             ${item.qty}
-            <button onclick="changeQty('${item.name.replace(/'/g,"\\'")}','${item.storeName.replace(/'/g,"\\'")}',1)">+</button>
+            <button onclick="changeQty('${item.id}','${item.storeName.replace(/'/g,"\\'")}','${item.variantLabel.replace(/'/g,"\\'")}',1)">+</button>
           </div>
         </div>
       `;
@@ -435,33 +434,24 @@
 
   onSnapshot(collection(db, "menu"), (snapshot) => {
     let menu = [];
-    snapshot.forEach((doc) => {
-      menu.push({ id: doc.id, ...doc.data() });
-    });
+    snapshot.forEach((doc) => menu.push({ id: doc.id, ...doc.data() }));
 
-   // renderStore("AB", "AB Foods", menu);
     renderStore("NAGZIRA", "HOTEL NAGZIRA", menu);
-     renderStore("AB", "AB Foods", menu);
-    // renderStore("RAMCAFE", "RAM CAFE", menu);
+    renderStore("AB", "AB Foods", menu);
+    renderStore("RAMCAFE", "RAM CAFE", menu);
     renderStore("HARYANA", "HARYANA JALEBI", menu);
   });
 
-  // ✅ Auto slider scroll
+  // Auto slider
   const slider = document.getElementById("bannerSlider");
   let index = 0;
-
   setInterval(()=>{
     const slides = slider.querySelectorAll("img");
     if(slides.length === 0) return;
-
     index = (index + 1) % slides.length;
-    slider.scrollTo({
-      left: slides[index].offsetLeft,
-      behavior: "smooth"
-    });
+    slider.scrollTo({ left: slides[index].offsetLeft, behavior:"smooth" });
   }, 2500);
 </script>
 
 </body>
 </html>
-
