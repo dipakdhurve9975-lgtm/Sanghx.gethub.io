@@ -11,7 +11,7 @@
     body{background:#fff7f5;padding:16px;}
 
     .card{
-      max-width:450px;
+      max-width:520px;
       margin:auto;
       background:white;
       padding:18px;
@@ -27,6 +27,12 @@
       border-radius:14px;
       margin-bottom:16px;
       font-size:20px;
+    }
+
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
     }
 
     input, select{
@@ -47,10 +53,19 @@
       font-weight:700;
       cursor:pointer;
       font-size:15px;
+      transition:0.2s;
     }
+
+    button:active{transform:scale(0.98);}
 
     .btn-add{
       background:linear-gradient(135deg,#ff7a18,#ff9f45);
+      color:white;
+      margin-top:10px;
+    }
+
+    .btn-black{
+      background:#111;
       color:white;
       margin-top:10px;
     }
@@ -68,6 +83,19 @@
       font-weight:700;
     }
 
+    .filters{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+
+    .filters input, .filters select{
+      margin:0;
+      flex:1;
+      min-width:160px;
+    }
+
     .menu-item{
       display:flex;
       gap:10px;
@@ -80,23 +108,44 @@
     }
 
     .menu-item img{
-      width:60px;
-      height:60px;
+      width:62px;
+      height:62px;
       border-radius:12px;
       object-fit:cover;
+      background:#f3f3f3;
     }
 
     .menu-info{
       flex:1;
+      min-width:0;
     }
 
     .menu-info b{
       font-size:14px;
+      display:block;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
 
     .menu-info small{
-      opacity:0.7;
+      opacity:0.75;
       font-size:12px;
+    }
+
+    .actions{
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+
+    .btn-edit{
+      background:#111;
+      color:white;
+      padding:8px 12px;
+      width:auto;
+      border-radius:12px;
+      font-size:13px;
     }
 
     .btn-delete{
@@ -113,13 +162,62 @@
       color:white;
       margin-top:14px;
     }
+
+    /* Modal */
+    .modal{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.55);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:99999;
+    }
+    .modal.show{display:flex;}
+
+    .modalBox{
+      width:100%;
+      max-width:520px;
+      background:white;
+      border-radius:18px;
+      padding:16px;
+      box-shadow:0 20px 60px rgba(0,0,0,0.35);
+      animation: pop 0.18s ease;
+    }
+
+    @keyframes pop{
+      from{transform:scale(0.96);opacity:0.6;}
+      to{transform:scale(1);opacity:1;}
+    }
+
+    .modalBox h3{
+      margin-bottom:10px;
+      font-size:18px;
+    }
+
+    .modalBtns{
+      display:flex;
+      gap:10px;
+      margin-top:10px;
+    }
+
+    .btn-cancel{
+      background:#f2f2f2;
+      color:#111;
+    }
+
+    .btn-save{
+      background:linear-gradient(135deg,#25D366,#1ebe5d);
+      color:white;
+    }
   </style>
 </head>
 
 <body>
 
   <div class="card">
-    <h2>⚙️ SANGHX Admin</h2>
+    <h2>⚙️ SANGHX Admin (PRO)</h2>
 
     <h3>Add Menu Item</h3>
 
@@ -127,25 +225,56 @@
     <input type="number" id="foodPrice" placeholder="Price (e.g. 100)">
     <input type="file" id="foodImg" accept="image/*">
 
+    <!-- ✅ ONLY 4 STORES -->
     <select id="storeName">
-      <option value="Makhan Foods">Makhan Foods</option>
-      <option value="AB Foods">AB Foods</option>
-      <option value="AS Foods">AS Foods</option>
-      <option value="RAM CAFE">RAM CAFE</option>
-      <option value="MAULI RESTUARANT">MAULI RESTUARANT</option>
       <option value="HOTEL NAGZIRA">HOTEL NAGZIRA</option>
+      <option value="AB Foods">AB Foods</option>
+      <option value="RAM CAFE">RAM CAFE</option>
       <option value="HARYANA JALEBI">HARYANA JALEBI</option>
     </select>
 
     <button class="btn-add" onclick="addMenuItem()">Add</button>
-
     <div class="status" id="statusText"></div>
 
     <div class="menu-title">Current Menu</div>
+
+    <!-- ✅ FILTERS -->
+    <div class="filters">
+      <input id="searchBox" placeholder="Search food name...">
+      <select id="filterStore">
+        <option value="ALL">All Stores</option>
+        <option value="HOTEL NAGZIRA">HOTEL NAGZIRA</option>
+        <option value="AB Foods">AB Foods</option>
+        <option value="RAM CAFE">RAM CAFE</option>
+        <option value="HARYANA JALEBI">HARYANA JALEBI</option>
+      </select>
+    </div>
+
     <div id="menuList"></div>
 
     <button class="btn-clear" onclick="logout()">Logout</button>
     <button class="btn-clear" onclick="clearAllMenu()">Clear All Menu (Danger)</button>
+  </div>
+
+  <!-- ✅ EDIT MODAL -->
+  <div class="modal" id="editModal">
+    <div class="modalBox">
+      <h3>Edit Item ✏️</h3>
+
+      <input id="editName" placeholder="Food Name">
+      <input id="editPrice" type="number" placeholder="Price">
+      <select id="editStore">
+        <option value="HOTEL NAGZIRA">HOTEL NAGZIRA</option>
+        <option value="AB Foods">AB Foods</option>
+        <option value="RAM CAFE">RAM CAFE</option>
+        <option value="HARYANA JALEBI">HARYANA JALEBI</option>
+      </select>
+
+      <div class="modalBtns">
+        <button class="btn-cancel" onclick="closeEdit()">Cancel</button>
+        <button class="btn-save" onclick="saveEdit()">Save</button>
+      </div>
+    </div>
   </div>
 
 <script type="module">
@@ -157,7 +286,8 @@
     getDocs,
     deleteDoc,
     doc,
-    onSnapshot
+    onSnapshot,
+    updateDoc
   } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -172,7 +302,6 @@
     appId: "1:491353757911:web:40752459b5b0049c71f892"
   };
 
-  // ✅ INIT APP + DB + AUTH (Correct order)
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
   const auth = getAuth(app);
@@ -191,6 +320,18 @@
   const statusText = document.getElementById("statusText");
   const menuList = document.getElementById("menuList");
 
+  const searchBox = document.getElementById("searchBox");
+  const filterStore = document.getElementById("filterStore");
+
+  // modal refs
+  const editModal = document.getElementById("editModal");
+  const editName = document.getElementById("editName");
+  const editPrice = document.getElementById("editPrice");
+  const editStore = document.getElementById("editStore");
+
+  let allMenu = [];
+  let editingId = null;
+
   async function uploadToCloudinary(file){
     const formData = new FormData();
     formData.append("file", file);
@@ -202,13 +343,56 @@
     });
 
     const data = await res.json();
-
-    if(data.error){
-      throw new Error(data.error.message);
-    }
+    if(data.error) throw new Error(data.error.message);
 
     return data.secure_url;
   }
+
+  function safeText(str){
+    return String(str).replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  }
+
+  function renderMenu(){
+    menuList.innerHTML = "";
+
+    const q = searchBox.value.trim().toLowerCase();
+    const store = filterStore.value;
+
+    let filtered = allMenu;
+
+    if(store !== "ALL"){
+      filtered = filtered.filter(i => i.storeName === store);
+    }
+
+    if(q){
+      filtered = filtered.filter(i => (i.name || "").toLowerCase().includes(q));
+    }
+
+    if(filtered.length === 0){
+      menuList.innerHTML = "<p style='opacity:0.7;margin-top:10px;'>No items found</p>";
+      return;
+    }
+
+    filtered.forEach((item) => {
+      menuList.innerHTML += `
+        <div class="menu-item">
+          <img src="${item.img}" alt="food">
+          <div class="menu-info">
+            <b>${safeText(item.name)} - ₹${item.price}</b>
+            <small>🏪 ${safeText(item.storeName)}</small>
+          </div>
+          <div class="actions">
+            <button class="btn-edit" onclick="openEdit('${item.id}')">Edit</button>
+            <button class="btn-delete" onclick="deleteItem('${item.id}')">Delete</button>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  // live search/filter
+  searchBox.addEventListener("input", renderMenu);
+  filterStore.addEventListener("change", renderMenu);
 
   // ✅ ADD MENU ITEM
   window.addMenuItem = async function(){
@@ -251,27 +435,15 @@
 
   // ✅ LIVE MENU LIST
   onSnapshot(collection(db, "menu"), (snapshot) => {
-    menuList.innerHTML = "";
-
-    if(snapshot.empty){
-      menuList.innerHTML = "<p style='opacity:0.7;margin-top:10px;'>No items added yet</p>";
-      return;
-    }
-
+    allMenu = [];
     snapshot.forEach((d) => {
-      const item = d.data();
-
-      menuList.innerHTML += `
-        <div class="menu-item">
-          <img src="${item.img}" alt="food">
-          <div class="menu-info">
-            <b>${item.name} - ₹${item.price}</b><br>
-            <small>🏪 ${item.storeName}</small>
-          </div>
-          <button class="btn-delete" onclick="deleteItem('${d.id}')">Delete</button>
-        </div>
-      `;
+      allMenu.push({ id: d.id, ...d.data() });
     });
+
+    // sort newest first
+    allMenu.sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+    renderMenu();
   });
 
   // ✅ DELETE ITEM
@@ -297,6 +469,57 @@
     await signOut(auth);
     window.location.href = "login.html";
   };
+
+  // ✅ EDIT
+  window.openEdit = function(id){
+    const item = allMenu.find(x => x.id === id);
+    if(!item) return;
+
+    editingId = id;
+
+    editName.value = item.name || "";
+    editPrice.value = item.price || "";
+    editStore.value = item.storeName || "AB Foods";
+
+    editModal.classList.add("show");
+  };
+
+  window.closeEdit = function(){
+    editingId = null;
+    editModal.classList.remove("show");
+  };
+
+  window.saveEdit = async function(){
+    try{
+      if(!editingId) return;
+
+      const newName = editName.value.trim();
+      const newPrice = Number(editPrice.value);
+      const newStore = editStore.value;
+
+      if(!newName || !newPrice){
+        alert("Enter valid name and price");
+        return;
+      }
+
+      await updateDoc(doc(db, "menu", editingId), {
+        name: newName,
+        price: newPrice,
+        storeName: newStore
+      });
+
+      closeEdit();
+      alert("✅ Updated Successfully!");
+    } catch(err){
+      alert("❌ Error: " + err.message);
+    }
+  };
+
+  // click outside modal to close
+  editModal.addEventListener("click", (e)=>{
+    if(e.target === editModal) closeEdit();
+  });
+
 </script>
 
 </body>
