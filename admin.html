@@ -29,12 +29,6 @@
       font-size:20px;
     }
 
-    .row{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-
     input, select{
       width:100%;
       padding:12px;
@@ -55,7 +49,6 @@
       font-size:15px;
       transition:0.2s;
     }
-
     button:active{transform:scale(0.98);}
 
     .btn-add{
@@ -64,10 +57,18 @@
       margin-top:10px;
     }
 
-    .btn-black{
-      background:#111;
+    .btn-save{
+      background:linear-gradient(135deg,#25D366,#1ebe5d);
       color:white;
       margin-top:10px;
+      display:none;
+    }
+
+    .btn-cancel{
+      background:#f2f2f2;
+      color:#111;
+      margin-top:10px;
+      display:none;
     }
 
     .status{
@@ -81,19 +82,6 @@
       margin-top:18px;
       font-size:18px;
       font-weight:700;
-    }
-
-    .filters{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:12px;
-    }
-
-    .filters input, .filters select{
-      margin:0;
-      flex:1;
-      min-width:160px;
     }
 
     .menu-item{
@@ -112,7 +100,7 @@
       height:62px;
       border-radius:12px;
       object-fit:cover;
-      background:#f3f3f3;
+      background:#f0f0f0;
     }
 
     .menu-info{
@@ -131,16 +119,18 @@
     .menu-info small{
       opacity:0.75;
       font-size:12px;
+      display:block;
+      margin-top:2px;
     }
 
-    .actions{
+    .menu-actions{
       display:flex;
-      gap:8px;
-      align-items:center;
+      flex-direction:column;
+      gap:6px;
     }
 
-    .btn-edit{
-      background:#111;
+    .btn-delete{
+      background:#ff3b3b;
       color:white;
       padding:8px 12px;
       width:auto;
@@ -148,8 +138,8 @@
       font-size:13px;
     }
 
-    .btn-delete{
-      background:#ff3b3b;
+    .btn-edit{
+      background:#111;
       color:white;
       padding:8px 12px;
       width:auto;
@@ -163,53 +153,58 @@
       margin-top:14px;
     }
 
-    /* Modal */
-    .modal{
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,0.55);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      padding:18px;
-      z-index:99999;
-    }
-    .modal.show{display:flex;}
-
-    .modalBox{
-      width:100%;
-      max-width:520px;
-      background:white;
-      border-radius:18px;
-      padding:16px;
-      box-shadow:0 20px 60px rgba(0,0,0,0.35);
-      animation: pop 0.18s ease;
-    }
-
-    @keyframes pop{
-      from{transform:scale(0.96);opacity:0.6;}
-      to{transform:scale(1);opacity:1;}
-    }
-
-    .modalBox h3{
-      margin-bottom:10px;
-      font-size:18px;
-    }
-
-    .modalBtns{
+    .row{
       display:flex;
       gap:10px;
-      margin-top:10px;
+    }
+    .row > *{flex:1;}
+
+    .variantsBox{
+      margin-top:6px;
+      padding:12px;
+      border:1px dashed #ddd;
+      border-radius:14px;
+      background:#fffaf9;
     }
 
-    .btn-cancel{
-      background:#f2f2f2;
-      color:#111;
+    .variantRow{
+      display:flex;
+      gap:8px;
+      margin-top:8px;
+      align-items:center;
     }
 
-    .btn-save{
-      background:linear-gradient(135deg,#25D366,#1ebe5d);
+    .variantRow input{
+      margin:0;
+      padding:10px;
+      border-radius:12px;
+      border:1px solid #ddd;
+      outline:none;
+      font-size:13px;
+    }
+
+    .variantRow button{
+      width:auto;
+      padding:10px 12px;
+      border-radius:12px;
+      background:#ff3b3b;
       color:white;
+      font-weight:800;
+      font-size:13px;
+    }
+
+    .addVariantBtn{
+      background:#111;
+      color:white;
+      margin-top:10px;
+      border-radius:12px;
+    }
+
+    .hint{
+      font-size:12px;
+      opacity:0.75;
+      margin-top:6px;
+      line-height:1.4;
     }
   </style>
 </head>
@@ -217,64 +212,44 @@
 <body>
 
   <div class="card">
-    <h2>⚙️ SANGHX Admin (PRO)</h2>
+    <h2>⚙️ SANGHX Admin</h2>
 
-    <h3>Add Menu Item</h3>
+    <h3 id="formTitle">Add Menu Item</h3>
 
-    <input type="text" id="foodName" placeholder="Food Name (e.g. Burger)">
-    <input type="number" id="foodPrice" placeholder="Price (e.g. 100)">
+    <input type="text" id="foodName" placeholder="Food Name (e.g. Jalebi)">
     <input type="file" id="foodImg" accept="image/*">
 
-    <!-- ✅ ONLY 4 STORES -->
-    <select id="storeName">
-      <option value="HOTEL NAGZIRA">HOTEL NAGZIRA</option>
-      <option value="AB Foods">AB Foods</option>
-      <option value="RAM CAFE">RAM CAFE</option>
-      <option value="HARYANA JALEBI">HARYANA JALEBI</option>
-    </select>
-
-    <button class="btn-add" onclick="addMenuItem()">Add</button>
-    <div class="status" id="statusText"></div>
-
-    <div class="menu-title">Current Menu</div>
-
-    <!-- ✅ FILTERS -->
-    <div class="filters">
-      <input id="searchBox" placeholder="Search food name...">
-      <select id="filterStore">
-        <option value="ALL">All Stores</option>
+    <div class="row">
+      <select id="storeName">
         <option value="HOTEL NAGZIRA">HOTEL NAGZIRA</option>
         <option value="AB Foods">AB Foods</option>
         <option value="RAM CAFE">RAM CAFE</option>
         <option value="HARYANA JALEBI">HARYANA JALEBI</option>
       </select>
+
+      <input type="number" id="priority" placeholder="Priority (1 = top)" min="1">
     </div>
 
+    <div class="variantsBox">
+      <b>Quantity / Variants</b>
+      <div class="hint">Example: 1 Pav ₹60, Half KG ₹180, Full KG ₹350</div>
+
+      <div id="variantsWrap"></div>
+
+      <button class="addVariantBtn" onclick="addVariantRow()">+ Add Variant</button>
+    </div>
+
+    <button class="btn-add" id="addBtn" onclick="addMenuItem()">Add Item</button>
+    <button class="btn-save" id="saveBtn" onclick="saveEdit()">Save Changes</button>
+    <button class="btn-cancel" id="cancelBtn" onclick="cancelEdit()">Cancel Edit</button>
+
+    <div class="status" id="statusText"></div>
+
+    <div class="menu-title">Current Menu</div>
     <div id="menuList"></div>
 
     <button class="btn-clear" onclick="logout()">Logout</button>
     <button class="btn-clear" onclick="clearAllMenu()">Clear All Menu (Danger)</button>
-  </div>
-
-  <!-- ✅ EDIT MODAL -->
-  <div class="modal" id="editModal">
-    <div class="modalBox">
-      <h3>Edit Item ✏️</h3>
-
-      <input id="editName" placeholder="Food Name">
-      <input id="editPrice" type="number" placeholder="Price">
-      <select id="editStore">
-        <option value="HOTEL NAGZIRA">HOTEL NAGZIRA</option>
-        <option value="AB Foods">AB Foods</option>
-        <option value="RAM CAFE">RAM CAFE</option>
-        <option value="HARYANA JALEBI">HARYANA JALEBI</option>
-      </select>
-
-      <div class="modalBtns">
-        <button class="btn-cancel" onclick="closeEdit()">Cancel</button>
-        <button class="btn-save" onclick="saveEdit()">Save</button>
-      </div>
-    </div>
   </div>
 
 <script type="module">
@@ -292,7 +267,6 @@
 
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-  // ✅ FIREBASE CONFIG
   const firebaseConfig = {
     apiKey: "AIzaSyC-igyzVwdH_4Jt1r64TtHSfYxIMw8UfzM",
     authDomain: "sanghx-foods.firebaseapp.com",
@@ -306,31 +280,74 @@
   const db = getFirestore(app);
   const auth = getAuth(app);
 
-  // ✅ PROTECT ADMIN PAGE
   onAuthStateChanged(auth, (user) => {
-    if(!user){
-      window.location.href = "login.html";
-    }
+    if(!user) window.location.href = "login.html";
   });
 
-  // ✅ CLOUDINARY SETTINGS
+  // CLOUDINARY
   const CLOUD_NAME = "dvbaqh8ja";
   const UPLOAD_PRESET = "SANGHX";
 
   const statusText = document.getElementById("statusText");
   const menuList = document.getElementById("menuList");
 
-  const searchBox = document.getElementById("searchBox");
-  const filterStore = document.getElementById("filterStore");
+  const addBtn = document.getElementById("addBtn");
+  const saveBtn = document.getElementById("saveBtn");
+  const cancelBtn = document.getElementById("cancelBtn");
+  const formTitle = document.getElementById("formTitle");
 
-  // modal refs
-  const editModal = document.getElementById("editModal");
-  const editName = document.getElementById("editName");
-  const editPrice = document.getElementById("editPrice");
-  const editStore = document.getElementById("editStore");
-
-  let allMenu = [];
   let editingId = null;
+  let editingOldImg = null;
+
+  // ===== Variants UI =====
+  const variantsWrap = document.getElementById("variantsWrap");
+
+  function createVariantRow(label="", price=""){
+    const row = document.createElement("div");
+    row.className = "variantRow";
+    row.innerHTML = `
+      <input class="vLabel" placeholder="Quantity (e.g. Half KG)" value="${label}">
+      <input class="vPrice" type="number" placeholder="Price (e.g. 180)" value="${price}">
+      <button type="button" class="vDel">X</button>
+    `;
+    row.querySelector(".vDel").addEventListener("click", ()=> row.remove());
+    variantsWrap.appendChild(row);
+  }
+
+  window.addVariantRow = function(){
+    createVariantRow();
+  }
+
+  function getVariantsFromUI(){
+    const rows = variantsWrap.querySelectorAll(".variantRow");
+    const variants = [];
+
+    rows.forEach(r=>{
+      const label = r.querySelector(".vLabel").value.trim();
+      const price = Number(r.querySelector(".vPrice").value);
+
+      if(label && price > 0){
+        variants.push({ label, price });
+      }
+    });
+
+    return variants;
+  }
+
+  function resetForm(){
+    document.getElementById("foodName").value = "";
+    document.getElementById("foodImg").value = "";
+    document.getElementById("priority").value = "";
+    document.getElementById("storeName").value = "HOTEL NAGZIRA";
+
+    variantsWrap.innerHTML = "";
+    createVariantRow("Full Plate", 0);
+  }
+
+  resetForm();
+  variantsWrap.innerHTML = "";
+  createVariantRow("Half Plate", 0);
+  createVariantRow("Full Plate", 0);
 
   async function uploadToCloudinary(file){
     const formData = new FormData();
@@ -344,115 +361,156 @@
 
     const data = await res.json();
     if(data.error) throw new Error(data.error.message);
-
     return data.secure_url;
   }
 
-  function safeText(str){
-    return String(str).replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  function setModeAdd(){
+    editingId = null;
+    editingOldImg = null;
+    formTitle.innerText = "Add Menu Item";
+    addBtn.style.display = "block";
+    saveBtn.style.display = "none";
+    cancelBtn.style.display = "none";
   }
 
-  function renderMenu(){
-    menuList.innerHTML = "";
-
-    const q = searchBox.value.trim().toLowerCase();
-    const store = filterStore.value;
-
-    let filtered = allMenu;
-
-    if(store !== "ALL"){
-      filtered = filtered.filter(i => i.storeName === store);
-    }
-
-    if(q){
-      filtered = filtered.filter(i => (i.name || "").toLowerCase().includes(q));
-    }
-
-    if(filtered.length === 0){
-      menuList.innerHTML = "<p style='opacity:0.7;margin-top:10px;'>No items found</p>";
-      return;
-    }
-
-    filtered.forEach((item) => {
-      menuList.innerHTML += `
-        <div class="menu-item">
-          <img src="${item.img}" alt="food">
-          <div class="menu-info">
-            <b>${safeText(item.name)} - ₹${item.price}</b>
-            <small>🏪 ${safeText(item.storeName)}</small>
-          </div>
-          <div class="actions">
-            <button class="btn-edit" onclick="openEdit('${item.id}')">Edit</button>
-            <button class="btn-delete" onclick="deleteItem('${item.id}')">Delete</button>
-          </div>
-        </div>
-      `;
-    });
+  function setModeEdit(){
+    formTitle.innerText = "Edit Menu Item";
+    addBtn.style.display = "none";
+    saveBtn.style.display = "block";
+    cancelBtn.style.display = "block";
   }
 
-  // live search/filter
-  searchBox.addEventListener("input", renderMenu);
-  filterStore.addEventListener("change", renderMenu);
+  window.cancelEdit = function(){
+    setModeAdd();
+    resetForm();
+    statusText.innerText = "Edit cancelled.";
+  }
 
-  // ✅ ADD MENU ITEM
+  // ADD NEW
   window.addMenuItem = async function(){
     try{
       const name = document.getElementById("foodName").value.trim();
-      const price = Number(document.getElementById("foodPrice").value);
       const storeName = document.getElementById("storeName").value;
+      const priority = Number(document.getElementById("priority").value) || 9999;
       const file = document.getElementById("foodImg").files[0];
 
-      if(!name || !price || !file){
-        alert("Please fill all fields and select image");
+      const variants = getVariantsFromUI();
+
+      if(!name || !file){
+        alert("Please enter food name and select image");
         return;
       }
 
-      statusText.innerText = "Uploading image to Cloudinary...";
+      if(variants.length === 0){
+        alert("Please add at least 1 variant with price");
+        return;
+      }
+
+      statusText.innerText = "Uploading image...";
       const imgUrl = await uploadToCloudinary(file);
 
-      statusText.innerText = "Saving menu to Firestore...";
-
+      statusText.innerText = "Saving item...";
       await addDoc(collection(db, "menu"), {
         name,
-        price,
         img: imgUrl,
         storeName,
+        priority,
+        variants,
         createdAt: Date.now()
       });
 
-      statusText.innerText = "✅ Item Added Successfully!";
-
-      document.getElementById("foodName").value = "";
-      document.getElementById("foodPrice").value = "";
-      document.getElementById("foodImg").value = "";
+      statusText.innerText = "✅ Added successfully!";
+      resetForm();
 
     } catch(err){
       console.log(err);
       statusText.innerText = "❌ Error: " + err.message;
-      alert("Error: " + err.message);
+      alert(err.message);
     }
   };
 
-  // ✅ LIVE MENU LIST
-  onSnapshot(collection(db, "menu"), (snapshot) => {
-    allMenu = [];
-    snapshot.forEach((d) => {
-      allMenu.push({ id: d.id, ...d.data() });
-    });
+  // EDIT LOAD
+  window.editItem = function(id, item){
+    editingId = id;
+    editingOldImg = item.img || "";
 
-    // sort newest first
-    allMenu.sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
+    document.getElementById("foodName").value = item.name || "";
+    document.getElementById("storeName").value = item.storeName || "HOTEL NAGZIRA";
+    document.getElementById("priority").value = item.priority ?? "";
 
-    renderMenu();
-  });
+    variantsWrap.innerHTML = "";
+    const variants = Array.isArray(item.variants) ? item.variants : [];
+    if(variants.length === 0){
+      createVariantRow("Full Plate", 0);
+    } else {
+      variants.forEach(v => createVariantRow(v.label, v.price));
+    }
 
-  // ✅ DELETE ITEM
+    setModeEdit();
+    statusText.innerText = "Editing: " + (item.name || "");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  // SAVE EDIT
+  window.saveEdit = async function(){
+    try{
+      if(!editingId){
+        alert("No item selected for edit");
+        return;
+      }
+
+      const name = document.getElementById("foodName").value.trim();
+      const storeName = document.getElementById("storeName").value;
+      const priority = Number(document.getElementById("priority").value) || 9999;
+      const file = document.getElementById("foodImg").files[0];
+
+      const variants = getVariantsFromUI();
+
+      if(!name){
+        alert("Food name required");
+        return;
+      }
+
+      if(variants.length === 0){
+        alert("Please add at least 1 variant with price");
+        return;
+      }
+
+      statusText.innerText = "Saving changes...";
+
+      let imgUrl = editingOldImg;
+      if(file){
+        statusText.innerText = "Uploading new image...";
+        imgUrl = await uploadToCloudinary(file);
+      }
+
+      await updateDoc(doc(db, "menu", editingId), {
+        name,
+        storeName,
+        priority,
+        variants,
+        img: imgUrl,
+        updatedAt: Date.now()
+      });
+
+      statusText.innerText = "✅ Updated successfully!";
+      setModeAdd();
+      resetForm();
+
+    } catch(err){
+      console.log(err);
+      statusText.innerText = "❌ Error: " + err.message;
+      alert(err.message);
+    }
+  };
+
+  // DELETE
   window.deleteItem = async function(id){
     if(!confirm("Delete this item?")) return;
     await deleteDoc(doc(db, "menu", id));
   };
 
-  // ✅ CLEAR ALL MENU
+  // CLEAR ALL
   window.clearAllMenu = async function(){
     if(!confirm("Are you sure you want to delete ALL menu?")) return;
 
@@ -464,62 +522,50 @@
     alert("All menu cleared!");
   };
 
-  // ✅ LOGOUT
+  // LOGOUT
   window.logout = async function(){
     await signOut(auth);
     window.location.href = "login.html";
   };
 
-  // ✅ EDIT
-  window.openEdit = function(id){
-    const item = allMenu.find(x => x.id === id);
-    if(!item) return;
+  function safeText(str){
+    return String(str || "").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  }
 
-    editingId = id;
+  // LIVE LIST
+  onSnapshot(collection(db, "menu"), (snapshot) => {
+    menuList.innerHTML = "";
 
-    editName.value = item.name || "";
-    editPrice.value = item.price || "";
-    editStore.value = item.storeName || "AB Foods";
-
-    editModal.classList.add("show");
-  };
-
-  window.closeEdit = function(){
-    editingId = null;
-    editModal.classList.remove("show");
-  };
-
-  window.saveEdit = async function(){
-    try{
-      if(!editingId) return;
-
-      const newName = editName.value.trim();
-      const newPrice = Number(editPrice.value);
-      const newStore = editStore.value;
-
-      if(!newName || !newPrice){
-        alert("Enter valid name and price");
-        return;
-      }
-
-      await updateDoc(doc(db, "menu", editingId), {
-        name: newName,
-        price: newPrice,
-        storeName: newStore
-      });
-
-      closeEdit();
-      alert("✅ Updated Successfully!");
-    } catch(err){
-      alert("❌ Error: " + err.message);
+    if(snapshot.empty){
+      menuList.innerHTML = "<p style='opacity:0.7;margin-top:10px;'>No items added yet</p>";
+      return;
     }
-  };
 
-  // click outside modal to close
-  editModal.addEventListener("click", (e)=>{
-    if(e.target === editModal) closeEdit();
+    // Sort by storeName then priority
+    const items = [];
+    snapshot.forEach((d) => items.push({ id: d.id, ...d.data() }));
+
+    items.sort((a,b) => (a.priority || 9999) - (b.priority || 9999));
+
+    items.forEach((item) => {
+      const firstVar = Array.isArray(item.variants) && item.variants.length ? item.variants[0] : null;
+
+      menuList.innerHTML += `
+        <div class="menu-item">
+          <img src="${item.img || ""}" alt="food">
+          <div class="menu-info">
+            <b>${safeText(item.name)}</b>
+            <small>🏪 ${safeText(item.storeName)} • ⭐ Priority: ${item.priority ?? 9999}</small>
+            <small>🍽 ${item.variants?.length || 0} variants • ${firstVar ? `${safeText(firstVar.label)} ₹${firstVar.price}` : ""}</small>
+          </div>
+          <div class="menu-actions">
+            <button class="btn-edit" onclick='editItem("${item.id}", ${JSON.stringify(item).replace(/</g,"\\u003c")})'>Edit</button>
+            <button class="btn-delete" onclick="deleteItem('${item.id}')">Delete</button>
+          </div>
+        </div>
+      `;
+    });
   });
-
 </script>
 
 </body>
