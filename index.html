@@ -240,7 +240,7 @@
     // ✅ SET OPEN TIME: Tomorrow 10:00 AM (device time)
     const now = new Date();
     const openTime = new Date();
-    openTime.setDate(now.getDate() + 1);
+    openTime.setDate(now.getDate() + 0);
     openTime.setHours(8, 30, 0, 0);
 
     // ✅ After opening, redirect to your real customer page
@@ -288,4 +288,5 @@
   </script>
 </body>
 </html>
+
 
