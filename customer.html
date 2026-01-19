@@ -255,23 +255,18 @@
   <div class="container">
     <h3>Menu</h3>
 
-    <!-- <div class="shop-title">Makhan Foods</div>
-    <div class="food-scroll" id="store-MAKHAN"></div> -->
-
+    <div class="shop-title">HOTEL NAGZIRA</div>
+    <div class="food-scroll" id="store-NAGZIRA"></div>
+    
     <div class="shop-title">AB Foods</div>
     <div class="food-scroll" id="store-AB"></div>
 
-    <div class="shop-title">AS Foods</div>
-    <div class="food-scroll" id="store-AS"></div>
+    <!-- <div class="shop-title">AS Foods</div>
+    <div class="food-scroll" id="store-AS"></div> -->
 
     <div class="shop-title">RAM CAFE</div>
     <div class="food-scroll" id="store-RAMCAFE"></div>
 
-    <!-- <div class="shop-title">MAULI RESTUARANT</div>
-  <div class="food-scroll" id="store-MAULI"></div> -->
-
-    <div class="shop-title">HOTEL NAGZIRA</div>
-    <div class="food-scroll" id="store-NAGZIRA"></div>
 
     <div class="shop-title">HARYANA JALEBI</div>
     <div class="food-scroll" id="store-HARYANA"></div>
@@ -323,10 +318,14 @@
     spark.classList.add("show");
   }
 
-  window.sparkEffect = sparkEffect;
+  function safeText(str){
+    return String(str).replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  }
 
   function renderStore(containerId, storeName, menu){
     const div = document.getElementById("store-" + containerId);
+    if(!div) return; // ✅ prevents error if section removed
+
     div.innerHTML = "";
 
     const filtered = menu.filter(item => item.storeName === storeName);
@@ -337,22 +336,28 @@
     }
 
     filtered.forEach(item=>{
-      div.innerHTML += `
-        <div class="food-card">
-          <img src="${item.img}" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
-          <div class="food-info">
-            <h4>${item.name}</h4>
-            <p>₹${item.price}</p>
-            <button onclick="addItem('${item.name}', ${item.price}, '${item.storeName}', event)">
-              Add
-            </button>
-          </div>
+      const card = document.createElement("div");
+      card.className = "food-card";
+
+      card.innerHTML = `
+        <img src="${item.img || ""}" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
+        <div class="food-info">
+          <h4>${safeText(item.name)}</h4>
+          <p>₹${item.price}</p>
+          <button class="addBtn">Add</button>
         </div>
       `;
+
+      const btn = card.querySelector(".addBtn");
+      btn.addEventListener("click", (e)=>{
+        addItem(item.name, item.price, item.storeName, e);
+      });
+
+      div.appendChild(card);
     });
   }
 
-  window.addItem = function(name, price, storeName, event){
+  function addItem(name, price, storeName, event){
     const wasEmpty = cart.length === 0;
 
     const found = cart.find(i => i.name === name && i.storeName === storeName);
@@ -362,7 +367,10 @@
     localStorage.setItem("cart", JSON.stringify(cart));
     renderCart();
 
-    sparkEffect(event.clientX, event.clientY);
+    // ✅ mobile safe spark
+    const x = event?.clientX || (event?.touches?.[0]?.clientX) || window.innerWidth/2;
+    const y = event?.clientY || (event?.touches?.[0]?.clientY) || window.innerHeight/2;
+    sparkEffect(x, y);
 
     if(wasEmpty){
       showToast("🔥 First item added! Cart ready ✅");
@@ -397,13 +405,13 @@
       cartDiv.innerHTML += `
         <div class="cart-item">
           <div>
-            <b>${item.name}</b><br>
-            <small style="opacity:0.7;">🏪 ${item.storeName}</small>
+            <b>${safeText(item.name)}</b><br>
+            <small style="opacity:0.7;">🏪 ${safeText(item.storeName)}</small>
           </div>
           <div class="qty">
-            <button onclick="changeQty('${item.name}','${item.storeName}',-1)">-</button>
+            <button onclick="changeQty('${item.name.replace(/'/g,"\\'")}','${item.storeName.replace(/'/g,"\\'")}',-1)">-</button>
             ${item.qty}
-            <button onclick="changeQty('${item.name}','${item.storeName}',1)">+</button>
+            <button onclick="changeQty('${item.name.replace(/'/g,"\\'")}','${item.storeName.replace(/'/g,"\\'")}',1)">+</button>
           </div>
         </div>
       `;
@@ -431,15 +439,14 @@
       menu.push({ id: doc.id, ...doc.data() });
     });
 
-    renderStore("MAKHAN", "Makhan Foods", menu);
-    renderStore("AB", "AB Foods", menu);
-    renderStore("AS", "AS Foods", menu);
-    renderStore("RAMCAFE", "RAM CAFE", menu);
-    // renderStore("MAULI", "MAULI RESTUARANT", menu);
+   // renderStore("AB", "AB Foods", menu);
     renderStore("NAGZIRA", "HOTEL NAGZIRA", menu);
+     renderStore("AB", "AB Foods", menu);
+    renderStore("RAMCAFE", "RAM CAFE", menu);
     renderStore("HARYANA", "HARYANA JALEBI", menu);
   });
 
+  // ✅ Auto slider scroll
   const slider = document.getElementById("bannerSlider");
   let index = 0;
 
@@ -453,13 +460,7 @@
       behavior: "smooth"
     });
   }, 2500);
-
 </script>
 
 </body>
 </html>
-
-
-
-
-
