@@ -1,6 +1,298 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SANGHX • Closed</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+    body{
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      background: radial-gradient(circle at top, #1a1a1a, #050505);
+      color:white;
+      overflow:hidden;
+      padding:20px;
+    }
+
+    /* glow */
+    .glow{
+      position:absolute;
+      width:520px;
+      height:520px;
+      background:#e23744;
+      filter: blur(180px);
+      opacity:0.22;
+      animation: floatGlow 4s ease-in-out infinite;
+    }
+
+    @keyframes floatGlow{
+      0%,100%{transform:translateY(0px);}
+      50%{transform:translateY(-20px);}
+    }
+
+    .card{
+      width:100%;
+      max-width:520px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 22px;
+      padding: 28px;
+      text-align:center;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.55);
+      position:relative;
+      z-index:2;
+      animation: pop 0.8s ease forwards;
+      transform: scale(0.95);
+      opacity:0;
+    }
+
+    @keyframes pop{
+      to{transform:scale(1);opacity:1;}
+    }
+
+    .brand{
+      font-size:46px;
+      font-weight:900;
+      letter-spacing:6px;
+      line-height:1;
+    }
+
+    .brand span{color:#e23744;}
+
+    .tagline{
+      margin-top:10px;
+      font-size:13px;
+      opacity:0.7;
+      letter-spacing:1.6px;
+    }
+
+    .closedText{
+      margin-top:18px;
+      font-size:15px;
+      opacity:0.92;
+      line-height:1.6;
+    }
+
+    .timer{
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap:12px;
+      margin-top:18px;
+    }
+
+    .box{
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius:18px;
+      padding:14px 10px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .box::before{
+      content:"";
+      position:absolute;
+      top:0;left:-60%;
+      width:60%;
+      height:100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent);
+      transform: skewX(-15deg);
+      animation: shine 2.4s infinite;
+    }
+
+    @keyframes shine{
+      0%{left:-60%;}
+      100%{left:140%;}
+    }
+
+    .num{
+      font-size:26px;
+      font-weight:800;
+    }
+
+    .label{
+      font-size:11px;
+      opacity:0.7;
+      letter-spacing:1px;
+      margin-top:2px;
+    }
+
+    .progressWrap{
+      margin-top:18px;
+      height:8px;
+      border-radius:999px;
+      background: rgba(255,255,255,0.12);
+      overflow:hidden;
+    }
+
+    .progress{
+      height:100%;
+      width:0%;
+      border-radius:999px;
+      background: linear-gradient(90deg, #ff7a18, #e23744);
+      transition: width 0.3s ease;
+    }
+
+    .btnRow{
+      display:flex;
+      gap:10px;
+      margin-top:18px;
+      flex-wrap:wrap;
+      justify-content:center;
+    }
+
+    .btn{
+      padding:12px 16px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.06);
+      color:white;
+      cursor:pointer;
+      font-weight:600;
+      text-decoration:none;
+      transition: 0.2s ease;
+    }
+
+    .btn:hover{
+      transform: translateY(-2px);
+      background: rgba(255,255,255,0.10);
+    }
+
+    .btn.primary{
+      background: linear-gradient(135deg, #e23744, #ff5a5f);
+      border:none;
+      box-shadow: 0 14px 30px rgba(226,55,68,0.25);
+    }
+
+    .footer{
+      margin-top:16px;
+      font-size:12px;
+      opacity:0.65;
+      letter-spacing:0.6px;
+    }
+
+    .fadeOut{
+      animation: fadeOut 0.6s ease forwards;
+    }
+
+    @keyframes fadeOut{
+      to{opacity:0; transform: scale(1.05); filter: blur(8px);}
+    }
+
+    @media(max-width:520px){
+      .timer{grid-template-columns: repeat(2, 1fr);}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="glow"></div>
+
+  <div class="card" id="card">
+    <div class="brand">SAN<span>GHX</span></div>
+    <div class="tagline">closed • launching soon</div>
+
+    <div class="closedText">
+      ⛔ We are currently <b>Closed</b><br>
+      ✅ Opening tomorrow at <b>10:00 AM</b><br>
+      Stay ready 😤🔥
+    </div>
+
+    <div class="timer">
+      <div class="box">
+        <div class="num" id="days">00</div>
+        <div class="label">DAYS</div>
+      </div>
+      <div class="box">
+        <div class="num" id="hours">00</div>
+        <div class="label">HOURS</div>
+      </div>
+      <div class="box">
+        <div class="num" id="minutes">00</div>
+        <div class="label">MIN</div>
+      </div>
+      <div class="box">
+        <div class="num" id="seconds">00</div>
+        <div class="label">SEC</div>
+      </div>
+    </div>
+
+    <div class="progressWrap">
+      <div class="progress" id="progress"></div>
+    </div>
+
+    <div class="btnRow">
+      <a class="btn" href="https://www.instagram.com/_sanghx" target="_blank">Follow Instagram</a>
+      <a class="btn primary" href="tel:+919322586177">Call Us</a>
+    </div>
+
+    <div class="footer">SANGHX FOODS • Sakoli</div>
+  </div>
+
+  <script>
+    // ✅ SET OPEN TIME: Tomorrow 10:00 AM (device time)
+    const now = new Date();
+    const openTime = new Date();
+    openTime.setDate(now.getDate() + 1);
+    openTime.setHours(10, 30, 0, 0);
+
+    // ✅ After opening, redirect to your real customer page
+    const OPEN_URL = "customer.html";
+
+    const card = document.getElementById("card");
+
+    const daysEl = document.getElementById("days");
+    const hoursEl = document.getElementById("hours");
+    const minutesEl = document.getElementById("minutes");
+    const secondsEl = document.getElementById("seconds");
+    const progressEl = document.getElementById("progress");
+
+    // total duration for progress
+    const totalMs = openTime - now;
+
+    function pad(n){ return String(n).padStart(2, "0"); }
+
+    function update(){
+      const current = new Date();
+      const diff = openTime - current;
+
+      if(diff <= 0){
+        card.classList.add("fadeOut");
+        setTimeout(()=> window.location.href = OPEN_URL, 650);
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      daysEl.textContent = pad(days);
+      hoursEl.textContent = pad(hours);
+      minutesEl.textContent = pad(minutes);
+      secondsEl.textContent = pad(seconds);
+
+      const passed = 1 - (diff / totalMs);
+      progressEl.style.width = Math.min(100, Math.max(0, passed * 100)) + "%";
+    }
+
+    update();
+    setInterval(update, 1000);
+  </script>
+</body>
+</html>
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>SANGHX</title>
@@ -200,3 +492,4 @@
 
 </body>
 </html>
+ -->
