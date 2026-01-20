@@ -250,10 +250,10 @@
 
   <div class="container">
     <h3>Menu</h3>
-<!-- 
+
     <div class="shop-title">HOTEL NAGZIRA</div>
     <b> Biryani & Chines</b>
-    <div class="food-scroll" id="store-NAGZIRA"></div> -->
+    <div class="food-scroll" id="store-NAGZIRA"></div> 
 
     <div class="shop-title">AB Foods</div>
     <b> Breakfast/(Nasta)</b>
@@ -262,8 +262,8 @@
     <!-- <div class="shop-title">RAM CAFE</div>
     <div class="food-scroll" id="store-RAMCAFE"></div> -->
 
-    <!-- <div class="shop-title">HARYANA JALEBI</div>
-    <div class="food-scroll" id="store-HARYANA"></div> -->
+     <div class="shop-title">HARYANA JALEBI</div>
+    <div class="food-scroll" id="store-HARYANA"></div> 
   </div>
 
   <div class="cart-bar" id="cartBar">
@@ -438,10 +438,10 @@
     let menu = [];
     snapshot.forEach((doc) => menu.push({ id: doc.id, ...doc.data() }));
 
-    // renderStore("NAGZIRA", "HOTEL NAGZIRA", menu);
+     renderStore("NAGZIRA", "HOTEL NAGZIRA", menu);
     renderStore("AB", "AB Foods", menu);
     // renderStore("RAMCAFE", "RAM CAFE", menu);
-    // renderStore("HARYANA", "HARYANA JALEBI", menu);
+     renderStore("HARYANA", "HARYANA JALEBI", menu);
   });
 
   // Auto slider
@@ -457,5 +457,6 @@
 
 </body>
 </html>
+
 
 
