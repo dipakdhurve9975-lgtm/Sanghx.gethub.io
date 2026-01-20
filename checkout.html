@@ -3,9 +3,9 @@
 <head>
   <title>SANGHX Checkout</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
-
     *{margin:0;padding:0;box-sizing:border-box}
     body{
       font-family:'Poppins',sans-serif;
@@ -38,17 +38,13 @@
       padding:12px;
       border:none;
       border-radius:12px;
-      font-weight:700;
+      font-weight:800;
       cursor:pointer;
       margin-top:10px;
       transition:0.2s;
     }
+    button:active{transform:scale(0.98);}
 
-    button:active{
-      transform:scale(0.98);
-    }
-
-    .btn-black{background:#111;color:white}
     .btn-wa{background:#25D366;color:white}
     .btn-back{background:#f2f2f2;color:#111}
 
@@ -62,15 +58,9 @@
     }
 
     .small{font-size:12px;opacity:0.7}
-
-    #locationStatus{
-      font-size:12px;
-      margin-top:6px;
-      text-align:center;
-      font-weight:600;
-    }
   </style>
 </head>
+
 <body>
 
   <div class="box">
@@ -90,38 +80,17 @@
       <option value="UPI">UPI</option>
     </select>
 
-    <!-- Location button -->
-    <button id="locBtn" class="btn-black" onclick="getLocation()">
-      📍 Share Live Location (Mandatory)
-    </button>
-
-    <!-- status text -->
-    <p id="locationStatus"></p>
-
-    <!-- WhatsApp button -->
-    <button id="sendBtn" class="btn-wa" onclick="sendWhatsAppOrder()" disabled style="opacity:0.5;cursor:not-allowed;">
-      Send Order on WhatsApp
-    </button>
-
-    <button class="btn-back" onclick="goBack()">⬅ Back to Menu</button>
+    <button class="btn-wa" onclick="sendWhatsAppOrder()">Send Order on WhatsApp</button>
+    <button class="btn-back" onclick="goBack()">⬅ Back</button>
   </div>
 
 <script>
   const DELIVERY_CHARGE = 0;
-
-  // ✅ Sakoli Center Location (approx)
-  // (You shared Sakoli location link, this is center point)
-  const SAKOLI_LAT = 21.0918;
-  const SAKOLI_LNG = 79.9847;
-
-  // ✅ Max Delivery Radius
-  const MAX_KM = 10;
-
-  let userLocation = "";
-  let locationAdded = false;
-  let serviceable = false;
-
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+  function safeText(str){
+    return String(str || "");
+  }
 
   function renderCheckout(){
     const div = document.getElementById("orderItems");
@@ -134,8 +103,9 @@
 
     div.innerHTML = "";
     cart.forEach(i=>{
-      div.innerHTML += `✅ <b>${i.name}</b> x${i.qty} = ₹${i.price*i.qty} <br>
-      <span class="small">🏪 ${i.storeName}</span><br><br>`;
+      const lineTotal = i.price * i.qty;
+      div.innerHTML += `✅ <b>${safeText(i.name)} (${safeText(i.variantLabel)})</b> x${i.qty} = ₹${lineTotal}<br>
+      <span class="small">🏪 ${safeText(i.storeName)}</span><br><br>`;
     });
 
     const subtotal = cart.reduce((t,i)=>t+i.price*i.qty,0);
@@ -143,119 +113,7 @@
     document.getElementById("totalAmount").innerText = total;
   }
 
-  // ✅ Haversine Formula (distance between 2 points)
-  function getDistanceKm(lat1, lon1, lat2, lon2){
-    const R = 6371; // km
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a =
-      Math.sin(dLat/2) * Math.sin(dLat/2) +
-      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-      Math.sin(dLon/2) * Math.sin(dLon/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    return R * c;
-  }
-
-  function disableWhatsApp(){
-    const sendBtn = document.getElementById("sendBtn");
-    sendBtn.disabled = true;
-    sendBtn.style.opacity = "0.5";
-    sendBtn.style.cursor = "not-allowed";
-  }
-
-  function enableWhatsApp(){
-    const sendBtn = document.getElementById("sendBtn");
-    sendBtn.disabled = false;
-    sendBtn.style.opacity = "1";
-    sendBtn.style.cursor = "pointer";
-  }
-
-  function getLocation() {
-    if (!navigator.geolocation) {
-      alert("Location not supported on this device");
-      return;
-    }
-
-    const locBtn = document.getElementById("locBtn");
-    const status = document.getElementById("locationStatus");
-
-    disableWhatsApp();
-    locationAdded = false;
-    serviceable = false;
-
-    status.style.color = "#111";
-    status.innerText = "⏳ Please wait... getting your live location...";
-
-    locBtn.innerText = "⏳ Getting Location...";
-    locBtn.style.background = "#111";
-    locBtn.disabled = true;
-
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
-
-        // Save google maps link
-        userLocation = `https://maps.google.com/?q=${lat},${lng}`;
-        locationAdded = true;
-
-        // ✅ Check distance
-        const dist = getDistanceKm(SAKOLI_LAT, SAKOLI_LNG, lat, lng);
-
-        if(dist <= MAX_KM){
-          serviceable = true;
-
-          status.style.color = "green";
-          status.innerText = `✅ Location Added! You are inside ${MAX_KM}km (Distance: ${dist.toFixed(1)}km)`;
-
-          locBtn.innerText = "✅ Location Added";
-          locBtn.style.background = "#25D366";
-          locBtn.style.color = "white";
-          locBtn.disabled = true;
-
-          enableWhatsApp();
-        } else {
-          serviceable = false;
-
-          status.style.color = "red";
-          status.innerText = `❌ Sorry! We deliver only within ${MAX_KM}km of Sakoli (You are ${dist.toFixed(1)}km away)`;
-
-          locBtn.innerText = "📍 Try Again";
-          locBtn.style.background = "#111";
-          locBtn.style.color = "white";
-          locBtn.disabled = false;
-
-          disableWhatsApp();
-        }
-      },
-      () => {
-        status.style.color = "red";
-        status.innerText = "❌ Location permission denied";
-
-        locBtn.innerText = "📍 Share Live Location (Mandatory)";
-        locBtn.style.background = "#111";
-        locBtn.disabled = false;
-
-        locationAdded = false;
-        serviceable = false;
-        userLocation = "";
-
-        disableWhatsApp();
-      }
-    );
-  }
-
-  function sendWhatsAppOrder() {
-    if (!locationAdded || userLocation === "") {
-      alert("📍 Please share live location first!");
-      return;
-    }
-
-    if(!serviceable){
-      alert("❌ Sorry! We are not available in your area.");
-      return;
-    }
-
+  function sendWhatsAppOrder(){
     const name = document.getElementById("custName").value.trim();
     const mobile = document.getElementById("custMobile").value.trim();
     const address = document.getElementById("custAddress").value.trim();
@@ -273,8 +131,7 @@
 
     const totalAmount = cart.reduce((sum, i) => sum + i.price * i.qty, 0) + DELIVERY_CHARGE;
 
-    // WhatsApp message
-    let itemsText = cart.map(i => `• ${i.name} x${i.qty} (₹${i.price}) - ${i.storeName}`).join("\n");
+    let itemsText = cart.map(i => `• ${i.name} (${i.variantLabel}) x${i.qty} = ₹${i.price*i.qty} - ${i.storeName}`).join("\n");
 
     const message = `
 🛒 New Order – SANGHX
@@ -289,21 +146,17 @@ ${itemsText}
 
 🚚 Delivery: ₹${DELIVERY_CHARGE}
 💰 Total: ₹${totalAmount}
-
-📍 Live Location:
-${userLocation}
 `;
 
     window.open(`https://wa.me/919322586177?text=${encodeURIComponent(message)}`, "_blank");
 
-    // Clear cart after order
+    // Clear cart
     localStorage.removeItem("cart");
     cart = [];
 
-    // Redirect back
-    setTimeout(() => {
+    setTimeout(()=>{
       window.location.href = "customer.html";
-    }, 600);
+    }, 800);
   }
 
   function goBack(){
@@ -315,4 +168,3 @@ ${userLocation}
 
 </body>
 </html>
-
