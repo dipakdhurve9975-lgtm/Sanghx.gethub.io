@@ -19,6 +19,7 @@
     color:white;
   }
 
+  /* Glow background */
   .glow{
     position:absolute;
     width:500px;
@@ -34,6 +35,7 @@
     50%{transform:translateY(-22px);}
   }
 
+  /* Main wrap */
   .wrap{
     text-align:center;
     position:relative;
@@ -47,6 +49,7 @@
     to{opacity:1;transform:scale(1);}
   }
 
+  /* Brand text */
   .brand{
     font-size:70px;
     font-weight:900;
@@ -60,6 +63,7 @@
     color:#e23744;
   }
 
+  /* Glitch / slice overlay */
   .brand::before,
   .brand::after{
     content:attr(data-text);
@@ -98,6 +102,7 @@
     100%{transform:translate(0,0);opacity:0;}
   }
 
+  /* Red slice line passing */
   .slice{
     position:absolute;
     left:-30%;
@@ -118,6 +123,7 @@
     100%{transform:translateY(-50%) rotate(-12deg) translateX(150%);opacity:0;}
   }
 
+  /* Loading bar */
   .bar{
     margin:22px auto 0;
     width:260px;
@@ -147,6 +153,7 @@
     opacity:0.65;
   }
 
+  /* Fade out */
   .fadeOut{
     animation: fadeOut 0.65s ease forwards;
   }
@@ -164,6 +171,7 @@
 <div class="wrap" id="wrap">
   <div class="slice"></div>
 
+  <!-- ✅ NAME ONLY -->
   <div class="brand" data-text="SANGHX">
     SAN<span>GHX</span>
   </div>
