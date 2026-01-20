@@ -20,7 +20,6 @@
       padding:20px;
     }
 
-    /* glow */
     .glow{
       position:absolute;
       width:520px;
@@ -201,7 +200,7 @@
 
     <div class="closedText">
       ⛔ We are currently <b>Closed</b><br>
-      ✅ Opening tomorrow at <b>10:00 AM</b><br>
+      ✅ Opening at <b>8:30 AM</b><br>
       Stay ready 😤🔥
     </div>
 
@@ -237,24 +236,26 @@
   </div>
 
   <script>
-    // ✅ SET OPEN TIME: Tomorrow 10:00 AM (device time)
+    // ✅ SET OPEN TIME: 8:30 AM (today, if passed then tomorrow)
     const now = new Date();
     const openTime = new Date();
-    openTime.setDate(now.getDate(0) + 0);
     openTime.setHours(8, 30, 0, 0);
 
-    // ✅ After opening, redirect to your real customer page
+    // if already passed today -> set tomorrow
+    if (now > openTime) {
+      openTime.setDate(openTime.getDate() + 1);
+    }
+
+    // redirect after open
     const OPEN_URL = "customer.html";
 
     const card = document.getElementById("card");
-
     const daysEl = document.getElementById("days");
     const hoursEl = document.getElementById("hours");
     const minutesEl = document.getElementById("minutes");
     const secondsEl = document.getElementById("seconds");
     const progressEl = document.getElementById("progress");
 
-    // total duration for progress
     const totalMs = openTime - now;
 
     function pad(n){ return String(n).padStart(2, "0"); }
@@ -288,7 +289,3 @@
   </script>
 </body>
 </html>
-
-
-
-
