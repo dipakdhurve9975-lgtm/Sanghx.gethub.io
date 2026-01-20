@@ -70,13 +70,79 @@
     }
     .whatsapp-float:hover { transform: scale(1.1); }
 
-    .container{padding:16px;padding-bottom:210px;}
+    .container{padding:16px;padding-bottom:190px;}
+
+    .topTools{
+      margin:12px 0 14px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .searchBox{
+      width:100%;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid #ddd;
+      outline:none;
+      font-size:14px;
+      background:white;
+      box-shadow:0 6px 14px rgba(0,0,0,0.06);
+    }
+
+    .chips{
+      display:flex;
+      gap:10px;
+      overflow-x:auto;
+      padding-bottom:6px;
+      scroll-behavior:smooth;
+    }
+    .chips::-webkit-scrollbar{display:none}
+
+    .chip{
+      flex:0 0 auto;
+      padding:8px 14px;
+      border-radius:999px;
+      font-size:13px;
+      font-weight:600;
+      border:1px solid #ddd;
+      background:white;
+      cursor:pointer;
+      transition:0.2s;
+      white-space:nowrap;
+    }
+    .chip.active{
+      background:#111;
+      color:white;
+      border-color:#111;
+    }
 
     .shop-title{
       font-size:18px;
-      font-weight:600;
-      margin:22px 0 10px;
+      font-weight:700;
+      margin:22px 0 8px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
     }
+
+    .storeMeta{
+      font-size:12px;
+      opacity:0.7;
+      margin-top:-4px;
+      margin-bottom:10px;
+    }
+
+    .storeBadge{
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      font-weight:800;
+      color:white;
+      background:#25D366;
+    }
+    .storeBadge.offline{ background:#ff3b3b; }
 
     .food-scroll{
       display:flex;
@@ -88,14 +154,20 @@
     .food-scroll::-webkit-scrollbar{display:none}
 
     .food-card{
-      min-width:170px;
+      min-width:180px;
       background:white;
       border-radius:16px;
       overflow:hidden;
       box-shadow:0 10px 25px rgba(0,0,0,0.08);
       transition:0.2s;
+      position:relative;
     }
     .food-card:hover{ transform:translateY(-3px); }
+
+    .food-card.offlineCard{
+      opacity:0.55;
+      filter:grayscale(0.2);
+    }
 
     .food-card img{
       width:100%;
@@ -107,14 +179,14 @@
     .food-info{padding:10px;}
     .food-info h4{
       font-size:14px;
-      font-weight:600;
-      margin-bottom:3px;
+      font-weight:700;
+      margin-bottom:4px;
     }
     .food-info p{
       font-size:13px;
       margin-bottom:8px;
       opacity:0.85;
-      font-weight:700;
+      font-weight:600;
     }
 
     .variantSelect{
@@ -123,10 +195,9 @@
       border-radius:12px;
       border:1px solid #ddd;
       outline:none;
+      margin-bottom:8px;
       font-size:13px;
       background:white;
-      cursor:pointer;
-      margin-bottom:8px;
     }
 
     button{
@@ -134,10 +205,15 @@
       background: linear-gradient(135deg, #ff7a18, #ff9f45);
       border:none;
       color:white;
-      padding:9px;
+      padding:8px;
       border-radius:12px;
-      font-weight:800;
+      font-weight:700;
       cursor:pointer;
+    }
+
+    button:disabled{
+      opacity:0.55;
+      cursor:not-allowed;
     }
 
     .cart-bar{
@@ -160,8 +236,14 @@
       display:flex;
       justify-content:space-between;
       align-items:center;
-      margin:6px 0;
+      margin:8px 0;
       gap:10px;
+    }
+
+    .cart-item small{
+      display:block;
+      opacity:0.7;
+      margin-top:2px;
     }
 
     .qty{display:flex;align-items:center;gap:6px;}
@@ -170,7 +252,6 @@
       padding:4px 10px;
       border-radius:8px;
       background:black;
-      font-weight:800;
     }
 
     .checkout-btn{
@@ -178,7 +259,7 @@
       width:100%;
       padding:12px;
       margin-top:10px;
-      font-weight:900;
+      font-weight:800;
       border-radius:14px;
       font-size:16px;
     }
@@ -212,7 +293,7 @@
       padding: 12px 18px;
       border-radius: 14px;
       font-size: 14px;
-      font-weight: 800;
+      font-weight: 700;
       opacity: 0;
       pointer-events: none;
       z-index: 99999;
@@ -222,6 +303,31 @@
     .toast.show{
       opacity: 1;
       transform: translateX(-50%) translateY(-10px);
+    }
+
+    .spark{
+      position: fixed;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #ffcc00, #ff7a18, transparent);
+      pointer-events: none;
+      opacity: 0;
+      z-index: 99999;
+    }
+    .spark.show{
+      animation: sparkPop 0.6s ease forwards;
+    }
+    @keyframes sparkPop{
+      0%{transform: scale(0.3); opacity: 0.9;}
+      60%{transform: scale(2.2); opacity: 0.6;}
+      100%{transform: scale(3.2); opacity: 0;}
+    }
+
+    .emptyNote{
+      opacity:0.7;
+      font-size:13px;
+      padding:8px 2px;
     }
   </style>
 </head>
@@ -249,21 +355,14 @@
   </div>
 
   <div class="container">
+    <div class="topTools">
+      <input id="searchInput" class="searchBox" placeholder="Search food or store...">
+      <div id="categoryChips" class="chips"></div>
+    </div>
+
     <h3>Menu</h3>
 
-    <div class="shop-title">HOTEL NAGZIRA</div>
-    <b> Biryani & Chines</b>
-    <div class="food-scroll" id="store-NAGZIRA"></div> 
-
-    <!-- <div class="shop-title">AB Foods</div>
-    <b> Breakfast/(Nasta)</b>
-    <div class="food-scroll" id="store-AB"></div> -->
-
-    <!-- <div class="shop-title">RAM CAFE</div>
-    <div class="food-scroll" id="store-RAMCAFE"></div> -->
-
-     <div class="shop-title">HARYANA JALEBI</div>
-    <div class="food-scroll" id="store-HARYANA"></div> 
+    <div id="storesWrap"></div>
   </div>
 
   <div class="cart-bar" id="cartBar">
@@ -275,6 +374,7 @@
   </div>
 
   <div id="toast" class="toast"></div>
+  <div id="spark" class="spark"></div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -293,100 +393,204 @@
   const db = getFirestore(app);
 
   const DELIVERY_CHARGE = 0;
+
+  let STORES = [];
+  let MENU = [];
+  let ACTIVE_CATEGORY = "All";
+  let SEARCH = "";
+
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-  function showToast(msg){
-    const toast = document.getElementById("toast");
-    toast.innerText = msg;
-    toast.classList.add("show");
-    setTimeout(()=> toast.classList.remove("show"), 1500);
-  }
+  const storesWrap = document.getElementById("storesWrap");
+  const categoryChips = document.getElementById("categoryChips");
+  const searchInput = document.getElementById("searchInput");
 
   function safeText(str){
     return String(str || "").replace(/</g,"&lt;").replace(/>/g,"&gt;");
   }
 
-  function renderStore(containerId, storeName, menu){
-    const div = document.getElementById("store-" + containerId);
-    if(!div) return;
+  function showToast(msg){
+    const toast = document.getElementById("toast");
+    toast.innerText = msg;
+    toast.classList.add("show");
+    setTimeout(()=> toast.classList.remove("show"), 1600);
+  }
 
-    div.innerHTML = "";
+  function sparkEffect(x, y){
+    const spark = document.getElementById("spark");
+    spark.style.left = (x - 9) + "px";
+    spark.style.top = (y - 9) + "px";
+    spark.classList.remove("show");
+    void spark.offsetWidth;
+    spark.classList.add("show");
+  }
 
-    const filtered = menu
-      .filter(item => item.storeName === storeName)
-      .sort((a,b)=> (a.priority || 9999) - (b.priority || 9999));
+  function getCategories(){
+    const set = new Set();
+    MENU.forEach(m=>{
+      if(m.category) set.add(m.category);
+    });
+    return ["All", ...Array.from(set)];
+  }
 
-    if(filtered.length === 0){
-      div.innerHTML = `<p style="opacity:0.6;font-size:13px;">No items added yet</p>`;
-      return;
-    }
+  function renderCategoryChips(){
+    const cats = getCategories();
+    categoryChips.innerHTML = "";
 
-    filtered.forEach(item=>{
-      const card = document.createElement("div");
-      card.className = "food-card";
-
-      const variants = Array.isArray(item.variants) ? item.variants : [];
-      const defaultVar = variants[0] || { label:"Default", price:item.price || 0 };
-
-      card.innerHTML = `
-        <img src="${item.img || ""}" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
-        <div class="food-info">
-          <h4>${safeText(item.name)}</h4>
-          <p class="priceText">₹${defaultVar.price}</p>
-
-          <select class="variantSelect">
-            ${variants.map((v,i)=> `<option value="${i}">${safeText(v.label)} - ₹${v.price}</option>`).join("")}
-          </select>
-
-          <button class="addBtn">Add</button>
-        </div>
-      `;
-
-      const select = card.querySelector(".variantSelect");
-      const priceText = card.querySelector(".priceText");
-
-      select.addEventListener("change", ()=>{
-        const v = variants[Number(select.value)];
-        if(v) priceText.innerText = `₹${v.price}`;
-      });
-
-      card.querySelector(".addBtn").addEventListener("click", ()=>{
-        const v = variants[Number(select.value)];
-        if(!v){ alert("Variant missing"); return; }
-
-        addItem(item.id, item.name, item.storeName, v.label, v.price);
-      });
-
-      div.appendChild(card);
+    cats.forEach(c=>{
+      const btn = document.createElement("button");
+      btn.className = "chip" + (ACTIVE_CATEGORY === c ? " active" : "");
+      btn.innerText = c;
+      btn.onclick = ()=>{
+        ACTIVE_CATEGORY = c;
+        renderCategoryChips();
+        renderStores();
+      };
+      categoryChips.appendChild(btn);
     });
   }
 
-  function addItem(id, name, storeName, variantLabel, price){
-    const found = cart.find(i =>
-      i.id === id &&
-      i.storeName === storeName &&
-      i.variantLabel === variantLabel
-    );
+  function menuMatchesFilters(item, store){
+    const q = SEARCH.toLowerCase().trim();
+
+    const matchSearch =
+      !q ||
+      (item.name || "").toLowerCase().includes(q) ||
+      (store.name || "").toLowerCase().includes(q);
+
+    const matchCat =
+      ACTIVE_CATEGORY === "All" ||
+      (item.category || "Other") === ACTIVE_CATEGORY;
+
+    return matchSearch && matchCat;
+  }
+
+  function renderStores(){
+    storesWrap.innerHTML = "";
+
+    if(STORES.length === 0){
+      storesWrap.innerHTML = `<div class="emptyNote">No stores added yet.</div>`;
+      return;
+    }
+
+    STORES.forEach(store=>{
+      const storeItems = MENU
+        .filter(m => m.storeId === store.id)
+        .sort((a,b)=>(a.priority||9999)-(b.priority||9999))
+        .filter(m => menuMatchesFilters(m, store));
+
+      // Store Header
+      const storeHeader = document.createElement("div");
+
+      storeHeader.innerHTML = `
+        <div class="shop-title">
+          <div>${safeText(store.name || "STORE")}</div>
+          <div class="storeBadge ${store.online ? "" : "offline"}">
+            ${store.online ? "Online" : "Offline"}
+          </div>
+        </div>
+        <div class="storeMeta">
+          ${store.online ? "🟢 Open now" : "🔴 Store closed"} • 🕒 ${safeText(store.openTime||"--:--")} - ${safeText(store.closeTime||"--:--")}
+        </div>
+      `;
+
+      storesWrap.appendChild(storeHeader);
+
+      // Items row
+      const row = document.createElement("div");
+      row.className = "food-scroll";
+
+      if(storeItems.length === 0){
+        row.innerHTML = `<div class="emptyNote">No items found</div>`;
+        storesWrap.appendChild(row);
+        return;
+      }
+
+      storeItems.forEach(item=>{
+        const variants = Array.isArray(item.variants) ? item.variants : [];
+        const firstVar = variants[0] || { label:"Default", price:0 };
+
+        const card = document.createElement("div");
+        card.className = "food-card" + (store.online ? "" : " offlineCard");
+
+        card.innerHTML = `
+          <img src="${item.img || ""}" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
+          <div class="food-info">
+            <h4>${safeText(item.name)}</h4>
+            <select class="variantSelect">
+              ${variants.map(v=>`<option value="${safeText(v.label)}" data-price="${v.price}">${safeText(v.label)} • ₹${v.price}</option>`).join("")}
+            </select>
+            <p>₹<span class="priceText">${firstVar.price}</span></p>
+            <button class="addBtn" ${store.online ? "" : "disabled"}>${store.online ? "Add" : "Closed"}</button>
+          </div>
+        `;
+
+        const select = card.querySelector(".variantSelect");
+        const priceText = card.querySelector(".priceText");
+        const addBtn = card.querySelector(".addBtn");
+
+        select.addEventListener("change", ()=>{
+          const opt = select.options[select.selectedIndex];
+          priceText.innerText = opt.getAttribute("data-price") || "0";
+        });
+
+        addBtn.addEventListener("click", (e)=>{
+          if(!store.online){
+            showToast("Store is offline 🔴");
+            return;
+          }
+
+          const opt = select.options[select.selectedIndex];
+          const vLabel = opt.value;
+          const vPrice = Number(opt.getAttribute("data-price")) || 0;
+
+          addItem(item, store, vLabel, vPrice, e);
+        });
+
+        row.appendChild(card);
+      });
+
+      storesWrap.appendChild(row);
+    });
+  }
+
+  function addItem(item, store, variantLabel, variantPrice, event){
+    const wasEmpty = cart.length === 0;
+
+    const key = `${item.id || item.name}__${store.id}__${variantLabel}`;
+    const found = cart.find(i => i.key === key);
 
     if(found) found.qty++;
-    else cart.push({ id, name, storeName, variantLabel, price, qty:1 });
+    else{
+      cart.push({
+        key,
+        name: item.name,
+        storeName: store.name,
+        storeId: store.id,
+        variantLabel,
+        price: variantPrice,
+        qty: 1
+      });
+    }
 
     localStorage.setItem("cart", JSON.stringify(cart));
     renderCart();
-    showToast(`${name} (${variantLabel}) added ✅`);
+
+    const x = event?.clientX || window.innerWidth/2;
+    const y = event?.clientY || window.innerHeight/2;
+    sparkEffect(x, y);
+
+    if(wasEmpty) showToast("🔥 First item added! Cart ready ✅");
+    else showToast(`${item.name} (${variantLabel}) added ✅`);
   }
 
-  window.changeQty = function(id, storeName, variantLabel, delta){
-    const item = cart.find(i =>
-      i.id === id &&
-      i.storeName === storeName &&
-      i.variantLabel === variantLabel
-    );
+  window.changeQty = function(key, delta){
+    const item = cart.find(i => i.key === key);
     if(!item) return;
 
     item.qty += delta;
     if(item.qty <= 0){
-      cart = cart.filter(i => !(i.id === id && i.storeName === storeName && i.variantLabel === variantLabel));
+      cart = cart.filter(i => i.key !== key);
     }
 
     localStorage.setItem("cart", JSON.stringify(cart));
@@ -406,19 +610,19 @@
       cartDiv.innerHTML += `
         <div class="cart-item">
           <div>
-            <b>${safeText(item.name)} (${safeText(item.variantLabel)})</b><br>
-            <small style="opacity:0.7;">🏪 ${safeText(item.storeName)}</small>
+            <b>${safeText(item.name)} (${safeText(item.variantLabel)})</b>
+            <small>🏪 ${safeText(item.storeName)} • ₹${item.price} each</small>
           </div>
           <div class="qty">
-            <button onclick="changeQty('${item.id}','${item.storeName.replace(/'/g,"\\'")}','${item.variantLabel.replace(/'/g,"\\'")}',-1)">-</button>
+            <button onclick="changeQty('${item.key}',-1)">-</button>
             ${item.qty}
-            <button onclick="changeQty('${item.id}','${item.storeName.replace(/'/g,"\\'")}','${item.variantLabel.replace(/'/g,"\\'")}',1)">+</button>
+            <button onclick="changeQty('${item.key}',1)">+</button>
           </div>
         </div>
       `;
     });
 
-    let subtotal = cart.reduce((t,i)=>t+i.price*i.qty,0);
+    let subtotal = cart.reduce((t,i)=>t + (i.price*i.qty),0);
     document.getElementById("subtotal").innerText = subtotal;
     document.getElementById("delivery").innerText = cart.length ? DELIVERY_CHARGE : 0;
     document.getElementById("total").innerText = subtotal + (cart.length ? DELIVERY_CHARGE : 0);
@@ -434,30 +638,46 @@
 
   renderCart();
 
-  onSnapshot(collection(db, "menu"), (snapshot) => {
-    let menu = [];
-    snapshot.forEach((doc) => menu.push({ id: doc.id, ...doc.data() }));
-
-     renderStore("NAGZIRA", "HOTEL NAGZIRA", menu);
-    // renderStore("AB", "AB Foods", menu);
-    // renderStore("RAMCAFE", "RAM CAFE", menu);
-     renderStore("HARYANA", "HARYANA JALEBI", menu);
+  // ===== FIRESTORE LISTENERS =====
+  onSnapshot(collection(db, "stores"), (snapshot)=>{
+    STORES = [];
+    snapshot.forEach(d => STORES.push({ id:d.id, ...d.data() }));
+    STORES.sort((a,b)=>(a.order||9999)-(b.order||9999));
+    renderStores();
   });
 
-  // Auto slider
+  onSnapshot(collection(db, "menu"), (snapshot)=>{
+    MENU = [];
+    snapshot.forEach((doc) => {
+      MENU.push({ id: doc.id, ...doc.data() });
+    });
+
+    renderCategoryChips();
+    renderStores();
+  });
+
+  // Search
+  searchInput.addEventListener("input", ()=>{
+    SEARCH = searchInput.value || "";
+    renderStores();
+  });
+
+  // Slider
   const slider = document.getElementById("bannerSlider");
   let index = 0;
+
   setInterval(()=>{
     const slides = slider.querySelectorAll("img");
     if(slides.length === 0) return;
+
     index = (index + 1) % slides.length;
-    slider.scrollTo({ left: slides[index].offsetLeft, behavior:"smooth" });
+    slider.scrollTo({
+      left: slides[index].offsetLeft,
+      behavior: "smooth"
+    });
   }, 2500);
+
 </script>
 
 </body>
 </html>
-
-
-
-
