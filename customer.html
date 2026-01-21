@@ -10,7 +10,7 @@
 
 <style>
   :root {
-    --primary: #FF4B3A; /* Vibrant Orange-Red */
+    --primary: #FF4B3A;
     --dark: #121212;
     --gray: #F5F5F8;
     --white: #ffffff;
@@ -35,7 +35,7 @@
   }
   .logo { font-size: 24px; font-weight: 800; color: var(--dark); letter-spacing: -0.5px; }
   .logo span { color: var(--primary); }
-  
+
   /* --- TICKER --- */
   .ticker-wrap {
     background: var(--dark); color: white; overflow: hidden; height: 34px; display: flex; align-items: center;
@@ -48,20 +48,31 @@
 
   /* --- HERO BANNER (AUTO SLIDER) --- */
   .hero-banner {
-    width: 100%; height: 180px; border-radius: 24px; margin-bottom: 20px; 
-    overflow: hidden; position: relative; box-shadow: var(--shadow-soft);
+    width: 100%;
+    height: 180px;
+    border-radius: 24px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: var(--shadow-soft);
+    background: #eee;
   }
-  .hero-img { 
-    width: 100%; 
-    height: 100%; 
-    object-fit: cover; 
-    animation: zoom 10s infinite alternate; 
-    transition: opacity 0.3s ease-in-out;
+
+  .hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    animation: zoom 10s infinite alternate;
+    transition: opacity 0.35s ease-in-out;
   }
-  @keyframes zoom { from{transform:scale(1)} to{transform:scale(1.1)} }
+
+  @keyframes zoom { from{transform:scale(1)} to{transform:scale(1.08)} }
+
   .hero-overlay {
-    position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-    display: flex; flex-direction: column; justify-content: flex-end; padding: 20px; color: white;
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 20px; color: white;
   }
 
   /* --- SEARCH & CHIPS --- */
@@ -90,7 +101,7 @@
   .status-badge.offline { background: #ff7675; opacity: 0.8; }
 
   .h-scroll { display: flex; gap: 15px; overflow-x: auto; padding: 5px 5px 25px; scrollbar-width: none; }
-  
+
   .card {
     min-width: 210px; background: white; border-radius: 24px; padding: 10px;
     box-shadow: 0 8px 20px rgba(0,0,0,0.06); position: relative; transition: 0.2s;
@@ -99,15 +110,15 @@
   .card.offline { filter: grayscale(1); opacity: 0.7; pointer-events: none; }
 
   .card img { width: 100%; height: 130px; object-fit: cover; border-radius: 18px; background: #eee; margin-bottom: 10px; }
-  
+
   .card-body { padding: 0 5px 5px; }
   .card-title { font-size: 16px; font-weight: 700; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  
+
   .variant-select {
     width: 100%; padding: 8px; border-radius: 10px; border: 1px solid #eee;
     font-size: 12px; margin-bottom: 10px; background: #f9f9f9; outline: none; font-weight: 500;
   }
-  
+
   .card-footer { display: flex; justify-content: space-between; align-items: center; }
   .price { font-size: 17px; font-weight: 800; color: var(--dark); }
   .add-btn {
@@ -150,16 +161,13 @@
   .modal-overlay.show .modal-card { transform: translateY(0); }
 
   /* AI Special Style */
-  .ai-card {
-    background: rgba(255, 255, 255, 0.95);
-    border-top: 1px solid rgba(255,255,255,0.5);
-  }
+  .ai-card { background: rgba(255, 255, 255, 0.95); border-top: 1px solid rgba(255,255,255,0.5); }
   .ai-bubble {
     background: #f0f0f5; padding: 16px; border-radius: 18px 18px 18px 4px;
     margin: 15px 0; font-size: 15px; line-height: 1.5; color: #333; font-weight: 500;
     box-shadow: inset 0 2px 5px rgba(0,0,0,0.03);
   }
-  
+
   .input-group { display: flex; gap: 10px; margin-top: 10px; }
   .input-group input {
     flex: 1; padding: 14px 18px; border-radius: 14px; border: 1px solid #ddd; outline: none; font-size: 15px;
@@ -172,7 +180,7 @@
   .cart-list { overflow-y: auto; flex: 1; margin-bottom: 15px; }
   .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f4f4f4; }
   .qty-ctrl { display: flex; align-items: center; gap: 12px; background: #f4f4f8; padding: 6px 12px; border-radius: 12px; font-weight: 700; }
-  
+
   .bill-box { background: #f9f9fb; padding: 15px; border-radius: 18px; border: 1px dashed #ddd; margin-bottom: 15px; }
   .bill-row { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 14px; color: #666; }
   .bill-total { display: flex; justify-content: space-between; margin-top: 10px; font-size: 18px; font-weight: 800; color: var(--dark); }
@@ -202,7 +210,6 @@
   .spark.active { animation: pop 0.6s ease-out; }
   @keyframes pop { 0%{transform:scale(0); opacity:1;} 50%{opacity:1} 100%{transform:scale(4); opacity:0;} }
   @keyframes fadeInUp { from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);} }
-
 </style>
 </head>
 
@@ -216,15 +223,16 @@
   <div class="ticker-wrap">
     <div class="ticker">
       <span>⚡ SANGHX = fast • local • savage 😈🔥</span>
-      <span>⚡ आज काय खायचं? AI ला विचार भावा 😭😂</span>
+      <span>⚡ आज काय खायचं? BRO ला विचार भावा 😭😂</span>
       <span>⚡ आयुष्यात पैशापेक्षा विश्वास जास्त महत्त्वाचा आहे भावा ❤️</span>
     </div>
   </div>
 
   <div class="container">
-    <!-- HERO AUTO SLIDER -->
-    <div class="hero-banner" id="heroSlider">
-      <img id="heroImg" src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=800&auto=format&fit=crop" class="hero-img">
+
+    <!-- HERO AUTO SLIDER (YOUR IMAGES) -->
+    <div class="hero-banner">
+      <img id="heroImg" src="2.png" class="hero-img" alt="SANGHX Banner">
       <div class="hero-overlay">
         <h2 style="font-weight:800; font-size:28px; line-height:1;">Delicious<br>Deals 50% OFF</h2>
       </div>
@@ -234,7 +242,7 @@
       <i class='bx bx-search search-icon'></i>
       <input class="search-box" id="searchInput" placeholder="Search biryani, pizza, rolls...">
     </div>
-    
+
     <div class="chips" id="categoryChips">
       <div class="chip active">All</div>
     </div>
@@ -243,7 +251,7 @@
   </div>
 
   <div class="fab-cart" id="miniCartBtn">
-    <i class='bx bxs-shopping-bag' style="font-size:20px;"></i> 
+    <i class='bx bxs-shopping-bag' style="font-size:20px;"></i>
     <span id="cartCount">0</span>
   </div>
 
@@ -255,15 +263,15 @@
         <h2 style="font-weight:800;">Your Cart 🛒</h2>
         <i class='bx bx-x' style="font-size:28px; padding:8px; background:#f4f4f8; border-radius:50%; cursor:pointer;" id="closeCartBtn"></i>
       </div>
-      
+
       <div class="cart-list" id="cartItems"></div>
-      
+
       <div class="bill-box">
         <div class="bill-row"><span>Subtotal</span> <span id="subtotal">₹0</span></div>
         <div class="bill-row"><span>Delivery</span> <span>₹10</span></div>
         <div class="bill-total"><span>Total</span> <span id="total">₹0</span></div>
       </div>
-      
+
       <button class="checkout-btn" id="checkoutBtn">Checkout Now <i class='bx bx-right-arrow-alt'></i></button>
     </div>
   </div>
@@ -274,7 +282,7 @@
         <div style="display:flex; align-items:center; gap:12px;">
           <div style="width:45px; height:45px; background:var(--dark); color:white; border-radius:50%; display:flex; justify-content:center; align-items:center; font-size:24px;"><i class='bx bx-bot'></i></div>
           <div>
-            <b style="display:block; font-size:16px;">BroAI</b>
+            <b style="display:block; font-size:16px;">BRO AI</b>
             <small style="color:var(--primary); font-weight:700; font-size:11px;">MARATHI MODE 🇮🇳</small>
           </div>
         </div>
@@ -306,7 +314,6 @@
   let STORES = [], MENU = [], ACTIVE_CATEGORY = "All", SEARCH = "";
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-  // Elements
   const els = {
     stores: document.getElementById("storesWrap"),
     chips: document.getElementById("categoryChips"),
@@ -321,40 +328,33 @@
     spark: document.getElementById("spark")
   };
 
-  // --- HERO AUTO SLIDER ---
-  const heroImages = [
-    "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1604908176997-125f25cc500f?q=80&w=800&auto=format&fit=crop"
-  ];
-
+  // ✅ HERO AUTO SLIDER (YOUR LOCAL IMAGES)
+  const heroImages = ["2.png", "order.png", "new.png"];
   let heroIndex = 0;
   const heroImgEl = document.getElementById("heroImg");
 
   setInterval(() => {
     heroIndex = (heroIndex + 1) % heroImages.length;
-
     heroImgEl.style.opacity = "0";
     setTimeout(() => {
       heroImgEl.src = heroImages[heroIndex];
       heroImgEl.style.opacity = "1";
     }, 250);
-  }, 3000);
+  }, 2500);
 
-  // --- 1. VOICE ENGINE (Hindi/Marathi Fix) ---
+  // --- VOICE ENGINE ---
   let selectedVoice = null;
   function loadVoices() {
     const voices = window.speechSynthesis.getVoices();
-    selectedVoice = voices.find(v => v.lang.includes('hi-IN')) || 
-                    voices.find(v => v.lang.includes('mr-IN')) || 
-                    voices.find(v => v.lang.includes('en-IN')) || 
+    selectedVoice = voices.find(v => v.lang.includes('hi-IN')) ||
+                    voices.find(v => v.lang.includes('mr-IN')) ||
+                    voices.find(v => v.lang.includes('en-IN')) ||
                     voices[0];
   }
   if (window.speechSynthesis.onvoiceschanged !== undefined) {
     window.speechSynthesis.onvoiceschanged = loadVoices;
   }
-  loadVoices(); 
+  loadVoices();
 
   function speak(text) {
     if (!('speechSynthesis' in window)) return;
@@ -365,12 +365,11 @@
     window.speechSynthesis.speak(u);
   }
 
-  // --- 2. RENDER STORES & MENU ---
   function safe(str) { return String(str||"").replace(/</g,"&lt;"); }
 
   function renderCategoryChips() {
     const cats = ["All", ...new Set(MENU.map(m => m.category).filter(Boolean))];
-    els.chips.innerHTML = cats.map(c => 
+    els.chips.innerHTML = cats.map(c =>
       `<div class="chip ${ACTIVE_CATEGORY===c?'active':''}" onclick="setCat('${c}')">${c}</div>`
     ).join("");
   }
@@ -381,13 +380,13 @@
     if(STORES.length === 0) { els.stores.innerHTML = "<div style='text-align:center;padding:40px;color:#aaa'>Loading Stores...</div>"; return; }
 
     STORES.forEach(store => {
-      const items = MENU.filter(m => 
+      const items = MENU.filter(m =>
         (m.storeName === store.name) &&
         (ACTIVE_CATEGORY==="All" || m.category===ACTIVE_CATEGORY) &&
         (m.name.toLowerCase().includes(SEARCH) || store.name.toLowerCase().includes(SEARCH))
       );
 
-      if(items.length === 0 && SEARCH) return; 
+      if(items.length === 0 && SEARCH) return;
 
       const section = document.createElement("div");
       section.className = "shop-section";
@@ -400,19 +399,19 @@
         </div>
         <div class="h-scroll" id="list-${store.id}"></div>
       `;
-      
+
       const list = section.querySelector(".h-scroll");
       if(items.length === 0) list.innerHTML = "<div style='font-size:13px;color:#aaa;padding:10px;'>No items found here</div>";
-      
+
       items.forEach(item => {
         const variants = item.variants || [{label:"Regular", price:item.price}];
         const div = document.createElement("div");
         div.className = `card ${store.isOnline?'':'offline'}`;
-        
+
         let opts = variants.map((v,i) => `<option value="${i}">${v.label} - ₹${v.price}</option>`).join('');
 
         div.innerHTML = `
-          <img src="${item.img}" onerror="this.src='https://via.placeholder.com/150'">
+          <img src="${item.img}" onerror="this.src='2.png'">
           <div class="card-body">
             <div class="card-title">${safe(item.name)}</div>
             <select class="variant-select">${opts}</select>
@@ -422,31 +421,30 @@
             </div>
           </div>
         `;
-        
+
         const sel = div.querySelector("select");
         const pVal = div.querySelector(".p-val");
         sel.onchange = () => pVal.innerText = variants[sel.value].price;
-        
+
         div.querySelector(".add-btn").onclick = (e) => {
           if(!store.isOnline) return;
           const v = variants[sel.value];
           addToCart(item, store.name, v.label, v.price);
           animateSpark(e.clientX, e.clientY);
         };
-        
+
         list.appendChild(div);
       });
       els.stores.appendChild(section);
     });
   }
 
-  // --- 3. CART SYSTEM ---
   function addToCart(item, storeName, variant, price) {
     const key = `${item.id}-${variant}`;
     const exist = cart.find(x => x.key === key);
     if(exist) exist.qty++;
     else cart.push({ key, id:item.id, name:item.name, storeName, variant, price, qty:1 });
-    
+
     saveCart();
     speak(`${item.name} added`);
     showToast(`Added ${item.name}`);
@@ -490,8 +488,7 @@
     document.getElementById("total").innerText = `₹${sub + (cart.length?10:0)}`;
   }
 
-  // --- 4. BroAI BRAIN ---
-  function broAIReply(msg) {
+  function broReply(msg) {
     msg = msg.toLowerCase();
     if(msg.includes('bhuk') || msg.includes('hungry')) return "भूक लागलीये? मग नुसतं बघत बसू नकोस 😭🔥 Jalebi + Roll combo टाक cart मध्ये!";
     if(msg.includes('recommend') || msg.includes('best')) return "Chicken Roll try कर… कारण तुझं आयुष्यही गोड आणि spicy दोन्ही आहे 😂🔥";
@@ -503,22 +500,21 @@
   document.getElementById("aiSendBtn").onclick = () => {
     const txt = els.aiInput.value.trim();
     if(!txt) return;
-    const ans = broAIReply(txt);
+    const ans = broReply(txt);
     els.aiLine.innerText = ans;
     speak(ans);
     els.aiInput.value = "";
   };
 
-  // --- 5. EVENTS ---
   els.search.oninput = (e) => { SEARCH = e.target.value.toLowerCase(); renderStores(); };
-  
+
   els.miniCart.onclick = () => els.cartModal.classList.add("show");
   document.getElementById("closeCartBtn").onclick = () => els.cartModal.classList.remove("show");
   document.getElementById("checkoutBtn").onclick = () => location.href = "checkout.html";
-  
+
   document.getElementById("aiBtn").onclick = () => {
     els.aiModal.classList.add("show");
-    speak("भावा, मी BroAI आहे. काय ऑर्डर करायचं?");
+    speak("भावा, मी BRO आहे. काय ऑर्डर करायचं?");
   };
   document.getElementById("aiCloseBtn").onclick = () => els.aiModal.classList.remove("show");
 
@@ -527,22 +523,23 @@
     els.toast.classList.add("show");
     setTimeout(() => els.toast.classList.remove("show"), 2000);
   }
-  
+
   function animateSpark(x, y) {
     els.spark.style.left = (x-10)+"px"; els.spark.style.top = (y-10)+"px";
     els.spark.classList.remove("active");
-    void els.spark.offsetWidth; 
+    void els.spark.offsetWidth;
     els.spark.classList.add("active");
   }
 
-  // --- 6. FIRESTORE SYNC ---
   onSnapshot(collection(db, "stores"), sn => {
     STORES = []; sn.forEach(d => STORES.push({id:d.id, ...d.data()}));
     renderStores();
   });
+
   onSnapshot(collection(db, "menu"), sn => {
     MENU = []; sn.forEach(d => MENU.push({id:d.id, ...d.data()}));
-    renderCategoryChips(); renderStores();
+    renderCategoryChips();
+    renderStores();
   });
 
   renderCart();
