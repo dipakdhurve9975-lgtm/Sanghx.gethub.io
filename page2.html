@@ -3,108 +3,234 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SANGHX</title>
+  <title>SANGHX • Select Role</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 
   <style>
-    *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
-    body{
-      min-height:100vh;
-      background:linear-gradient(135deg,#fff7f5,#ffe9e5);
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      padding:18px;
+    :root {
+      /* Food Palette */
+      --bg-color: #121212; /* Deep Charcoal */
+      --card-bg: rgba(30, 30, 30, 0.6);
+      
+      /* The "Appetite" Gradients */
+      --food-primary: linear-gradient(135deg, #FF416C 0%, #FF4B2B 100%); /* Hot Red/Orange */
+      --food-accent: #FFB75E; /* Cheese/Gold */
+      
+      --text-white: #ffffff;
+      --text-gray: #b0b0b0;
+      
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --shadow-color: rgba(255, 75, 43, 0.4); /* Red Glow */
     }
 
-    .card{
-      width:100%;
-      max-width:420px;
-      background:white;
-      border-radius:20px;
-      padding:22px;
-      box-shadow:0 12px 30px rgba(0,0,0,0.08);
-      text-align:center;
-      animation: fadeIn 0.6s ease;
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Outfit', sans-serif; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: var(--bg-color);
+      /* Subtle mesh pattern for texture */
+      background-image: 
+        radial-gradient(at 0% 0%, hsla(353,100%,45%,0.2) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, hsla(34,100%,48%,0.2) 0px, transparent 50%);
+      padding: 20px;
+      overflow: hidden;
+      color: var(--text-white);
     }
 
-    @keyframes fadeIn{
-      from{opacity:0; transform: translateY(20px);}
-      to{opacity:1; transform: translateY(0px);}
+    /* --- Ambient "Heat" Blobs --- */
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      z-index: 0;
+      animation: pulseHeat 8s infinite alternate ease-in-out;
+    }
+    .blob-1 { 
+      width: 350px; height: 350px; 
+      background: #FF416C; /* Red */
+      top: -100px; left: -50px; opacity: 0.3; 
+    }
+    .blob-2 { 
+      width: 400px; height: 400px; 
+      background: #FFB75E; /* Orange/Yellow */
+      bottom: -100px; right: -80px; opacity: 0.25; 
+      animation-delay: -4s;
     }
 
-    .logo{
-      font-size:34px;
-      font-weight:800;
-      letter-spacing:2px;
-      color:#e23744;
-      margin-bottom:8px;
+    @keyframes pulseHeat { 
+      0% { transform: scale(1) translate(0,0); } 
+      100% { transform: scale(1.1) translate(20px, -20px); } 
     }
 
-    .greeting{
-      font-size:16px;
-      font-weight:600;
-      margin-bottom:6px;
+    /* --- The Frosted Menu Card --- */
+    .card {
+      position: relative;
+      width: 100%;
+      max-width: 400px;
+      background: var(--card-bg);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      border: 1px solid var(--glass-border);
+      border-top: 1px solid rgba(255,255,255,0.2);
+      border-radius: 32px;
+      padding: 45px 30px;
+      text-align: center;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+      z-index: 10;
+      transform: translateY(30px);
+      animation: menuSlideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
     }
 
-    .description{
-      font-size:14px;
-      opacity:0.8;
-      margin-bottom:14px;
-      line-height:1.5;
+    @keyframes menuSlideUp { to { transform: translateY(0); opacity: 1; } }
+
+    /* --- Tasty Typography --- */
+    .logo {
+      font-size: 46px;
+      font-weight: 900;
+      /* Delicious Gradient Text */
+      background: linear-gradient(to right, #FFF, #FF4B2B);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 5px;
+      letter-spacing: -1.5px;
+      drop-shadow: 0 5px 15px rgba(255, 75, 43, 0.3);
     }
 
-    .question{
-      font-size:16px;
-      font-weight:700;
-      margin-bottom:14px;
+    .greeting { font-size: 18px; font-weight: 600; color: #eee; margin-bottom: 15px; }
+
+    .description {
+      font-size: 14px; color: var(--text-gray); line-height: 1.6; margin-bottom: 30px;
+    }
+    .description b { color: #FFB75E; } /* Gold highlight */
+
+    .divider {
+      height: 1px;
+      width: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+      margin-bottom: 25px;
     }
 
-    .buttons{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
+    .label {
+      font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+      font-weight: 800; color: #888; margin-bottom: 15px; display: block;
     }
 
-    .btn{
-      display:block;
-      text-decoration:none;
-      padding:12px;
-      border-radius:14px;
-      font-weight:700;
-      background:linear-gradient(135deg,#e23744,#ff5a5f);
-      color:white;
-      transition:0.2s;
+    /* --- BUTTONS (The Main Attraction) --- */
+    .btn-container { display: flex; flex-direction: column; gap: 16px; }
+
+    .btn {
+      position: relative;
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+      padding: 18px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-weight: 700; font-size: 16px;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); /* Bouncy feel */
+      overflow: hidden;
     }
 
-    .btn:active{ transform: scale(0.98); }
-
-    .btn.gray{
-      background:#111;
+    /* 1. Primary Button (Customer - Juicy) */
+    .btn-primary {
+      background: var(--food-primary);
+      color: white;
+      box-shadow: 0 10px 25px var(--shadow-color);
+      border: 1px solid rgba(255,255,255,0.2);
     }
+
+    /* Glossy Shine Effect */
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(120deg, transparent, rgba(255,255,255,0.4), transparent);
+      transition: 0.5s;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 15px 35px rgba(255, 75, 43, 0.6);
+    }
+
+    .btn-primary:hover::before { left: 100%; }
+
+    .btn-primary:active { transform: scale(0.95); }
+
+    /* 2. Secondary Buttons (Vendors - Dark Glass) */
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.03);
+      color: #ccc;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.2);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    /* Staggered Entrance */
+    .stagger { opacity: 0; animation: fadeUp 0.6s ease forwards; }
+    .d1 { animation-delay: 0.1s; }
+    .d2 { animation-delay: 0.2s; }
+    .d3 { animation-delay: 0.3s; }
+    .d4 { animation-delay: 0.4s; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .icon-box { font-size: 22px; display: flex; }
+
   </style>
 </head>
 
 <body>
 
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
   <div class="card">
-    <h1 class="logo">SANGHX</h1>
+    
+    <div class="stagger d1">
+      <div class="logo">SANGHX</div>
+      <div class="greeting">स्वागत आहे! 🍲</div>
+    </div>
 
-    <p class="greeting">नमस्कार!</p>
-
-    <p class="description">
+    <div class="description stagger d2">
       चव, सोय आणि विश्वास — सगळं एका ठिकाणी.<br>
       <b>तुमची चव, आमची जबाबदारी.</b>
-    </p>
-
-    <p class="question">तुम्ही कोण आहात?</p>
-
-    <div class="buttons">
-      <a href="customer.html" class="btn">🍽️ ग्राहक</a>
-      <a href="#" class="btn gray" onclick="alert('🏪 Coming Soon')">🏪 COMMING SOON</a>
-      <a href="#" class="btn gray" onclick="alert('🚴‍♂️ Coming Soon')">🚴‍♂️ COMMING SOON</a>
     </div>
+
+    <div class="divider stagger d3"></div>
+
+    <span class="label stagger d3">तुम्ही कोण आहात? (Select Role)</span>
+
+    <div class="btn-container stagger d4">
+      
+      <a href="customer.html" class="btn btn-primary">
+        <div class="icon-box"><i class='bx bxs-dish'></i></div>
+        <span>ग्राहक (Customer)</span>
+      </a>
+
+      <a href="#" class="btn btn-secondary" onclick="alert('लवकरच येत आहे! 🏪')">
+        <div class="icon-box"><i class='bx bxs-store'></i></div>
+        <span>विक्रेते (Store)</span>
+      </a>
+
+      <a href="#" class="btn btn-secondary" onclick="alert('लवकरच येत आहे! 🚴‍♂️')">
+        <div class="icon-box"><i class='bx bxs-package'></i></div>
+        <span>डिलिव्हरी (Delivery)</span>
+      </a>
+    </div>
+
   </div>
 
 </body>
