@@ -1,685 +1,551 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>SANGHX Food</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SANGHX • Gourmet App</title>
 
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
-    *{margin:0;padding:0;box-sizing:border-box}
-    body{font-family:'Poppins',sans-serif;background:#fff7f5;color:#1c1c1c;}
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 
-    .header{
-      background: linear-gradient(135deg, #e23744, #ff5a5f);
-      color:white;
-      padding:16px;
-      text-align:center;
-      font-size:22px;
-      font-weight:600;
-      position:sticky;
-      top:0;
-      z-index:999;
-    }
+<style>
+  :root {
+    --primary: #FF4B3A; /* Vibrant Orange-Red */
+    --dark: #121212;
+    --gray: #F5F5F8;
+    --white: #ffffff;
+    --shadow-soft: 0 10px 30px -10px rgba(0,0,0,0.08);
+    --glass: rgba(255, 255, 255, 0.85);
+    --glass-border: 1px solid rgba(255, 255, 255, 0.5);
+  }
 
-    .alert-bar{
-      background:#111;
-      color:white;
-      overflow:hidden;
-      white-space:nowrap;
-      position:sticky;
-      top:58px;
-      z-index:998;
-      padding:8px 0;
-    }
+  * { margin:0; padding:0; box-sizing:border-box; font-family:'Outfit', sans-serif; -webkit-tap-highlight-color:transparent; }
+  body { background: var(--gray); color: var(--dark); padding-bottom: 120px; overflow-x: hidden; }
 
-    .alert-track{
-      display:inline-block;
-      white-space:nowrap;
-      animation: scroll-left 14s linear infinite;
-    }
+  /* --- HEADER --- */
+  .header {
+    background: var(--glass);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    position: sticky; top: 0; z-index: 100;
+    padding: 15px 20px;
+    border-bottom: var(--glass-border);
+    display: flex; justify-content: space-between; align-items: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+  }
+  .logo { font-size: 24px; font-weight: 800; color: var(--dark); letter-spacing: -0.5px; }
+  .logo span { color: var(--primary); }
+  
+  /* --- TICKER --- */
+  .ticker-wrap {
+    background: var(--dark); color: white; overflow: hidden; height: 34px; display: flex; align-items: center;
+  }
+  .ticker { display: inline-block; white-space: nowrap; animation: scroll 20s linear infinite; }
+  .ticker span { padding: 0 30px; font-size: 12px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
+  @keyframes scroll { 0%{transform:translateX(0);} 100%{transform:translateX(-100%);} }
 
-    .alert-track span{
-      display:inline-block;
-      padding:0 60px;
-      font-size:14px;
-      font-weight:500;
-      opacity:0.95;
-    }
+  .container { padding: 20px; max-width: 600px; margin: 0 auto; }
 
-    @keyframes scroll-left{
-      0%{transform:translateX(100%)}
-      100%{transform:translateX(-100%)}
-    }
+  /* --- HERO BANNER (AUTO SLIDER) --- */
+  .hero-banner {
+    width: 100%; height: 180px; border-radius: 24px; margin-bottom: 20px; 
+    overflow: hidden; position: relative; box-shadow: var(--shadow-soft);
+  }
+  .hero-img { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+    animation: zoom 10s infinite alternate; 
+    transition: opacity 0.3s ease-in-out;
+  }
+  @keyframes zoom { from{transform:scale(1)} to{transform:scale(1.1)} }
+  .hero-overlay {
+    position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    display: flex; flex-direction: column; justify-content: flex-end; padding: 20px; color: white;
+  }
 
-    .whatsapp-float {
-      position: fixed;
-      top: 120px;
-      right: 18px;
-      background: #25d348;
-      color: white;
-      font-size: 20px;
-      padding: 12px 16px;
-      border-radius: 50%;
-      text-decoration: none;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-      z-index: 9999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.2s;
-    }
-    .whatsapp-float:hover { transform: scale(1.1); }
+  /* --- SEARCH & CHIPS --- */
+  .search-wrapper { position: relative; margin-bottom: 15px; }
+  .search-box {
+    background: white; padding: 14px 16px 14px 45px; border-radius: 18px; width: 100%;
+    border: 1px solid transparent; box-shadow: var(--shadow-soft); font-size: 15px; font-weight: 500;
+    transition: 0.3s;
+  }
+  .search-box:focus { border-color: var(--primary); outline: none; box-shadow: 0 5px 20px rgba(255, 75, 58, 0.15); }
+  .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #888; font-size: 20px; }
 
-    .container{padding:16px;padding-bottom:190px;}
+  .chips { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; margin-bottom: 20px; }
+  .chip {
+    padding: 10px 20px; border-radius: 40px; background: white; border: 1px solid #eee;
+    font-size: 13px; font-weight: 600; color: #666; white-space: nowrap; transition: 0.2s; cursor: pointer;
+  }
+  .chip.active { background: var(--dark); color: white; border-color: var(--dark); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
 
-    .topTools{
-      margin:12px 0 14px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
+  /* --- STORES & CARDS --- */
+  .shop-section { margin-bottom: 30px; animation: fadeInUp 0.5s ease; }
+  .shop-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding: 0 5px; }
+  .shop-name { font-size: 19px; font-weight: 800; }
+  .status-badge { font-size: 10px; padding: 5px 12px; border-radius: 20px; font-weight: 800; color: white; text-transform: uppercase; }
+  .status-badge.online { background: #00b894; box-shadow: 0 4px 10px rgba(0, 184, 148, 0.3); }
+  .status-badge.offline { background: #ff7675; opacity: 0.8; }
 
-    .searchBox{
-      width:100%;
-      padding:12px 14px;
-      border-radius:14px;
-      border:1px solid #ddd;
-      outline:none;
-      font-size:14px;
-      background:white;
-      box-shadow:0 6px 14px rgba(0,0,0,0.06);
-    }
+  .h-scroll { display: flex; gap: 15px; overflow-x: auto; padding: 5px 5px 25px; scrollbar-width: none; }
+  
+  .card {
+    min-width: 210px; background: white; border-radius: 24px; padding: 10px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06); position: relative; transition: 0.2s;
+  }
+  .card:active { transform: scale(0.97); }
+  .card.offline { filter: grayscale(1); opacity: 0.7; pointer-events: none; }
 
-    .chips{
-      display:flex;
-      gap:10px;
-      overflow-x:auto;
-      padding-bottom:6px;
-      scroll-behavior:smooth;
-    }
-    .chips::-webkit-scrollbar{display:none}
+  .card img { width: 100%; height: 130px; object-fit: cover; border-radius: 18px; background: #eee; margin-bottom: 10px; }
+  
+  .card-body { padding: 0 5px 5px; }
+  .card-title { font-size: 16px; font-weight: 700; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  
+  .variant-select {
+    width: 100%; padding: 8px; border-radius: 10px; border: 1px solid #eee;
+    font-size: 12px; margin-bottom: 10px; background: #f9f9f9; outline: none; font-weight: 500;
+  }
+  
+  .card-footer { display: flex; justify-content: space-between; align-items: center; }
+  .price { font-size: 17px; font-weight: 800; color: var(--dark); }
+  .add-btn {
+    width: 38px; height: 38px; background: var(--dark); color: white; border-radius: 12px;
+    display: flex; justify-content: center; align-items: center; border: none; font-size: 20px; cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2); transition: 0.2s;
+  }
+  .add-btn:active { transform: scale(0.8); background: var(--primary); }
 
-    .chip{
-      flex:0 0 auto;
-      padding:8px 14px;
-      border-radius:999px;
-      font-size:13px;
-      font-weight:600;
-      border:1px solid #ddd;
-      background:white;
-      cursor:pointer;
-      transition:0.2s;
-      white-space:nowrap;
-    }
-    .chip.active{
-      background:#111;
-      color:white;
-      border-color:#111;
-    }
+  /* --- FLOATING UI --- */
+  .fab-cart {
+    position: fixed; bottom: 95px; right: 20px; background: var(--dark); color: white;
+    padding: 14px 24px; border-radius: 40px; font-weight: 700; box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+    display: flex; align-items: center; gap: 10px; z-index: 90; transition: 0.3s;
+    cursor: pointer; transform: translateY(100px); opacity: 0;
+  }
+  .fab-cart.visible { transform: translateY(0); opacity: 1; }
 
-    .shop-title{
-      font-size:18px;
-      font-weight:700;
-      margin:22px 0 8px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-    }
+  .fab-ai {
+    position: fixed; bottom: 25px; right: 20px; width: 64px; height: 64px;
+    background: linear-gradient(135deg, #FF4B3A, #FF7F50); color: white;
+    border-radius: 50%; display: flex; justify-content: center; align-items: center;
+    font-size: 30px; box-shadow: 0 10px 30px rgba(255, 75, 58, 0.4); z-index: 95;
+    border: none; animation: float 3s ease-in-out infinite; cursor: pointer;
+  }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
 
-    .storeMeta{
-      font-size:12px;
-      opacity:0.7;
-      margin-top:-4px;
-      margin-bottom:10px;
-    }
+  /* --- MODALS (GLASS) --- */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(6px);
+    z-index: 200; display: none; align-items: flex-end; opacity: 0; transition: opacity 0.3s;
+  }
+  .modal-overlay.show { display: flex; opacity: 1; }
 
-    .storeBadge{
-      font-size:12px;
-      padding:6px 10px;
-      border-radius:999px;
-      font-weight:800;
-      color:white;
-      background:#25D366;
-    }
-    .storeBadge.offline{ background:#ff3b3b; }
+  .modal-card {
+    background: white; width: 100%; border-radius: 30px 30px 0 0; padding: 25px;
+    box-shadow: 0 -10px 40px rgba(0,0,0,0.15); transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    max-height: 85vh; display: flex; flex-direction: column;
+  }
+  .modal-overlay.show .modal-card { transform: translateY(0); }
 
-    .food-scroll{
-      display:flex;
-      gap:12px;
-      overflow-x:auto;
-      padding-bottom:8px;
-      scroll-behavior:smooth;
-    }
-    .food-scroll::-webkit-scrollbar{display:none}
+  /* AI Special Style */
+  .ai-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-top: 1px solid rgba(255,255,255,0.5);
+  }
+  .ai-bubble {
+    background: #f0f0f5; padding: 16px; border-radius: 18px 18px 18px 4px;
+    margin: 15px 0; font-size: 15px; line-height: 1.5; color: #333; font-weight: 500;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.03);
+  }
+  
+  .input-group { display: flex; gap: 10px; margin-top: 10px; }
+  .input-group input {
+    flex: 1; padding: 14px 18px; border-radius: 14px; border: 1px solid #ddd; outline: none; font-size: 15px;
+  }
+  .send-btn {
+    width: 50px; border-radius: 14px; border: none; background: var(--dark); color: white; font-size: 20px; cursor: pointer;
+  }
 
-    .food-card{
-      min-width:180px;
-      background:white;
-      border-radius:16px;
-      overflow:hidden;
-      box-shadow:0 10px 25px rgba(0,0,0,0.08);
-      transition:0.2s;
-      position:relative;
-    }
-    .food-card:hover{ transform:translateY(-3px); }
+  /* Cart Items */
+  .cart-list { overflow-y: auto; flex: 1; margin-bottom: 15px; }
+  .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f4f4f4; }
+  .qty-ctrl { display: flex; align-items: center; gap: 12px; background: #f4f4f8; padding: 6px 12px; border-radius: 12px; font-weight: 700; }
+  
+  .bill-box { background: #f9f9fb; padding: 15px; border-radius: 18px; border: 1px dashed #ddd; margin-bottom: 15px; }
+  .bill-row { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 14px; color: #666; }
+  .bill-total { display: flex; justify-content: space-between; margin-top: 10px; font-size: 18px; font-weight: 800; color: var(--dark); }
 
-    .food-card.offlineCard{
-      opacity:0.55;
-      filter:grayscale(0.2);
-    }
+  .checkout-btn {
+    width: 100%; padding: 16px; background: #2ed573; color: white; border: none;
+    border-radius: 16px; font-size: 16px; font-weight: 700; cursor: pointer;
+    box-shadow: 0 8px 20px rgba(46, 213, 115, 0.3); transition: 0.2s;
+  }
+  .checkout-btn:active { transform: scale(0.98); }
 
-    .food-card img{
-      width:100%;
-      height:110px;
-      object-fit:cover;
-      background:#f0f0f0;
-    }
+  /* --- TOAST & SPARK --- */
+  .toast {
+    position: fixed; top: 100px; left: 50%; transform: translateX(-50%) scale(0.9);
+    background: rgba(15, 15, 15, 0.9); backdrop-filter: blur(5px); color: white;
+    padding: 12px 24px; border-radius: 40px; font-size: 14px; font-weight: 600;
+    opacity: 0; pointer-events: none; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 300;
+    display: flex; align-items: center; gap: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  }
+  .toast.show { transform: translateX(-50%) scale(1); opacity: 1; }
 
-    .food-info{padding:10px;}
-    .food-info h4{
-      font-size:14px;
-      font-weight:700;
-      margin-bottom:4px;
-    }
-    .food-info p{
-      font-size:13px;
-      margin-bottom:8px;
-      opacity:0.85;
-      font-weight:600;
-    }
+  .spark {
+    position: fixed; pointer-events: none; width: 20px; height: 20px;
+    background: radial-gradient(circle, #FFD700, transparent); border-radius: 50%;
+    transform: scale(0); z-index: 300;
+  }
+  .spark.active { animation: pop 0.6s ease-out; }
+  @keyframes pop { 0%{transform:scale(0); opacity:1;} 50%{opacity:1} 100%{transform:scale(4); opacity:0;} }
+  @keyframes fadeInUp { from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);} }
 
-    .variantSelect{
-      width:100%;
-      padding:8px 10px;
-      border-radius:12px;
-      border:1px solid #ddd;
-      outline:none;
-      margin-bottom:8px;
-      font-size:13px;
-      background:white;
-    }
-
-    button{
-      width:100%;
-      background: linear-gradient(135deg, #ff7a18, #ff9f45);
-      border:none;
-      color:white;
-      padding:8px;
-      border-radius:12px;
-      font-weight:700;
-      cursor:pointer;
-    }
-
-    button:disabled{
-      opacity:0.55;
-      cursor:not-allowed;
-    }
-
-    .cart-bar{
-      position:fixed;
-      bottom:0;
-      left:0;
-      right:0;
-      background:white;
-      border-top:1px solid #eee;
-      padding:14px;
-      box-shadow:0 -10px 30px rgba(0,0,0,0.1);
-      font-size:14px;
-      transform: translateY(120%);
-      transition: 0.3s ease;
-      z-index:999;
-    }
-    .cart-bar.show{transform: translateY(0%);}
-
-    .cart-item{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin:8px 0;
-      gap:10px;
-    }
-
-    .cart-item small{
-      display:block;
-      opacity:0.7;
-      margin-top:2px;
-    }
-
-    .qty{display:flex;align-items:center;gap:6px;}
-    .qty button{
-      width:auto;
-      padding:4px 10px;
-      border-radius:8px;
-      background:black;
-    }
-
-    .checkout-btn{
-      background: linear-gradient(135deg, #25D366, #1ebe5d);
-      width:100%;
-      padding:12px;
-      margin-top:10px;
-      font-weight:800;
-      border-radius:14px;
-      font-size:16px;
-    }
-
-    .food-slider{
-      display:flex;
-      gap:12px;
-      overflow-x:auto;
-      scroll-snap-type:x mandatory;
-      padding:12px;
-      scroll-behavior:smooth;
-    }
-    .food-slider::-webkit-scrollbar{display:none}
-    .food-slider img{
-      flex:0 0 85%;
-      max-width:85%;
-      height:180px;
-      border-radius:16px;
-      object-fit:cover;
-      scroll-snap-align:center;
-      box-shadow:0 6px 14px rgba(0,0,0,0.15);
-    }
-
-    .toast{
-      position: fixed;
-      bottom: 90px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(20,20,20,0.95);
-      color: white;
-      padding: 12px 18px;
-      border-radius: 14px;
-      font-size: 14px;
-      font-weight: 700;
-      opacity: 0;
-      pointer-events: none;
-      z-index: 99999;
-      transition: 0.3s ease;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
-    }
-    .toast.show{
-      opacity: 1;
-      transform: translateX(-50%) translateY(-10px);
-    }
-
-    .spark{
-      position: fixed;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: radial-gradient(circle, #ffcc00, #ff7a18, transparent);
-      pointer-events: none;
-      opacity: 0;
-      z-index: 99999;
-    }
-    .spark.show{
-      animation: sparkPop 0.6s ease forwards;
-    }
-    @keyframes sparkPop{
-      0%{transform: scale(0.3); opacity: 0.9;}
-      60%{transform: scale(2.2); opacity: 0.6;}
-      100%{transform: scale(3.2); opacity: 0;}
-    }
-
-    .emptyNote{
-      opacity:0.7;
-      font-size:13px;
-      padding:8px 2px;
-    }
-  </style>
+</style>
 </head>
 
 <body>
 
-  <div class="header">🍽 SANGHX</div>
-
-  <div class="alert-bar">
-    <div class="alert-track">
-      <span>⚡आयुष्यात पैशापेक्षा विश्वास जास्त महत्त्वाचा आहे भावा ❤️</span>
-      <span>⚡आयुष्यात पैशापेक्षा विश्वास जास्त महत्त्वाचा आहे भावा ❤️</span>
-      <span>⚡आयुष्यात पैशापेक्षा विश्वास जास्त महत्त्वाचा आहे भावा ❤️</span>
-    </div>
+  <div class="header">
+    <div class="logo">SAN<span>GHX</span></div>
+    <a href="https://wa.me/918087762813" target="_blank" style="color:var(--dark); font-size:26px;"><i class='bx bxl-whatsapp'></i></a>
   </div>
 
-  <a href="https://wa.me/918087762813?text=Hey,%20I’m%20facing%20some%20issues%20related%20to%20your%20Site.%20Please%20help%20me."
-     target="_blank"
-     class="whatsapp-float">💬</a>
-
-  <div class="food-slider" id="bannerSlider">
-    <img src="2.png">
-    <img src="order.png">
-    <img src="new.png">
+  <div class="ticker-wrap">
+    <div class="ticker">
+      <span>⚡ SANGHX = fast • local • savage 😈🔥</span>
+      <span>⚡ आज काय खायचं? AI ला विचार भावा 😭😂</span>
+      <span>⚡ आयुष्यात पैशापेक्षा विश्वास जास्त महत्त्वाचा आहे भावा ❤️</span>
+    </div>
   </div>
 
   <div class="container">
-    <div class="topTools">
-      <input id="searchInput" class="searchBox" placeholder="Search food or store...">
-      <div id="categoryChips" class="chips"></div>
+    <!-- HERO AUTO SLIDER -->
+    <div class="hero-banner" id="heroSlider">
+      <img id="heroImg" src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=800&auto=format&fit=crop" class="hero-img">
+      <div class="hero-overlay">
+        <h2 style="font-weight:800; font-size:28px; line-height:1;">Delicious<br>Deals 50% OFF</h2>
+      </div>
     </div>
 
-    <h3>Menu</h3>
+    <div class="search-wrapper">
+      <i class='bx bx-search search-icon'></i>
+      <input class="search-box" id="searchInput" placeholder="Search biryani, pizza, rolls...">
+    </div>
+    
+    <div class="chips" id="categoryChips">
+      <div class="chip active">All</div>
+    </div>
 
     <div id="storesWrap"></div>
   </div>
 
-  <div class="cart-bar" id="cartBar">
-    <div id="cartItems"></div>
-    <div>Subtotal: ₹<span id="subtotal">0</span></div>
-    <div>Delivery: ₹<span id="delivery">0</span></div>
-    <div><b>Total: ₹<span id="total">0</span></b></div>
-    <button class="checkout-btn" onclick="goCheckout()">Checkout</button>
+  <div class="fab-cart" id="miniCartBtn">
+    <i class='bx bxs-shopping-bag' style="font-size:20px;"></i> 
+    <span id="cartCount">0</span>
   </div>
 
-  <div id="toast" class="toast"></div>
+  <button class="fab-ai" id="aiBtn"><i class='bx bx-bot'></i></button>
+
+  <div class="modal-overlay" id="cartModalBg">
+    <div class="modal-card">
+      <div style="display:flex; justify-content:space-between; margin-bottom:20px; align-items:center;">
+        <h2 style="font-weight:800;">Your Cart 🛒</h2>
+        <i class='bx bx-x' style="font-size:28px; padding:8px; background:#f4f4f8; border-radius:50%; cursor:pointer;" id="closeCartBtn"></i>
+      </div>
+      
+      <div class="cart-list" id="cartItems"></div>
+      
+      <div class="bill-box">
+        <div class="bill-row"><span>Subtotal</span> <span id="subtotal">₹0</span></div>
+        <div class="bill-row"><span>Delivery</span> <span>₹10</span></div>
+        <div class="bill-total"><span>Total</span> <span id="total">₹0</span></div>
+      </div>
+      
+      <button class="checkout-btn" id="checkoutBtn">Checkout Now <i class='bx bx-right-arrow-alt'></i></button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="aiPanelBg">
+    <div class="modal-card ai-card">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="width:45px; height:45px; background:var(--dark); color:white; border-radius:50%; display:flex; justify-content:center; align-items:center; font-size:24px;"><i class='bx bx-bot'></i></div>
+          <div>
+            <b style="display:block; font-size:16px;">BroAI</b>
+            <small style="color:var(--primary); font-weight:700; font-size:11px;">MARATHI MODE 🇮🇳</small>
+          </div>
+        </div>
+        <i class='bx bx-x' id="aiCloseBtn" style="font-size:28px; padding:5px; cursor:pointer;"></i>
+      </div>
+
+      <div class="ai-bubble" id="aiLine">
+        भावा… मी तयार आहे 😈🔥 “भूक लागली” असं टाईप कर!
+      </div>
+
+      <div class="input-group">
+        <input id="aiInput" placeholder="Ask me (e.g. Best combo?)...">
+        <button class="send-btn" id="aiSendBtn"><i class='bx bxs-send'></i></button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"><i class='bx bxs-check-circle' style="color:#2ed573; font-size:18px;"></i> <span>Added to cart</span></div>
   <div id="spark" class="spark"></div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
   import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyC-igyzVwdH_4Jt1r64TtHSfYxIMw8UfzM",
-    authDomain: "sanghx-foods.firebaseapp.com",
-    projectId: "sanghx-foods",
-    storageBucket: "sanghx-foods.firebasestorage.app",
-    messagingSenderId: "491353757911",
-    appId: "1:491353757911:web:40752459b5b0049c71f892"
-  };
-
+  const firebaseConfig = { apiKey: "AIzaSyC-igyzVwdH_4Jt1r64TtHSfYxIMw8UfzM", projectId: "sanghx-foods" };
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  const DELIVERY_CHARGE = 10;
-
-  let STORES = [];
-  let MENU = [];
-  let ACTIVE_CATEGORY = "All";
-  let SEARCH = "";
-
+  let STORES = [], MENU = [], ACTIVE_CATEGORY = "All", SEARCH = "";
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-  const storesWrap = document.getElementById("storesWrap");
-  const categoryChips = document.getElementById("categoryChips");
-  const searchInput = document.getElementById("searchInput");
+  // Elements
+  const els = {
+    stores: document.getElementById("storesWrap"),
+    chips: document.getElementById("categoryChips"),
+    search: document.getElementById("searchInput"),
+    miniCart: document.getElementById("miniCartBtn"),
+    cartModal: document.getElementById("cartModalBg"),
+    cartItems: document.getElementById("cartItems"),
+    aiModal: document.getElementById("aiPanelBg"),
+    aiLine: document.getElementById("aiLine"),
+    aiInput: document.getElementById("aiInput"),
+    toast: document.getElementById("toast"),
+    spark: document.getElementById("spark")
+  };
 
-  function safeText(str){
-    return String(str || "").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  // --- HERO AUTO SLIDER ---
+  const heroImages = [
+    "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=800&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?q=80&w=800&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=800&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1604908176997-125f25cc500f?q=80&w=800&auto=format&fit=crop"
+  ];
+
+  let heroIndex = 0;
+  const heroImgEl = document.getElementById("heroImg");
+
+  setInterval(() => {
+    heroIndex = (heroIndex + 1) % heroImages.length;
+
+    heroImgEl.style.opacity = "0";
+    setTimeout(() => {
+      heroImgEl.src = heroImages[heroIndex];
+      heroImgEl.style.opacity = "1";
+    }, 250);
+  }, 3000);
+
+  // --- 1. VOICE ENGINE (Hindi/Marathi Fix) ---
+  let selectedVoice = null;
+  function loadVoices() {
+    const voices = window.speechSynthesis.getVoices();
+    selectedVoice = voices.find(v => v.lang.includes('hi-IN')) || 
+                    voices.find(v => v.lang.includes('mr-IN')) || 
+                    voices.find(v => v.lang.includes('en-IN')) || 
+                    voices[0];
+  }
+  if (window.speechSynthesis.onvoiceschanged !== undefined) {
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+  }
+  loadVoices(); 
+
+  function speak(text) {
+    if (!('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    if(selectedVoice) u.voice = selectedVoice;
+    u.rate = 1; u.pitch = 1;
+    window.speechSynthesis.speak(u);
   }
 
-  function showToast(msg){
-    const toast = document.getElementById("toast");
-    toast.innerText = msg;
-    toast.classList.add("show");
-    setTimeout(()=> toast.classList.remove("show"), 1600);
+  // --- 2. RENDER STORES & MENU ---
+  function safe(str) { return String(str||"").replace(/</g,"&lt;"); }
+
+  function renderCategoryChips() {
+    const cats = ["All", ...new Set(MENU.map(m => m.category).filter(Boolean))];
+    els.chips.innerHTML = cats.map(c => 
+      `<div class="chip ${ACTIVE_CATEGORY===c?'active':''}" onclick="setCat('${c}')">${c}</div>`
+    ).join("");
   }
+  window.setCat = (c) => { ACTIVE_CATEGORY = c; renderCategoryChips(); renderStores(); };
 
-  function sparkEffect(x, y){
-    const spark = document.getElementById("spark");
-    spark.style.left = (x - 9) + "px";
-    spark.style.top = (y - 9) + "px";
-    spark.classList.remove("show");
-    void spark.offsetWidth;
-    spark.classList.add("show");
-  }
+  function renderStores() {
+    els.stores.innerHTML = "";
+    if(STORES.length === 0) { els.stores.innerHTML = "<div style='text-align:center;padding:40px;color:#aaa'>Loading Stores...</div>"; return; }
 
-  function getCategories(){
-    const set = new Set();
-    MENU.forEach(m=>{
-      if(m.category) set.add(m.category);
-    });
-    return ["All", ...Array.from(set)];
-  }
+    STORES.forEach(store => {
+      const items = MENU.filter(m => 
+        (m.storeName === store.name) &&
+        (ACTIVE_CATEGORY==="All" || m.category===ACTIVE_CATEGORY) &&
+        (m.name.toLowerCase().includes(SEARCH) || store.name.toLowerCase().includes(SEARCH))
+      );
 
-  function renderCategoryChips(){
-    const cats = getCategories();
-    categoryChips.innerHTML = "";
+      if(items.length === 0 && SEARCH) return; 
 
-    cats.forEach(c=>{
-      const btn = document.createElement("button");
-      btn.className = "chip" + (ACTIVE_CATEGORY === c ? " active" : "");
-      btn.innerText = c;
-      btn.onclick = ()=>{
-        ACTIVE_CATEGORY = c;
-        renderCategoryChips();
-        renderStores();
-      };
-      categoryChips.appendChild(btn);
-    });
-  }
-
-  function menuMatchesFilters(item, store){
-    const q = SEARCH.toLowerCase().trim();
-
-    const matchSearch =
-      !q ||
-      (item.name || "").toLowerCase().includes(q) ||
-      (store.name || "").toLowerCase().includes(q);
-
-    const matchCat =
-      ACTIVE_CATEGORY === "All" ||
-      (item.category || "Other") === ACTIVE_CATEGORY;
-
-    return matchSearch && matchCat;
-  }
-
-  function renderStores(){
-    storesWrap.innerHTML = "";
-
-    if(STORES.length === 0){
-      storesWrap.innerHTML = `<div class="emptyNote">No stores added yet.</div>`;
-      return;
-    }
-
-    STORES.forEach(store=>{
-      const storeItems = MENU
-        .filter(m => m.storeId === store.id)
-        .sort((a,b)=>(a.priority||9999)-(b.priority||9999))
-        .filter(m => menuMatchesFilters(m, store));
-
-      // Store Header
-      const storeHeader = document.createElement("div");
-
-      storeHeader.innerHTML = `
-        <div class="shop-title">
-          <div>${safeText(store.name || "STORE")}</div>
-          <div class="storeBadge ${store.online ? "" : "offline"}">
-            ${store.online ? "Online" : "Offline"}
+      const section = document.createElement("div");
+      section.className = "shop-section";
+      section.innerHTML = `
+        <div class="shop-header">
+          <div class="shop-name">${safe(store.name)}</div>
+          <div class="status-badge ${store.isOnline?'online':'offline'}">
+            ${store.isOnline ? 'Open Now' : 'Closed'}
           </div>
         </div>
-        <div class="storeMeta">
-          ${store.online ? "🟢 Open now" : "🔴 Store closed"} • 🕒 ${safeText(store.openTime||"--:--")} - ${safeText(store.closeTime||"--:--")}
-        </div>
+        <div class="h-scroll" id="list-${store.id}"></div>
       `;
+      
+      const list = section.querySelector(".h-scroll");
+      if(items.length === 0) list.innerHTML = "<div style='font-size:13px;color:#aaa;padding:10px;'>No items found here</div>";
+      
+      items.forEach(item => {
+        const variants = item.variants || [{label:"Regular", price:item.price}];
+        const div = document.createElement("div");
+        div.className = `card ${store.isOnline?'':'offline'}`;
+        
+        let opts = variants.map((v,i) => `<option value="${i}">${v.label} - ₹${v.price}</option>`).join('');
 
-      storesWrap.appendChild(storeHeader);
-
-      // Items row
-      const row = document.createElement("div");
-      row.className = "food-scroll";
-
-      if(storeItems.length === 0){
-        row.innerHTML = `<div class="emptyNote">No items found</div>`;
-        storesWrap.appendChild(row);
-        return;
-      }
-
-      storeItems.forEach(item=>{
-        const variants = Array.isArray(item.variants) ? item.variants : [];
-        const firstVar = variants[0] || { label:"Default", price:0 };
-
-        const card = document.createElement("div");
-        card.className = "food-card" + (store.online ? "" : " offlineCard");
-
-        card.innerHTML = `
-          <img src="${item.img || ""}" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
-          <div class="food-info">
-            <h4>${safeText(item.name)}</h4>
-            <select class="variantSelect">
-              ${variants.map(v=>`<option value="${safeText(v.label)}" data-price="${v.price}">${safeText(v.label)} • ₹${v.price}</option>`).join("")}
-            </select>
-            <p>₹<span class="priceText">${firstVar.price}</span></p>
-            <button class="addBtn" ${store.online ? "" : "disabled"}>${store.online ? "Add" : "Closed"}</button>
+        div.innerHTML = `
+          <img src="${item.img}" onerror="this.src='https://via.placeholder.com/150'">
+          <div class="card-body">
+            <div class="card-title">${safe(item.name)}</div>
+            <select class="variant-select">${opts}</select>
+            <div class="card-footer">
+              <div class="price">₹<span class="p-val">${variants[0].price}</span></div>
+              <button class="add-btn"><i class='bx bx-plus'></i></button>
+            </div>
           </div>
         `;
-
-        const select = card.querySelector(".variantSelect");
-        const priceText = card.querySelector(".priceText");
-        const addBtn = card.querySelector(".addBtn");
-
-        select.addEventListener("change", ()=>{
-          const opt = select.options[select.selectedIndex];
-          priceText.innerText = opt.getAttribute("data-price") || "0";
-        });
-
-        addBtn.addEventListener("click", (e)=>{
-          if(!store.online){
-            showToast("Store is offline 🔴");
-            return;
-          }
-
-          const opt = select.options[select.selectedIndex];
-          const vLabel = opt.value;
-          const vPrice = Number(opt.getAttribute("data-price")) || 0;
-
-          addItem(item, store, vLabel, vPrice, e);
-        });
-
-        row.appendChild(card);
+        
+        const sel = div.querySelector("select");
+        const pVal = div.querySelector(".p-val");
+        sel.onchange = () => pVal.innerText = variants[sel.value].price;
+        
+        div.querySelector(".add-btn").onclick = (e) => {
+          if(!store.isOnline) return;
+          const v = variants[sel.value];
+          addToCart(item, store.name, v.label, v.price);
+          animateSpark(e.clientX, e.clientY);
+        };
+        
+        list.appendChild(div);
       });
-
-      storesWrap.appendChild(row);
+      els.stores.appendChild(section);
     });
   }
 
-  function addItem(item, store, variantLabel, variantPrice, event){
-    const wasEmpty = cart.length === 0;
-
-    const key = `${item.id || item.name}__${store.id}__${variantLabel}`;
-    const found = cart.find(i => i.key === key);
-
-    if(found) found.qty++;
-    else{
-      cart.push({
-        key,
-        name: item.name,
-        storeName: store.name,
-        storeId: store.id,
-        variantLabel,
-        price: variantPrice,
-        qty: 1
-      });
-    }
-
-    localStorage.setItem("cart", JSON.stringify(cart));
-    renderCart();
-
-    const x = event?.clientX || window.innerWidth/2;
-    const y = event?.clientY || window.innerHeight/2;
-    sparkEffect(x, y);
-
-    if(wasEmpty) showToast("🔥 First item added! Cart ready ✅");
-    else showToast(`${item.name} (${variantLabel}) added ✅`);
+  // --- 3. CART SYSTEM ---
+  function addToCart(item, storeName, variant, price) {
+    const key = `${item.id}-${variant}`;
+    const exist = cart.find(x => x.key === key);
+    if(exist) exist.qty++;
+    else cart.push({ key, id:item.id, name:item.name, storeName, variant, price, qty:1 });
+    
+    saveCart();
+    speak(`${item.name} added`);
+    showToast(`Added ${item.name}`);
   }
 
-  window.changeQty = function(key, delta){
-    const item = cart.find(i => i.key === key);
-    if(!item) return;
+  function updateQty(key, delta) {
+    const i = cart.find(x => x.key === key);
+    if(!i) return;
+    i.qty += delta;
+    if(i.qty <= 0) cart = cart.filter(x => x.key !== key);
+    saveCart();
+  }
 
-    item.qty += delta;
-    if(item.qty <= 0){
-      cart = cart.filter(i => i.key !== key);
-    }
-
+  function saveCart() {
     localStorage.setItem("cart", JSON.stringify(cart));
     renderCart();
   }
 
-  function renderCart(){
-    const cartDiv = document.getElementById("cartItems");
-    const cartBar = document.getElementById("cartBar");
+  function renderCart() {
+    const totalQty = cart.reduce((a,b)=>a+b.qty,0);
+    els.miniCart.classList.toggle("visible", totalQty > 0);
+    document.getElementById("cartCount").innerText = totalQty;
 
-    if(cart.length === 0) cartBar.classList.remove("show");
-    else cartBar.classList.add("show");
-
-    cartDiv.innerHTML = "";
-
-    cart.forEach(item=>{
-      cartDiv.innerHTML += `
-        <div class="cart-item">
-          <div>
-            <b>${safeText(item.name)} (${safeText(item.variantLabel)})</b>
-            <small>🏪 ${safeText(item.storeName)} • ₹${item.price} each</small>
-          </div>
-          <div class="qty">
-            <button onclick="changeQty('${item.key}',-1)">-</button>
-            ${item.qty}
-            <button onclick="changeQty('${item.key}',1)">+</button>
-          </div>
+    els.cartItems.innerHTML = cart.map(i => `
+      <div class="cart-item">
+        <div>
+          <div style="font-weight:700; font-size:15px;">${safe(i.name)}</div>
+          <div style="font-size:12px;color:#888;">${safe(i.variant)} • ₹${i.price}</div>
         </div>
-      `;
-    });
+        <div class="qty-ctrl">
+          <i class='bx bx-minus' onclick="window.upd('${i.key}',-1)" style="cursor:pointer"></i>
+          <span>${i.qty}</span>
+          <i class='bx bx-plus' onclick="window.upd('${i.key}',1)" style="cursor:pointer"></i>
+        </div>
+      </div>
+    `).join("");
+    window.upd = updateQty;
 
-    let subtotal = cart.reduce((t,i)=>t + (i.price*i.qty),0);
-    document.getElementById("subtotal").innerText = subtotal;
-    document.getElementById("delivery").innerText = cart.length ? DELIVERY_CHARGE : 0;
-    document.getElementById("total").innerText = subtotal + (cart.length ? DELIVERY_CHARGE : 0);
+    const sub = cart.reduce((a,b)=>a+(b.price*b.qty),0);
+    document.getElementById("subtotal").innerText = `₹${sub}`;
+    document.getElementById("total").innerText = `₹${sub + (cart.length?10:0)}`;
   }
 
-  window.goCheckout = function(){
-    if(cart.length === 0){
-      alert("Cart is empty");
-      return;
-    }
-    window.location.href = "checkout.html";
+  // --- 4. BroAI BRAIN ---
+  function broAIReply(msg) {
+    msg = msg.toLowerCase();
+    if(msg.includes('bhuk') || msg.includes('hungry')) return "भूक लागलीये? मग नुसतं बघत बसू नकोस 😭🔥 Jalebi + Roll combo टाक cart मध्ये!";
+    if(msg.includes('recommend') || msg.includes('best')) return "Chicken Roll try कर… कारण तुझं आयुष्यही गोड आणि spicy दोन्ही आहे 😂🔥";
+    if(msg.includes('cheap') || msg.includes('budget')) return "Budget मध्ये? भावा delivery फक्त ₹10… बाकी तू राजा आहेस 😭👑";
+    if(msg.includes('cart')) return cart.length ? `Cart मध्ये ${cart.length} items आहेत. आता order कर!` : "Cart रिकामा आहे, diet वर आहेस का? 😂";
+    return "भावा… तू विचारतोयस पण order करत नाहीस. Order kar jaldi 😭😂";
   }
+
+  document.getElementById("aiSendBtn").onclick = () => {
+    const txt = els.aiInput.value.trim();
+    if(!txt) return;
+    const ans = broAIReply(txt);
+    els.aiLine.innerText = ans;
+    speak(ans);
+    els.aiInput.value = "";
+  };
+
+  // --- 5. EVENTS ---
+  els.search.oninput = (e) => { SEARCH = e.target.value.toLowerCase(); renderStores(); };
+  
+  els.miniCart.onclick = () => els.cartModal.classList.add("show");
+  document.getElementById("closeCartBtn").onclick = () => els.cartModal.classList.remove("show");
+  document.getElementById("checkoutBtn").onclick = () => location.href = "checkout.html";
+  
+  document.getElementById("aiBtn").onclick = () => {
+    els.aiModal.classList.add("show");
+    speak("भावा, मी BroAI आहे. काय ऑर्डर करायचं?");
+  };
+  document.getElementById("aiCloseBtn").onclick = () => els.aiModal.classList.remove("show");
+
+  function showToast(msg) {
+    els.toast.innerHTML = `<i class='bx bxs-check-circle' style="color:#2ed573; font-size:18px;"></i> <span>${msg}</span>`;
+    els.toast.classList.add("show");
+    setTimeout(() => els.toast.classList.remove("show"), 2000);
+  }
+  
+  function animateSpark(x, y) {
+    els.spark.style.left = (x-10)+"px"; els.spark.style.top = (y-10)+"px";
+    els.spark.classList.remove("active");
+    void els.spark.offsetWidth; 
+    els.spark.classList.add("active");
+  }
+
+  // --- 6. FIRESTORE SYNC ---
+  onSnapshot(collection(db, "stores"), sn => {
+    STORES = []; sn.forEach(d => STORES.push({id:d.id, ...d.data()}));
+    renderStores();
+  });
+  onSnapshot(collection(db, "menu"), sn => {
+    MENU = []; sn.forEach(d => MENU.push({id:d.id, ...d.data()}));
+    renderCategoryChips(); renderStores();
+  });
 
   renderCart();
-
-  // ===== FIRESTORE LISTENERS =====
-  onSnapshot(collection(db, "stores"), (snapshot)=>{
-    STORES = [];
-    snapshot.forEach(d => STORES.push({ id:d.id, ...d.data() }));
-    STORES.sort((a,b)=>(a.order||9999)-(b.order||9999));
-    renderStores();
-  });
-
-  onSnapshot(collection(db, "menu"), (snapshot)=>{
-    MENU = [];
-    snapshot.forEach((doc) => {
-      MENU.push({ id: doc.id, ...doc.data() });
-    });
-
-    renderCategoryChips();
-    renderStores();
-  });
-
-  // Search
-  searchInput.addEventListener("input", ()=>{
-    SEARCH = searchInput.value || "";
-    renderStores();
-  });
-
-  // Slider
-  const slider = document.getElementById("bannerSlider");
-  let index = 0;
-
-  setInterval(()=>{
-    const slides = slider.querySelectorAll("img");
-    if(slides.length === 0) return;
-
-    index = (index + 1) % slides.length;
-    slider.scrollTo({
-      left: slides[index].offsetLeft,
-      behavior: "smooth"
-    });
-  }, 2500);
-
 </script>
-
 </body>
 </html>
-
-
