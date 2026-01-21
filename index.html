@@ -1,202 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>SANGHX</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>SANGHX • Welcome</title>
+  <link rel="manifest" href="manifest.json">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
+    
+    body {
+      background-color: #000;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      perspective: 1000px;
+    }
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800;900&display=swap" rel="stylesheet">
+    /* Container */
+    .splash-container {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      animation: zoomThrough 3.5s cubic-bezier(0.7, 0, 0.3, 1) forwards;
+    }
 
-<style>
-  *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
-  body{
-    height:100vh;
-    background:#050505;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    overflow:hidden;
-    color:white;
-  }
+    /* Text Styling */
+    .logo-text {
+      font-size: 60px;
+      font-weight: 900;
+      letter-spacing: -2px;
+      display: flex;
+      gap: 5px;
+      z-index: 10;
+    }
 
-  /* Glow background */
-  .glow{
-    position:absolute;
-    width:500px;
-    height:500px;
-    background:#e23744;
-    filter:blur(180px);
-    opacity:0.20;
-    animation: floatGlow 4s ease-in-out infinite;
-  }
+    .white-part {
+      color: #ffffff;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+      animation: dropIn 0.8s ease-out forwards;
+      opacity: 0;
+    }
 
-  @keyframes floatGlow{
-    0%,100%{transform:translateY(0px);}
-    50%{transform:translateY(-22px);}
-  }
+    .red-part {
+      color: #e50914;
+      position: relative;
+      animation: dropIn 0.8s ease-out 0.2s forwards;
+      opacity: 0;
+    }
+    
+    .red-part::after {
+      content: attr(data-text);
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: -1;
+      color: #b20710;
+      transform: translateX(2px) translateY(2px);
+      filter: blur(4px);
+    }
 
-  /* Main wrap */
-  .wrap{
-    text-align:center;
-    position:relative;
-    z-index:2;
-    opacity:0;
-    transform:scale(0.92);
-    animation: pop 0.8s ease forwards;
-  }
+    /* Glow Effect */
+    .glow-effect {
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      background: radial-gradient(circle, rgba(229, 9, 20, 0.6) 0%, rgba(0,0,0,0) 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1;
+      opacity: 0;
+      animation: pulseGlow 2s ease-in-out infinite 0.5s;
+    }
 
-  @keyframes pop{
-    to{opacity:1;transform:scale(1);}
-  }
+    /* Tagline */
+    .tagline {
+      margin-top: 15px;
+      color: #888;
+      font-size: 10px;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      opacity: 0;
+      animation: fadeIn 1s ease forwards 1s;
+    }
 
-  /* Brand text */
-  .brand{
-    font-size:70px;
-    font-weight:900;
-    letter-spacing:10px;
-    position:relative;
-    display:inline-block;
-    line-height:1;
-  }
+    /* Animations */
+    @keyframes dropIn {
+      0% { transform: scale(3); opacity: 0; filter: blur(10px); }
+      100% { transform: scale(1); opacity: 1; filter: blur(0); }
+    }
 
-  .brand span{
-    color:#e23744;
-  }
+    @keyframes pulseGlow {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+      50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.5); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(2); }
+    }
 
-  /* Glitch / slice overlay */
-  .brand::before,
-  .brand::after{
-    content:attr(data-text);
-    position:absolute;
-    left:0;
-    top:0;
-    width:100%;
-    overflow:hidden;
-    opacity:0.8;
-    pointer-events:none;
-  }
+    @keyframes fadeIn { to { opacity: 1; } }
 
-  .brand::before{
-    color:#ff7a18;
-    clip-path: inset(0 0 55% 0);
-    animation: glitchTop 1.2s ease forwards;
-  }
+    @keyframes zoomThrough {
+      0% { transform: scale(1); }
+      75% { transform: scale(1); opacity: 1; }
+      90% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(50); opacity: 0; }
+    }
 
-  .brand::after{
-    color:#e23744;
-    clip-path: inset(55% 0 0 0);
-    animation: glitchBottom 1.2s ease forwards;
-  }
-
-  @keyframes glitchTop{
-    0%{transform:translate(-14px,-6px);opacity:0;}
-    30%{opacity:1;}
-    60%{transform:translate(10px,2px);opacity:0.9;}
-    100%{transform:translate(0,0);opacity:0;}
-  }
-
-  @keyframes glitchBottom{
-    0%{transform:translate(14px,6px);opacity:0;}
-    30%{opacity:1;}
-    60%{transform:translate(-10px,-2px);opacity:0.9;}
-    100%{transform:translate(0,0);opacity:0;}
-  }
-
-  /* Red slice line passing */
-  .slice{
-    position:absolute;
-    left:-30%;
-    top:50%;
-    width:160%;
-    height:10px;
-    background:#e23744;
-    transform:translateY(-50%) rotate(-12deg);
-    opacity:0;
-    filter:blur(0.2px);
-    animation:sliceMove 1.2s ease forwards;
-  }
-
-  @keyframes sliceMove{
-    0%{transform:translateY(-50%) rotate(-12deg) translateX(-130%);opacity:0;}
-    35%{opacity:1;}
-    70%{transform:translateY(-50%) rotate(-12deg) translateX(0%);opacity:1;}
-    100%{transform:translateY(-50%) rotate(-12deg) translateX(150%);opacity:0;}
-  }
-
-  /* Loading bar */
-  .bar{
-    margin:22px auto 0;
-    width:260px;
-    height:6px;
-    border-radius:999px;
-    background:rgba(255,255,255,0.12);
-    overflow:hidden;
-  }
-
-  .fill{
-    width:0%;
-    height:100%;
-    border-radius:999px;
-    background:linear-gradient(90deg,#ff7a18,#e23744);
-    animation: fill 2.4s ease forwards;
-  }
-
-  @keyframes fill{
-    from{width:0%;}
-    to{width:100%;}
-  }
-
-  .tag{
-    margin-top:12px;
-    font-size:12px;
-    letter-spacing:2px;
-    opacity:0.65;
-  }
-
-  /* Fade out */
-  .fadeOut{
-    animation: fadeOut 0.65s ease forwards;
-  }
-
-  @keyframes fadeOut{
-    to{opacity:0;transform:scale(1.08);filter:blur(8px);}
-  }
-</style>
+  </style>
 </head>
-
 <body>
 
-<div class="glow"></div>
+  <div class="splash-container">
+    <div class="glow-effect"></div>
+    
+    <div class="logo-text">
+      <span class="white-part">SAN</span>
+      <span class="red-part" data-text="GHX">GHX</span>
+    </div>
 
-<div class="wrap" id="wrap">
-  <div class="slice"></div>
-
-  <!-- ✅ NAME ONLY -->
-  <div class="brand" data-text="SANGHX">
-    SAN<span>GHX</span>
+    <div class="tagline">SAKOLI'S FINEST</div>
   </div>
 
-  <div class="bar">
-    <div class="fill"></div>
-  </div>
+  <script>
+    if('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
 
-  <div class="tag">minimal • fast • local</div>
-</div>
-
-<script>
-  // ✅ next page
-  const NEXT_PAGE = "page2.html"; // change to customer.html if you want
-
-  // fade out
-  setTimeout(() => {
-    document.getElementById("wrap").classList.add("fadeOut");
-  }, 2600);
-
-  // redirect
-  setTimeout(() => {
-    window.location.href = NEXT_PAGE;
-  }, 3200);
-</script>
+    // Redirect to page2.html after animation
+    setTimeout(() => {
+      document.body.style.backgroundColor = "#000"; 
+      window.location.href = "page2.html"; // ✅ Updated Redirect
+    }, 3200);
+  </script>
 
 </body>
 </html>
