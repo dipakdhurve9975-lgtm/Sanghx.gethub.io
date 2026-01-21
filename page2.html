@@ -2,7 +2,7 @@
 <html lang="mr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>SANGHX • Select Role</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
@@ -11,76 +11,67 @@
   <style>
     :root {
       /* Food Palette */
-      --bg-color: #121212; /* Deep Charcoal */
-      --card-bg: rgba(30, 30, 30, 0.6);
+      --bg-color: #121212; 
+      --card-bg: rgba(30, 30, 30, 0.75); /* Slightly darker for readability */
       
-      /* The "Appetite" Gradients */
-      --food-primary: linear-gradient(135deg, #FF416C 0%, #FF4B2B 100%); /* Hot Red/Orange */
-      --food-accent: #FFB75E; /* Cheese/Gold */
+      /* Gradients */
+      --food-primary: linear-gradient(135deg, #FF416C 0%, #FF4B2B 100%);
+      --food-accent: #FFB75E; 
       
       --text-white: #ffffff;
       --text-gray: #b0b0b0;
       
-      --glass-border: rgba(255, 255, 255, 0.08);
-      --shadow-color: rgba(255, 75, 43, 0.4); /* Red Glow */
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --shadow-color: rgba(255, 75, 43, 0.4);
     }
 
-    * { margin:0; padding:0; box-sizing:border-box; font-family:'Outfit', sans-serif; }
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Outfit', sans-serif; -webkit-tap-highlight-color:transparent; }
 
     body {
-      min-height: 100vh;
+      height: 100vh; /* Fixed height for mobile app feel */
+      width: 100vw;
       display: flex;
       justify-content: center;
       align-items: center;
       background-color: var(--bg-color);
-      /* Subtle mesh pattern for texture */
       background-image: 
         radial-gradient(at 0% 0%, hsla(353,100%,45%,0.2) 0px, transparent 50%),
         radial-gradient(at 100% 100%, hsla(34,100%,48%,0.2) 0px, transparent 50%);
-      padding: 20px;
-      overflow: hidden;
+      overflow: hidden; /* No scroll */
       color: var(--text-white);
     }
 
-    /* --- Ambient "Heat" Blobs --- */
+    /* --- Ambient Background --- */
     .blob {
       position: absolute;
       border-radius: 50%;
-      filter: blur(90px);
+      filter: blur(80px);
       z-index: 0;
+      opacity: 0.4;
       animation: pulseHeat 8s infinite alternate ease-in-out;
     }
-    .blob-1 { 
-      width: 350px; height: 350px; 
-      background: #FF416C; /* Red */
-      top: -100px; left: -50px; opacity: 0.3; 
-    }
-    .blob-2 { 
-      width: 400px; height: 400px; 
-      background: #FFB75E; /* Orange/Yellow */
-      bottom: -100px; right: -80px; opacity: 0.25; 
-      animation-delay: -4s;
-    }
+    .blob-1 { width: 300px; height: 300px; background: #FF416C; top: -80px; left: -50px; }
+    .blob-2 { width: 300px; height: 300px; background: #FFB75E; bottom: -80px; right: -50px; animation-delay: -4s; }
 
     @keyframes pulseHeat { 
       0% { transform: scale(1) translate(0,0); } 
-      100% { transform: scale(1.1) translate(20px, -20px); } 
+      100% { transform: scale(1.1) translate(10px, -10px); } 
     }
 
-    /* --- The Frosted Menu Card --- */
+    /* --- Mobile Card --- */
     .card {
       position: relative;
-      width: 100%;
+      width: 90%; /* Responsive Width */
       max-width: 400px;
       background: var(--card-bg);
-      backdrop-filter: blur(30px);
-      -webkit-backdrop-filter: blur(30px);
+      backdrop-filter: blur(35px);
+      -webkit-backdrop-filter: blur(35px);
       border: 1px solid var(--glass-border);
-      border-top: 1px solid rgba(255,255,255,0.2);
+      border-top: 1px solid rgba(255,255,255,0.25);
       border-radius: 32px;
-      padding: 45px 30px;
+      padding: 35px 25px; /* Comfortable padding */
       text-align: center;
-      box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+      box-shadow: 0 25px 50px rgba(0,0,0,0.6);
       z-index: 10;
       transform: translateY(30px);
       animation: menuSlideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
@@ -88,94 +79,83 @@
 
     @keyframes menuSlideUp { to { transform: translateY(0); opacity: 1; } }
 
-    /* --- Tasty Typography --- */
+    /* --- Typography --- */
     .logo {
-      font-size: 46px;
+      font-size: 40px; /* Slightly smaller for mobile */
       font-weight: 900;
-      /* Delicious Gradient Text */
       background: linear-gradient(to right, #FFF, #FF4B2B);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       margin-bottom: 5px;
-      letter-spacing: -1.5px;
+      letter-spacing: -1px;
       drop-shadow: 0 5px 15px rgba(255, 75, 43, 0.3);
     }
 
-    .greeting { font-size: 18px; font-weight: 600; color: #eee; margin-bottom: 15px; }
+    .greeting { font-size: 16px; font-weight: 600; color: #eee; margin-bottom: 15px; }
 
     .description {
-      font-size: 14px; color: var(--text-gray); line-height: 1.6; margin-bottom: 30px;
+      font-size: 13px; color: var(--text-gray); line-height: 1.5; margin-bottom: 25px;
     }
-    .description b { color: #FFB75E; } /* Gold highlight */
+    .description b { color: #FFB75E; font-weight: 700; }
 
     .divider {
-      height: 1px;
-      width: 100%;
+      height: 1px; width: 100%;
       background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
-      margin-bottom: 25px;
+      margin-bottom: 20px;
     }
 
     .label {
       font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
-      font-weight: 800; color: #888; margin-bottom: 15px; display: block;
+      font-weight: 800; color: #999; margin-bottom: 15px; display: block;
     }
 
-    /* --- BUTTONS (The Main Attraction) --- */
-    .btn-container { display: flex; flex-direction: column; gap: 16px; }
+    /* --- Buttons --- */
+    .btn-container { display: flex; flex-direction: column; gap: 14px; }
 
     .btn {
       position: relative;
       display: flex; align-items: center; justify-content: center; gap: 12px;
-      padding: 18px;
-      border-radius: 20px;
+      padding: 16px; /* Touch friendly */
+      border-radius: 18px;
       text-decoration: none;
       font-weight: 700; font-size: 16px;
-      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); /* Bouncy feel */
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
       overflow: hidden;
     }
 
-    /* 1. Primary Button (Customer - Juicy) */
+    /* Primary Button */
     .btn-primary {
       background: var(--food-primary);
       color: white;
-      box-shadow: 0 10px 25px var(--shadow-color);
+      box-shadow: 0 8px 20px var(--shadow-color);
       border: 1px solid rgba(255,255,255,0.2);
     }
 
-    /* Glossy Shine Effect */
+    /* Shine Animation */
     .btn-primary::before {
       content: '';
-      position: absolute;
-      top: 0; left: -100%;
-      width: 100%; height: 100%;
+      position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
       background: linear-gradient(120deg, transparent, rgba(255,255,255,0.4), transparent);
-      transition: 0.5s;
+      animation: shine 3s infinite;
     }
+    @keyframes shine { 20% { left: 100%; } 100% { left: 100%; } }
 
-    .btn-primary:hover {
-      transform: translateY(-4px) scale(1.02);
-      box-shadow: 0 15px 35px rgba(255, 75, 43, 0.6);
-    }
+    .btn-primary:active { transform: scale(0.96); }
 
-    .btn-primary:hover::before { left: 100%; }
-
-    .btn-primary:active { transform: scale(0.95); }
-
-    /* 2. Secondary Buttons (Vendors - Dark Glass) */
+    /* Secondary Buttons */
     .btn-secondary {
-      background: rgba(255, 255, 255, 0.03);
+      background: rgba(255, 255, 255, 0.05);
       color: #ccc;
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.08);
-      border-color: rgba(255, 255, 255, 0.2);
+    .btn-secondary:active {
+      background: rgba(255, 255, 255, 0.1);
       color: white;
-      transform: translateY(-2px);
+      transform: scale(0.96);
     }
 
-    /* Staggered Entrance */
+    /* Animations */
     .stagger { opacity: 0; animation: fadeUp 0.6s ease forwards; }
     .d1 { animation-delay: 0.1s; }
     .d2 { animation-delay: 0.2s; }
@@ -187,7 +167,7 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .icon-box { font-size: 22px; display: flex; }
+    .icon-box { font-size: 20px; display: flex; }
 
   </style>
 </head>
@@ -211,7 +191,7 @@
 
     <div class="divider stagger d3"></div>
 
-    <span class="label stagger d3">तुम्ही कोण आहात? (Select Role)</span>
+    <span class="label stagger d3">तुमची भूमिका निवडा</span>
 
     <div class="btn-container stagger d4">
       
