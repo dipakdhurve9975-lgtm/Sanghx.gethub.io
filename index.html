@@ -3,279 +3,139 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>SANGHX • Premium Delivery</title>
-  
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-
+  <title>SANGHX • Welcome</title>
+  <link rel="manifest" href="manifest.json">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --primary: #E50914; /* Netflix Red */
-      --dark: #0f0f0f;
-      --bg: #FAFAFA;
-      --glass: rgba(255, 255, 255, 0.85);
-      --glass-border: 1px solid rgba(255, 255, 255, 0.6);
-      --shadow: 0 10px 40px -10px rgba(0,0,0,0.1);
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
+    
+    body {
+      background-color: #000;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      perspective: 1000px;
     }
 
-    * { margin:0; padding:0; box-sizing:border-box; font-family:'Outfit', sans-serif; -webkit-tap-highlight-color:transparent; }
-    body { background-color: var(--dark); overflow-x: hidden; }
-
-    /* =========================================
-       1. CINEMATIC SPLASH SCREEN (Netflix Style)
-       ========================================= */
-    .splash-screen {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-      background: #000; z-index: 9999;
-      display: flex; justify-content: center; align-items: center;
-      animation: fadeOutBg 0.5s ease 3.5s forwards; /* Fades out black bg at end */
-      pointer-events: none;
-    }
-
-    .splash-logo {
-      font-size: 60px; font-weight: 900; letter-spacing: -2px; color: var(--primary);
-      text-transform: uppercase;
+    /* Container */
+    .splash-container {
       position: relative;
-      animation: netflixZoom 3.5s cubic-bezier(0.6, 0.05, 0.01, 0.99) forwards;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      animation: zoomThrough 3.5s cubic-bezier(0.7, 0, 0.3, 1) forwards;
+    }
+
+    /* Text Styling */
+    .logo-text {
+      font-size: 60px;
+      font-weight: 900;
+      letter-spacing: -2px;
+      display: flex;
+      gap: 5px;
+      z-index: 10;
+    }
+
+    .white-part {
+      color: #ffffff;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+      animation: dropIn 0.8s ease-out forwards;
+      opacity: 0;
+    }
+
+    .red-part {
+      color: #e50914;
+      position: relative;
+      animation: dropIn 0.8s ease-out 0.2s forwards;
+      opacity: 0;
     }
     
-    .splash-logo span { color: white; }
-
-    /* The "Camera Fly Through" Effect */
-    @keyframes netflixZoom {
-      0% { transform: scale(0.5); opacity: 0; }
-      20% { transform: scale(1); opacity: 1; }
-      60% { transform: scale(1); opacity: 1; } /* Hold */
-      80% { transform: scale(1.5); opacity: 1; } /* Slight pull back */
-      100% { transform: scale(60); opacity: 0; } /* Zoom through */
+    .red-part::after {
+      content: attr(data-text);
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: -1;
+      color: #b20710;
+      transform: translateX(2px) translateY(2px);
+      filter: blur(4px);
     }
 
-    @keyframes fadeOutBg { to { opacity: 0; visibility: hidden; } }
-
-    /* =========================================
-       2. MAIN APP UI (Hidden initially)
-       ========================================= */
-    .app-container {
-      background: var(--bg); min-height: 100vh;
-      opacity: 0; animation: appFadeIn 1s ease 3.2s forwards;
-      padding-bottom: 100px;
+    /* Glow Effect */
+    .glow-effect {
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      background: radial-gradient(circle, rgba(229, 9, 20, 0.6) 0%, rgba(0,0,0,0) 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1;
+      opacity: 0;
+      animation: pulseGlow 2s ease-in-out infinite 0.5s;
     }
 
-    @keyframes appFadeIn { to { opacity: 1; } }
-
-    /* --- Glass Header --- */
-    .header {
-      position: sticky; top: 0; z-index: 100;
-      background: var(--glass); backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: var(--glass-border);
-      padding: 15px 20px;
-      display: flex; justify-content: space-between; align-items: center;
-    }
-    .brand { font-size: 24px; font-weight: 900; color: var(--dark); letter-spacing: -1px; }
-    .brand span { color: var(--primary); }
-    
-    /* --- Ticker --- */
-    .ticker-wrap {
-      background: var(--dark); color: white; padding: 8px 0; overflow: hidden; white-space: nowrap;
-    }
-    .ticker { display: inline-block; animation: scroll 15s linear infinite; font-size: 12px; font-weight: 600; letter-spacing: 1px; }
-    @keyframes scroll { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
-
-    /* --- Hero Section --- */
-    .hero {
-      margin: 20px; height: 180px; border-radius: 24px; overflow: hidden; position: relative;
-      box-shadow: var(--shadow);
-    }
-    .hero img { width: 100%; height: 100%; object-fit: cover; animation: slowZoom 10s infinite alternate; }
-    .hero-overlay {
-      position: absolute; inset: 0;
-      background: linear-gradient(to right, #000000cc, transparent);
-      display: flex; flex-direction: column; justify-content: center; padding: 25px; color: white;
-    }
-    @keyframes slowZoom { from{transform:scale(1)} to{transform:scale(1.1)} }
-
-    /* --- Search & Filters --- */
-    .search-bar {
-      margin: 0 20px 20px; background: white; border-radius: 16px; padding: 14px;
-      display: flex; align-items: center; gap: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.04);
-    }
-    .search-bar input { border: none; outline: none; width: 100%; font-size: 15px; font-weight: 500; color: #333; }
-
-    .filters {
-      display: flex; gap: 12px; overflow-x: auto; padding: 0 20px 10px; scrollbar-width: none;
-    }
-    .chip {
-      padding: 10px 20px; background: white; border-radius: 30px; font-size: 13px; font-weight: 700;
-      color: #888; white-space: nowrap; transition: 0.3s; border: 1px solid #f0f0f0;
-    }
-    .chip.active { background: var(--dark); color: white; border-color: var(--dark); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-
-    /* --- Food Grid --- */
-    .grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 10px 20px;
-    }
-    .card {
-      background: white; border-radius: 20px; padding: 10px; position: relative;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.06); transition: transform 0.2s; overflow: hidden;
-    }
-    .card:active { transform: scale(0.96); }
-    
-    .card-img-box {
-      height: 120px; border-radius: 16px; overflow: hidden; position: relative;
-    }
-    .card-img { width: 100%; height: 100%; object-fit: cover; }
-    
-    /* Elegant Closed Overlay */
-    .closed-overlay {
-      position: absolute; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: grayscale(1);
-      display: flex; justify-content: center; align-items: center; color: white; font-weight: 800;
-      font-size: 12px; letter-spacing: 1px; text-transform: uppercase;
+    /* Tagline */
+    .tagline {
+      margin-top: 15px;
+      color: #888;
+      font-size: 10px;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      opacity: 0;
+      animation: fadeIn 1s ease forwards 1s;
     }
 
-    .card-info { padding: 10px 5px 5px; }
-    .card-title { font-size: 15px; font-weight: 700; color: var(--dark); margin-bottom: 4px; }
-    .card-price { font-size: 16px; font-weight: 800; color: var(--primary); display: flex; justify-content: space-between; align-items: center; }
-    
-    .add-btn {
-      width: 32px; height: 32px; background: var(--dark); color: white; border-radius: 10px;
-      display: flex; justify-content: center; align-items: center; font-size: 18px; cursor: pointer;
+    /* Animations */
+    @keyframes dropIn {
+      0% { transform: scale(3); opacity: 0; filter: blur(10px); }
+      100% { transform: scale(1); opacity: 1; filter: blur(0); }
     }
 
-    /* --- Floating Nav --- */
-    .nav {
-      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-      width: 90%; background: var(--glass); backdrop-filter: blur(20px);
-      padding: 15px 30px; border-radius: 25px; display: flex; justify-content: space-between; align-items: center;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.4); z-index: 90;
+    @keyframes pulseGlow {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+      50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.5); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(2); }
     }
-    .nav-item { font-size: 24px; color: #999; position: relative; transition: 0.3s; }
-    .nav-item.active { color: var(--primary); transform: translateY(-3px); }
-    .nav-item.active::after {
-      content: ''; position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%);
-      width: 5px; height: 5px; background: var(--primary); border-radius: 50%;
+
+    @keyframes fadeIn { to { opacity: 1; } }
+
+    @keyframes zoomThrough {
+      0% { transform: scale(1); }
+      75% { transform: scale(1); opacity: 1; }
+      90% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(50); opacity: 0; }
     }
-    
-    .cart-float {
-      position: absolute; top: -25px; left: 50%; transform: translateX(-50%);
-      width: 55px; height: 55px; background: var(--primary); color: white;
-      border-radius: 50%; display: flex; justify-content: center; align-items: center;
-      font-size: 24px; box-shadow: 0 10px 25px rgba(229, 9, 20, 0.4); border: 4px solid var(--bg);
-    }
+
   </style>
 </head>
 <body>
 
-  <div class="splash-screen">
-    <div class="splash-logo">SAN<span>GHX</span></div>
-  </div>
-
-  <div class="app-container">
+  <div class="splash-container">
+    <div class="glow-effect"></div>
     
-    <div class="header">
-      <div class="brand">SAN<span>GHX</span></div>
-      <i class='bx bxl-whatsapp' style="font-size:26px; color:#25D366;"></i>
+    <div class="logo-text">
+      <span class="white-part">SAN</span>
+      <span class="red-part" data-text="GHX">GHX</span>
     </div>
 
-    <div class="ticker-wrap">
-      <div class="ticker">
-        ⚡ TODAY'S SPECIAL: 50% OFF ON BIRYANI • FASTEST DELIVERY IN SAKOLI • BRO AI IS LIVE 🤖
-      </div>
-    </div>
-
-    <div class="hero">
-      <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=800&auto=format&fit=crop" alt="Food">
-      <div class="hero-overlay">
-        <h2 style="font-size:28px; line-height:1.1; font-weight:800;">Only ₹10<br>Delivery</h2>
-        <p style="opacity:0.8; margin-top:5px; font-weight:500;">Welcome to Sanghx</p>
-      </div>
-    </div>
-
-    <div class="search-bar">
-      <i class='bx bx-search' style="color:#999; font-size:20px;"></i>
-      <input type="text" placeholder="Search biryani, pizza, rolls...">
-    </div>
-
-    <div class="filters">
-      <div class="chip active">All</div>
-      <div class="chip">Biryani</div>
-      <div class="chip">Fast Food</div>
-      <div class="chip">Chinese</div>
-      <div class="chip">Desserts</div>
-    </div>
-
-    <div class="grid">
-      <div class="card">
-        <div class="card-img-box">
-          <img src="https://images.unsplash.com/photo-1589302168068-964664d93dc0?q=80&w=400&auto=format&fit=crop" class="card-img">
-        </div>
-        <div class="card-info">
-          <div class="card-title">Hyderabadi Biryani</div>
-          <div class="card-price">
-            ₹120
-            <div class="add-btn"><i class='bx bx-plus'></i></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-img-box">
-          <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=400&auto=format&fit=crop" class="card-img">
-          <div class="closed-overlay">Closed</div>
-        </div>
-        <div class="card-info" style="opacity:0.5;">
-          <div class="card-title">Cheese Pizza</div>
-          <div class="card-price">
-            ₹199
-            <div class="add-btn" style="background:#ccc;"><i class='bx bx-x'></i></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-img-box">
-          <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?q=80&w=400&auto=format&fit=crop" class="card-img">
-        </div>
-        <div class="card-info">
-          <div class="card-title">Samosa Plate</div>
-          <div class="card-price">
-            ₹30
-            <div class="add-btn"><i class='bx bx-plus'></i></div>
-          </div>
-        </div>
-      </div>
-       <div class="card">
-        <div class="card-img-box">
-          <img src="https://images.unsplash.com/photo-1626074353765-517a681e40be?q=80&w=400&auto=format&fit=crop" class="card-img">
-        </div>
-        <div class="card-info">
-          <div class="card-title">Fried Chicken</div>
-          <div class="card-price">
-            ₹150
-            <div class="add-btn"><i class='bx bx-plus'></i></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="nav">
-      <i class='bx bxs-home-alt-2 nav-item active'></i>
-      <i class='bx bxs-offer nav-item'></i>
-      <div class="cart-float" onclick="location.href='checkout.html'"><i class='bx bxs-shopping-bag'></i></div>
-      <i class='bx bxs-bell nav-item'></i>
-      <i class='bx bxs-user-circle nav-item'></i>
-    </div>
-
+    <div class="tagline">SAKOLI'S FINEST</div>
   </div>
 
   <script>
-    // Logic to handle navigation or simple interactions
-    document.querySelectorAll('.chip').forEach(chip => {
-      chip.addEventListener('click', function() {
-        document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-        this.classList.add('active');
-      });
-    });
+    if('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
+
+    // Redirect to page2.html after animation
+    setTimeout(() => {
+      document.body.style.backgroundColor = "#000"; 
+      window.location.href = "page2.html"; // ✅ Updated Redirect
+    }, 3200);
   </script>
+
 </body>
 </html>
