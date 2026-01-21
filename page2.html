@@ -3,108 +3,217 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SANGHX</title>
+  <title>SANGHX • Select Role</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 
   <style>
-    *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
-    body{
-      min-height:100vh;
-      background:linear-gradient(135deg,#fff7f5,#ffe9e5);
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      padding:18px;
+    :root {
+      --primary: #FF4B3A;
+      --primary-dark: #E63E30;
+      --accent: #FF8F70;
+      --glass: rgba(255, 255, 255, 0.1);
+      --glass-border: rgba(255, 255, 255, 0.2);
+      --text: #ffffff;
+      --bg-dark: #0f0c29;
     }
 
-    .card{
-      width:100%;
-      max-width:420px;
-      background:white;
-      border-radius:20px;
-      padding:22px;
-      box-shadow:0 12px 30px rgba(0,0,0,0.08);
-      text-align:center;
-      animation: fadeIn 0.6s ease;
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Outfit', sans-serif; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: radial-gradient(circle at 50% 0%, #2a2a72 0%, #0f0c29 100%);
+      padding: 20px;
+      overflow: hidden;
+      color: var(--text);
     }
 
-    @keyframes fadeIn{
-      from{opacity:0; transform: translateY(20px);}
-      to{opacity:1; transform: translateY(0px);}
+    /* --- Ambient Background --- */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: 0;
+      animation: drift 10s infinite alternate ease-in-out;
+    }
+    .orb-1 { width: 300px; height: 300px; background: #FF4B3A; top: -50px; left: -50px; opacity: 0.4; }
+    .orb-2 { width: 400px; height: 400px; background: #4b6cb7; bottom: -100px; right: -100px; opacity: 0.3; animation-delay: -5s; }
+
+    @keyframes drift { from { transform: translate(0,0); } to { transform: translate(30px, 50px); } }
+
+    /* --- The Glass Card --- */
+    .card {
+      position: relative;
+      width: 100%;
+      max-width: 420px;
+      background: rgba(20, 20, 30, 0.6);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid var(--glass-border);
+      border-top: 1px solid rgba(255,255,255,0.4); /* Highlight top edge */
+      border-radius: 30px;
+      padding: 40px 30px;
+      text-align: center;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      z-index: 10;
+      transform: translateY(30px);
+      opacity: 0;
+      animation: popIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
     }
 
-    .logo{
-      font-size:34px;
-      font-weight:800;
-      letter-spacing:2px;
-      color:#e23744;
-      margin-bottom:8px;
+    @keyframes popIn { to { transform: translateY(0); opacity: 1; } }
+
+    /* --- Typography --- */
+    .logo {
+      font-size: 48px;
+      font-weight: 900;
+      background: linear-gradient(to right, #fff, #FF4B3A);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 5px;
+      letter-spacing: -1.5px;
+      drop-shadow: 0 0 20px rgba(255, 75, 58, 0.3);
     }
 
-    .greeting{
-      font-size:16px;
-      font-weight:600;
-      margin-bottom:6px;
+    .greeting { font-size: 18px; font-weight: 600; color: #ddd; margin-bottom: 15px; }
+
+    .description {
+      font-size: 14px; color: #aaa; line-height: 1.6; margin-bottom: 30px;
+    }
+    .description b { color: #fff; }
+
+    .divider {
+      height: 1px;
+      width: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      margin-bottom: 25px;
     }
 
-    .description{
-      font-size:14px;
-      opacity:0.8;
-      margin-bottom:14px;
-      line-height:1.5;
+    .label {
+      font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+      font-weight: 700; color: #666; margin-bottom: 15px; display: block;
     }
 
-    .question{
-      font-size:16px;
-      font-weight:700;
-      margin-bottom:14px;
+    /* --- BUTTONS (The High CSS Part) --- */
+    .btn-container { display: flex; flex-direction: column; gap: 15px; }
+
+    .btn {
+      position: relative;
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+      padding: 18px;
+      border-radius: 16px;
+      text-decoration: none;
+      font-weight: 700; font-size: 16px;
+      transition: all 0.3s ease;
+      overflow: hidden; /* For shine effect */
     }
 
-    .buttons{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
+    /* 1. Primary Button (Customer) */
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      box-shadow: 0 10px 20px rgba(255, 75, 58, 0.3);
+      border: 1px solid rgba(255,255,255,0.1);
     }
 
-    .btn{
-      display:block;
-      text-decoration:none;
-      padding:12px;
-      border-radius:14px;
-      font-weight:700;
-      background:linear-gradient(135deg,#e23744,#ff5a5f);
-      color:white;
-      transition:0.2s;
+    /* The SHINE Effect */
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 50%; height: 100%;
+      background: linear-gradient(to right, transparent, rgba(255,255,255,0.4), transparent);
+      transform: skewX(-20deg);
+      transition: 0.5s;
     }
 
-    .btn:active{ transform: scale(0.98); }
-
-    .btn.gray{
-      background:#111;
+    .btn-primary:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 15px 30px rgba(255, 75, 58, 0.5);
     }
+
+    .btn-primary:hover::before {
+      left: 150%; /* Moves the shine across */
+      transition: 0.5s;
+    }
+
+    .btn-primary:active { transform: scale(0.98); }
+
+    /* 2. Secondary Buttons (Vendors/Delivery) */
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: #ccc;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(5px);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.3);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    /* Staggered Entrance Animations */
+    .stagger { opacity: 0; animation: fadeUp 0.6s ease forwards; }
+    .d1 { animation-delay: 0.1s; }
+    .d2 { animation-delay: 0.2s; }
+    .d3 { animation-delay: 0.3s; }
+    .d4 { animation-delay: 0.4s; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Icon styling */
+    .icon-box { font-size: 22px; display: flex; }
+
   </style>
 </head>
 
 <body>
 
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+
   <div class="card">
-    <h1 class="logo">SANGHX</h1>
+    
+    <div class="stagger d1">
+      <div class="logo">SANGHX</div>
+      <div class="greeting">नमस्कार! 🙏</div>
+    </div>
 
-    <p class="greeting">नमस्कार!</p>
-
-    <p class="description">
+    <div class="description stagger d2">
       चव, सोय आणि विश्वास — सगळं एका ठिकाणी.<br>
       <b>तुमची चव, आमची जबाबदारी.</b>
-    </p>
-
-    <p class="question">तुम्ही कोण आहात?</p>
-
-    <div class="buttons">
-      <a href="customer.html" class="btn">🍽️ ग्राहक</a>
-      <a href="#" class="btn gray" onclick="alert('🏪 Coming Soon')">🏪 COMMING SOON</a>
-      <a href="#" class="btn gray" onclick="alert('🚴‍♂️ Coming Soon')">🚴‍♂️ COMMING SOON</a>
     </div>
+
+    <div class="divider stagger d3"></div>
+
+    <span class="label stagger d3">तुमची भूमिका निवडा (Select Role)</span>
+
+    <div class="btn-container stagger d4">
+      <a href="customer.html" class="btn btn-primary">
+        <div class="icon-box"><i class='bx bxs-dish'></i></div>
+        <span>ग्राहक (Customer)</span>
+      </a>
+
+      <a href="#" class="btn btn-secondary" onclick="alert('लवकरच येत आहे! 🏪')">
+        <div class="icon-box"><i class='bx bxs-store'></i></div>
+        <span>Comming (Soon)</span>
+      </a>
+
+      <a href="#" class="btn btn-secondary" onclick="alert('लवकरच येत आहे! 🚴‍♂️')">
+        <div class="icon-box"><i class='bx bxs-package'></i></div>
+        <span>Comming (Soon)</span>
+      </a>
+    </div>
+
   </div>
 
 </body>
