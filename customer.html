@@ -342,26 +342,49 @@
     }, 250);
   }, 2500);
 
-  // --- VOICE ENGINE ---
+  // ✅ VOICE ENGINE (BEST MOBILE FIX)
   let selectedVoice = null;
-  function loadVoices() {
+
+  function pickBestVoice() {
     const voices = window.speechSynthesis.getVoices();
-    selectedVoice = voices.find(v => v.lang.includes('hi-IN')) ||
-                    voices.find(v => v.lang.includes('mr-IN')) ||
-                    voices.find(v => v.lang.includes('en-IN')) ||
-                    voices[0];
+
+    selectedVoice =
+      voices.find(v => v.lang === "mr-IN") ||
+      voices.find(v => v.lang.includes("mr")) ||
+      voices.find(v => v.lang === "hi-IN") ||
+      voices.find(v => v.lang.includes("hi")) ||
+      voices.find(v => v.lang === "en-IN") ||
+      voices[0] ||
+      null;
   }
-  if (window.speechSynthesis.onvoiceschanged !== undefined) {
-    window.speechSynthesis.onvoiceschanged = loadVoices;
+
+  function initVoice() {
+    pickBestVoice();
+    setTimeout(pickBestVoice, 500);
+    setTimeout(pickBestVoice, 1500);
   }
-  loadVoices();
+
+  if ("speechSynthesis" in window) {
+    window.speechSynthesis.onvoiceschanged = pickBestVoice;
+    initVoice();
+  }
 
   function speak(text) {
-    if (!('speechSynthesis' in window)) return;
+    if (!("speechSynthesis" in window)) return;
+
     window.speechSynthesis.cancel();
+
     const u = new SpeechSynthesisUtterance(text);
-    if(selectedVoice) u.voice = selectedVoice;
-    u.rate = 1; u.pitch = 1;
+
+    // Force Marathi
+    u.lang = "mr-IN";
+
+    if (selectedVoice) u.voice = selectedVoice;
+
+    u.rate = 1;
+    u.pitch = 1;
+    u.volume = 1;
+
     window.speechSynthesis.speak(u);
   }
 
@@ -512,10 +535,18 @@
   document.getElementById("closeCartBtn").onclick = () => els.cartModal.classList.remove("show");
   document.getElementById("checkoutBtn").onclick = () => location.href = "checkout.html";
 
+  // ✅ AI OPEN (UNLOCK MOBILE VOICE)
   document.getElementById("aiBtn").onclick = () => {
     els.aiModal.classList.add("show");
-    speak("भावा, मी BRO आहे. काय ऑर्डर करायचं?");
+
+    // unlock voice on mobile
+    speak(" ");
+
+    setTimeout(() => {
+      speak("भावा, मी BRO आहे. काय ऑर्डर करायचं?");
+    }, 200);
   };
+
   document.getElementById("aiCloseBtn").onclick = () => els.aiModal.classList.remove("show");
 
   function showToast(msg) {
@@ -546,4 +577,3 @@
 </script>
 </body>
 </html>
-
