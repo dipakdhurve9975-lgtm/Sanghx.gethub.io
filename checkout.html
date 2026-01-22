@@ -1,390 +1,447 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Checkout</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SANGHX • Secure Checkout</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+
   <style>
-    :root { --p:#ff3f34; --bg:#f1f2f6; --dark:#111; --green:#25D366; }
-    body { font-family:'Outfit',sans-serif; background:var(--bg); padding:20px; max-width:520px; margin:auto; }
+    :root {
+      --primary: #FF4B3A;
+      --dark: #0d0d0d;
+      --gray: #f2f2f5;
+      --green: #2ecc71;
+      --red: #ff3b3b;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Outfit', sans-serif; -webkit-tap-highlight-color:transparent; }
+    body { background: var(--gray); padding: 20px; max-width: 600px; margin: auto; padding-bottom: 100px; }
 
-    h2{ margin-bottom:15px; }
+    /* Header */
+    .header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+    .header i { font-size: 28px; color: var(--dark); cursor: pointer; }
+    .header h2 { font-size: 22px; font-weight: 800; }
 
-    .card { background:white; padding:20px; border-radius:16px; margin-bottom:15px; box-shadow:0 4px 15px rgba(0,0,0,0.03); }
-    .item-row { display:flex; justify-content:space-between; margin-bottom:10px; font-size:14px; gap:10px; }
-    .bill-box { background:#f9f9f9; padding:15px; border-radius:10px; margin-top:10px; }
+    /* Cards */
+    .card {
+      background: white; border-radius: 20px; padding: 20px; margin-bottom: 20px;
+      box-shadow: 0 10px 40px -10px rgba(0,0,0,0.08); position: relative; overflow: hidden;
+    }
+    .card-title { font-size: 16px; font-weight: 700; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
 
+    /* Order Items */
+    .order-item { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; border-bottom: 1px solid #f5f5f5; padding-bottom: 8px; }
+    .order-item b { font-weight: 700; }
+
+    /* Bill Summary */
+    .bill-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; color: #666; }
+    .total-row { display: flex; justify-content: space-between; margin-top: 15px; padding-top: 15px; border-top: 2px dashed #eee; font-size: 18px; font-weight: 800; color: var(--dark); }
+
+    /* Inputs */
+    .input-group { position: relative; margin-bottom: 15px; }
+    .input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #888; font-size: 20px; }
     input, textarea {
-      width:100%; padding:14px; margin-bottom:12px; border:1px solid #ddd;
-      border-radius:10px; outline:none; font-family:inherit; transition:0.3s;
+      width: 100%; padding: 14px 14px 14px 45px; border-radius: 14px; border: 1px solid #eee;
+      background: #f9f9f9; outline: none; font-size: 15px; font-weight: 500; transition: 0.3s;
     }
-    input:focus, textarea:focus { border-color:var(--p); background:#fff5f5; }
+    input:focus, textarea:focus { border-color: var(--primary); background: white; }
+    textarea { height: 80px; padding-left: 15px; }
 
+    /* Buttons */
     .btn {
-      width:100%; padding:16px; border:none; border-radius:12px; font-weight:800;
-      font-size:16px; cursor:pointer; display:flex; justify-content:center; align-items:center; gap:8px;
+      width: 100%; padding: 16px; border: none; border-radius: 16px; font-size: 16px; font-weight: 700;
+      cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; transition: 0.2s;
     }
-    .btn-pay { background:var(--green); color:white; margin-top:10px; box-shadow:0 5px 15px rgba(37,211,102,0.3); opacity:0.7; }
-    .btn-pay.enabled { opacity:1; }
+    .btn-gps { background: var(--dark); color: white; margin-top: 10px; }
+    .btn-gps.active { background: var(--green); }
 
-    .btn-loc { background:#1e272e; color:white; }
-
-    .status { text-align:center; margin-top:8px; font-size:12px; font-weight:800; color:#555; }
-    .small { font-size:11px; color:#888; margin-top:6px; }
-
-    .store-title{
-      font-weight:900; font-size:15px; margin-bottom:10px;
-      display:flex; justify-content:space-between; align-items:center;
+    /* Payment Options */
+    .pay-opt {
+      display: flex; align-items: center; padding: 15px; border: 2px solid #eee; border-radius: 16px;
+      margin-bottom: 10px; cursor: pointer; transition: 0.3s;
+      user-select: none;
     }
-    .badge{
-      font-size:10px; padding:5px 10px; border-radius:999px; font-weight:900;
-      background:#111; color:white;
+    .pay-opt.active { border-color: var(--primary); background: #fff0f0; }
+    .radio-circle { width: 20px; height: 20px; border: 2px solid #ccc; border-radius: 50%; margin-right: 15px; position: relative; }
+    .pay-opt.active .radio-circle { border-color: var(--primary); }
+    .pay-opt.active .radio-circle::after { content: ''; position: absolute; inset: 4px; background: var(--primary); border-radius: 50%; }
+
+    /* Bottom Bar */
+    .bottom-bar {
+      position: fixed; bottom: 0; left: 0; width: 100%; background: white;
+      padding: 15px 20px; border-radius: 20px 20px 0 0; box-shadow: 0 -10px 30px rgba(0,0,0,0.1);
+      z-index: 100;
+    }
+    .place-btn {
+      width: 100%; padding: 16px; background: linear-gradient(135deg, #FF4B3A, #ff7f50);
+      color: white; border: none; border-radius: 16px; font-size: 18px; font-weight: 800;
+      box-shadow: 0 10px 20px rgba(255, 75, 58, 0.3); cursor: pointer;
+      transition: 0.2s;
+    }
+    .place-btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      background: #999;
+      box-shadow: none;
     }
 
-    .toggle-wrap{
-      display:flex; gap:10px; margin-top:10px;
+    /* Modals */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px);
+      z-index: 200; display: none; align-items: center; justify-content: center; padding: 20px;
     }
-    .toggle{
-      flex:1;
-      padding:12px;
-      border-radius:12px;
-      border:2px solid #eee;
-      font-weight:900;
-      cursor:pointer;
-      background:white;
-      display:flex;
+    .modal-overlay.show { display: flex; }
+    .modal-card {
+      background: white; padding: 30px; border-radius: 24px; text-align: center; width: 100%;
+      max-width: 400px; box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+    }
+
+    .km-pill{
+      display:inline-flex;
       align-items:center;
-      justify-content:center;
       gap:8px;
-    }
-    .toggle.active{
-      border-color:var(--p);
-      background:#fff5f5;
-      color:var(--p);
-    }
-
-    .paybox{
-      background:#f9f9f9;
-      padding:14px;
-      border-radius:12px;
-      margin-top:12px;
-      border:1px dashed #ddd;
-    }
-    .upi-btn{
-      width:100%;
-      padding:14px;
-      border-radius:12px;
-      border:none;
-      font-weight:900;
-      cursor:pointer;
-      background:#111;
-      color:white;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:8px;
+      font-size:12px;
+      font-weight:800;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid #eee;
+      background:#fff;
       margin-top:10px;
     }
+    .km-pill.ok{ color: var(--green); border-color:#b8f0d0; background:#eafff2; }
+    .km-pill.no{ color: var(--red); border-color:#ffd0d0; background:#fff1f1; }
+
+    @keyframes slideUp { from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1} }
+    .animate { animation: slideUp 0.4s ease forwards; }
   </style>
 </head>
+
 <body>
 
-  <h2>Checkout 🛍️</h2>
-
-  <!-- CART + BILL -->
-  <div class="card">
-    <div id="cartStores"></div>
-    <div class="bill-box">
-      <div class="item-row"><span>Total Subtotal</span> <span id="sub">₹0</span></div>
-      <div class="item-row"><span>Total Delivery</span> <span id="delivery">₹0</span></div>
-      <div class="item-row"><span>Discount</span> <span id="disc" style="color:green;">-₹0</span></div>
-
-      <div class="item-row" style="font-weight:900; font-size:18px; border-top:1px dashed #ccc; padding-top:10px; margin-top:5px;">
-        <span>To Pay</span> <span id="total">₹0</span>
-      </div>
-    </div>
+  <div class="header">
+    <i class='bx bx-left-arrow-alt' onclick="location.href='index.html'"></i>
+    <h2>Checkout</h2>
   </div>
 
-  <!-- PAYMENT MODE -->
-  <div class="card">
-    <h3 style="margin-bottom:10px;">Payment Mode</h3>
+  <div class="animate">
 
-    <div class="toggle-wrap">
-      <div class="toggle active" id="codToggle" onclick="setPayMode('COD')">
-        <i class='bx bx-package'></i> COD
-      </div>
-      <div class="toggle" id="upiToggle" onclick="setPayMode('UPI')">
-        <i class='bx bx-rupee'></i> Pay Online
+    <div class="card">
+      <div class="card-title"><i class='bx bxs-receipt'></i> Order Summary</div>
+      <div id="orderItems"></div>
+
+      <div style="margin-top:15px;">
+        <div class="bill-row"><span>Item Total</span> <span id="subtotal">₹0</span></div>
+        <div class="bill-row"><span>Delivery Charge</span> <span>₹10</span></div>
+        <div class="total-row"><span>To Pay</span> <span id="grandTotal">₹0</span></div>
       </div>
     </div>
 
-    <div class="paybox" id="upiBox" style="display:none;">
-      <b>Pay via UPI</b>
-      <div class="small">After payment, click “Confirm Order” and we’ll verify on WhatsApp ✅</div>
+    <div class="card" style="animation-delay: 0.1s;">
+      <div class="card-title"><i class='bx bxs-user-detail'></i> Delivery Details</div>
 
-      <button class="upi-btn" onclick="payNowUPI()">
-        <i class='bx bx-credit-card'></i> Pay Now (UPI)
+      <div class="input-group">
+        <i class='bx bxs-user'></i>
+        <input id="name" placeholder="Full Name">
+      </div>
+
+      <div class="input-group">
+        <i class='bx bxs-phone'></i>
+        <input id="mobile" type="number" placeholder="Mobile Number">
+      </div>
+
+      <textarea id="address" placeholder="Full Address (House No, Area, Landmark)"></textarea>
+
+      <button class="btn btn-gps" onclick="getLocation()" id="gpsBtn">
+        <i class='bx bxs-map'></i> Use Current Location
+      </button>
+
+      <div id="gpsStatus" style="font-size:12px; margin-top:8px; text-align:center; color:gray;">
+        Location required for delivery (10KM limit)
+      </div>
+
+      <div id="kmPill" class="km-pill" style="display:none;"></div>
+    </div>
+
+    <div class="card" style="animation-delay: 0.2s;">
+      <div class="card-title"><i class='bx bxs-wallet'></i> Payment Method</div>
+
+      <div class="pay-opt active" onclick="selectPay('UPI', event)">
+        <div class="radio-circle"></div>
+        <div style="flex:1;">
+          <b style="font-size:15px;">Pay via UPI (Fast)</b>
+          <div style="font-size:12px; color:#666;">Pay now, confirm on WhatsApp</div>
+        </div>
+        <i class='bx bxs-bank' style="font-size:24px; color:#666;"></i>
+      </div>
+
+      <div class="pay-opt" onclick="selectPay('COD', event)">
+        <div class="radio-circle"></div>
+        <div style="flex:1;">
+          <b style="font-size:15px;">Pay on Delivery</b>
+          <div style="font-size:12px; color:#666;">Cash / QR Scan on arrival</div>
+        </div>
+        <i class='bx bxs-truck' style="font-size:24px; color:#666;"></i>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="bottom-bar">
+    <button class="place-btn" id="placeBtn" onclick="processOrder()" disabled>
+      Place Order <i class='bx bx-right-arrow-alt'></i>
+    </button>
+  </div>
+
+  <div class="modal-overlay" id="payModal">
+    <div class="modal-card">
+      <i class='bx bxs-time-five' style="font-size:60px; color:var(--primary); margin-bottom:15px;"></i>
+      <h2 style="margin-bottom:10px;">Completing Payment...</h2>
+      <p style="color:#666; font-size:14px; margin-bottom:20px;">
+        Please complete the payment on your UPI App. Once done, click the button below to send your order.
+      </p>
+      <button class="btn" style="background:#25D366; color:white;" onclick="finishWhatsApp()">
+        <i class='bx bxl-whatsapp'></i> Payment Done? Send Order
       </button>
     </div>
   </div>
-
-  <!-- DELIVERY DETAILS -->
-  <div class="card">
-    <h3 style="margin-bottom:10px;">Delivery Details</h3>
-    <input id="name" placeholder="Full Name">
-    <input id="mobile" type="number" placeholder="Phone Number">
-    <textarea id="address" placeholder="Full Address (House No, Area, Landmark)"></textarea>
-
-    <button class="btn btn-loc" onclick="getLocation()" id="locBtn">
-      <i class='bx bxs-map'></i> Attach Exact Location
-    </button>
-    <div class="status" id="locMsg">GPS not attached yet</div>
-    <div class="small">⚠️ Location is required to confirm order</div>
-  </div>
-
-  <button class="btn btn-pay" onclick="placeOrder()" id="payBtn" disabled>
-    Confirm Order on WhatsApp <i class='bx bxl-whatsapp'></i>
-  </button>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
   import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-  const db = getFirestore(initializeApp({
+  const firebaseConfig = {
     apiKey: "AIzaSyC-igyzVwdH_4Jt1r64TtHSfYxIMw8UfzM",
-    projectId: "sanghx-foods"
-  }));
+    authDomain: "sanghx-foods.firebaseapp.com",
+    projectId: "sanghx-foods",
+    storageBucket: "sanghx-foods.firebasestorage.app",
+    messagingSenderId: "491353757911",
+    appId: "1:491353757911:web:40752459b5b0049c71f892"
+  };
 
-  // ---- SETTINGS ----
-  const DELIVERY_FEE_PER_STORE = 10; // delivery per store order
-  const WHATSAPP_NUMBER = "919322586177";
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-  // ✅ YOUR REAL UPI ID (UPDATED)
-  const UPI_ID = "samyaksangode0-2@okicici";
-  const UPI_NAME = "SANGHX";
+  // =========================
+  // 🔥 DELIVERY LIMIT SETTINGS
+  // =========================
+  const MAX_KM = 10;
 
-  // Auto-Fill Profile from Memory
+  // 📍 Sakoli center point (CHANGE THIS to your exact location)
+  const SAKOLI_LAT = 21.0819;
+  const SAKOLI_LNG = 79.9814;
+
+  const DELIVERY_FEE = 10;
+
+  // Auto-Fill
   document.getElementById("name").value = localStorage.getItem("uName") || "";
   document.getElementById("mobile").value = localStorage.getItem("uMob") || "";
   document.getElementById("address").value = localStorage.getItem("uAddr") || "";
 
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
-  let discount = 0;
   let userLoc = "";
-  let payMode = "COD"; // COD default
+  let userDistanceKm = null;
+  let paymentMethod = "UPI";
 
-  if(cart.length === 0){
-    document.body.innerHTML = "<center><h1>Cart is Empty 😭</h1><a href='customer.html' style='font-weight:900;color:#ff3f34;'>Go Back</a></center>";
+  const placeBtn = document.getElementById("placeBtn");
+  const gpsStatus = document.getElementById("gpsStatus");
+  const gpsBtn = document.getElementById("gpsBtn");
+  const kmPill = document.getElementById("kmPill");
+
+  if(cart.length === 0) {
+    document.body.innerHTML = "<div style='text-align:center; padding:50px;'><h2>Cart Empty 🛒</h2><br><a href='index.html' style='color:blue;'>Go Back</a></div>";
   }
 
-  // ---- STORE-WISE GROUPING ----
-  function groupByStore(items){
-    const map = {};
-    items.forEach(i=>{
-      const store = i.storeName || "Unknown Store";
-      if(!map[store]) map[store] = [];
-      map[store].push(i);
-    });
-    return map;
+  // Render Bill
+  let subtotal = cart.reduce((a,b)=>a+(b.price*b.qty),0);
+  let total = subtotal + DELIVERY_FEE;
+
+  document.getElementById("orderItems").innerHTML = cart.map(i => `
+    <div class="order-item">
+      <span>${i.qty}x ${i.name} <small>(${i.variantLabel})</small></span>
+      <b>₹${i.price*i.qty}</b>
+    </div>
+  `).join("");
+
+  document.getElementById("subtotal").innerText = `₹${subtotal}`;
+  document.getElementById("grandTotal").innerText = `₹${total}`;
+
+  // =========================
+  // 🔥 DISTANCE CALCULATION
+  // =========================
+  function toRad(v){ return (v * Math.PI) / 180; }
+
+  function calcDistanceKm(lat1, lon1, lat2, lon2){
+    const R = 6371;
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+
+    const a =
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+      Math.sin(dLon/2) * Math.sin(dLon/2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
   }
 
-  function calcSubtotal(items){
-    return items.reduce((a,b)=>a + (Number(b.price) * Number(b.qty)), 0);
+  function showKm(ok, km){
+    kmPill.style.display = "inline-flex";
+    kmPill.className = "km-pill " + (ok ? "ok" : "no");
+    kmPill.innerHTML = ok
+      ? `✅ Delivery Available • ${km.toFixed(2)} KM`
+      : `❌ Out of Range • ${km.toFixed(2)} KM`;
   }
 
-  function renderStoreWiseCart(){
-    const wrap = document.getElementById("cartStores");
-    const grouped = groupByStore(cart);
-    const storeNames = Object.keys(grouped);
-
-    wrap.innerHTML = storeNames.map((storeName, idx)=>{
-      const items = grouped[storeName];
-      const sub = calcSubtotal(items);
-      const delivery = DELIVERY_FEE_PER_STORE;
-
-      const itemsHTML = items.map(i=>{
-        const v = i.variant || "Regular";
-        return `
-          <div class="item-row">
-            <span>${i.qty}x ${i.name} (${v})</span>
-            <b>₹${Number(i.price) * Number(i.qty)}</b>
-          </div>
-        `;
-      }).join("");
-
-      return `
-        <div style="margin-bottom:14px;">
-          <div class="store-title">
-            <span>${storeName}</span>
-            <span class="badge">ORDER ${idx+1}</span>
-          </div>
-
-          ${itemsHTML}
-
-          <div class="bill-box" style="margin-top:10px;">
-            <div class="item-row"><span>Store Subtotal</span><b>₹${sub}</b></div>
-            <div class="item-row"><span>Delivery</span><b>₹${delivery}</b></div>
-            <div class="item-row" style="font-weight:900;border-top:1px dashed #ccc;padding-top:10px;margin-top:5px;">
-              <span>Store Total</span><b>₹${sub + delivery}</b>
-            </div>
-          </div>
-        </div>
-      `;
-    }).join("");
+  function allowOrder(){
+    placeBtn.disabled = false;
+    gpsStatus.innerText = `✅ Location locked. Delivery available within ${MAX_KM}KM`;
+    gpsStatus.style.color = "green";
   }
 
-  function renderGrandBill(){
-    const grouped = groupByStore(cart);
-    const storeNames = Object.keys(grouped);
-
-    const totalSub = storeNames.reduce((sum, s)=> sum + calcSubtotal(grouped[s]), 0);
-    const totalDelivery = storeNames.length * DELIVERY_FEE_PER_STORE;
-
-    const totalPay = totalSub + totalDelivery - discount;
-
-    document.getElementById("sub").innerText = "₹" + totalSub;
-    document.getElementById("delivery").innerText = "₹" + totalDelivery;
-    document.getElementById("disc").innerText = "-₹" + discount;
-    document.getElementById("total").innerText = "₹" + totalPay;
-
-    return { totalSub, totalDelivery, totalPay, storeCount: storeNames.length };
+  function blockOrder(){
+    placeBtn.disabled = true;
+    gpsStatus.innerText = `❌ We deliver only within ${MAX_KM}KM of Sakoli`;
+    gpsStatus.style.color = "red";
   }
 
-  // ---- PAYMENT MODE TOGGLE ----
-  window.setPayMode = (mode) => {
-    payMode = mode;
-
-    document.getElementById("codToggle").classList.toggle("active", mode==="COD");
-    document.getElementById("upiToggle").classList.toggle("active", mode==="UPI");
-
-    document.getElementById("upiBox").style.display = (mode==="UPI") ? "block" : "none";
+  // =========================
+  // Payment select
+  // =========================
+  window.selectPay = (mode, ev) => {
+    paymentMethod = mode;
+    document.querySelectorAll(".pay-opt").forEach(el => el.classList.remove("active"));
+    ev.currentTarget.classList.add("active");
   };
 
-  // ---- PAY NOW UPI ----
-  window.payNowUPI = () => {
-    const bill = renderGrandBill();
-    const amt = bill.totalPay;
-
-    const note = encodeURIComponent(`SANGHX Order • ${bill.storeCount} store(s)`);
-    const upiUrl = `upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent(UPI_NAME)}&am=${amt}&cu=INR&tn=${note}`;
-
-    window.location.href = upiUrl;
-  };
-
-  // ---- LOCATION ----
+  // =========================
+  // GPS + 10KM CHECK
+  // =========================
   window.getLocation = () => {
-    const btn = document.getElementById("locBtn");
-    const msg = document.getElementById("locMsg");
+    gpsBtn.innerHTML = "<i class='bx bx-loader-alt bx-spin'></i> Detecting...";
+    gpsBtn.classList.remove("active");
 
-    btn.innerHTML = "Detecting GPS...";
-    msg.innerText = "Waiting for permission...";
-
-    if(!navigator.geolocation){
-      alert("GPS not supported on this device");
-      btn.innerHTML = "<i class='bx bxs-map'></i> Attach Exact Location";
-      msg.innerText = "GPS not supported";
+    if (!navigator.geolocation) {
+      alert("GPS not supported.");
+      gpsBtn.innerHTML = "<i class='bx bxs-map'></i> Use Current Location";
       return;
     }
 
-    navigator.geolocation.getCurrentPosition(pos => {
-      const lat = pos.coords.latitude;
-      const lng = pos.coords.longitude;
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
 
-      userLoc = `https://www.google.com/maps?q=${lat},${lng}`;
+        userLoc = `https://www.google.com/maps?q=${lat},${lng}`;
+        userDistanceKm = calcDistanceKm(lat, lng, SAKOLI_LAT, SAKOLI_LNG);
 
-      btn.innerHTML = "✅ GPS Locked";
-      btn.style.background = "#25D366";
+        gpsBtn.innerHTML = "<i class='bx bxs-check-circle'></i> Location Attached";
+        gpsBtn.classList.add("active");
 
-      msg.innerText = "Location attached ✅";
-
-      const payBtn = document.getElementById("payBtn");
-      payBtn.disabled = false;
-      payBtn.classList.add("enabled");
-
-    }, () => {
-      alert("Allow Location Access");
-      btn.innerHTML = "<i class='bx bxs-map'></i> Attach Exact Location";
-      msg.innerText = "Location not attached ❌";
-    });
+        if(userDistanceKm <= MAX_KM){
+          allowOrder();
+          showKm(true, userDistanceKm);
+        } else {
+          blockOrder();
+          showKm(false, userDistanceKm);
+        }
+      },
+      () => {
+        gpsBtn.innerHTML = "❌ Permission Denied";
+        blockOrder();
+        gpsStatus.innerText = "❌ Location required (Allow GPS)";
+        gpsStatus.style.color = "red";
+        alert("Please allow location access for delivery.");
+      },
+      { enableHighAccuracy: true, timeout: 12000 }
+    );
   };
 
-  // ---- PLACE ORDER (STORE-WISE) ----
-  window.placeOrder = async () => {
+  // =========================
+  // PLACE ORDER (BLOCK IF >10KM)
+  // =========================
+  window.processOrder = async () => {
     const n = document.getElementById("name").value.trim();
     const m = document.getElementById("mobile").value.trim();
     const a = document.getElementById("address").value.trim();
 
-    if(!n || !m || !a) return alert("Fill all details");
-    if(!userLoc) return alert("Attach GPS location first");
+    if(!n || !m || !a) return alert("Please fill all details!");
+    if(!userLoc) return alert("Please attach your current location first!");
+    if(userDistanceKm === null) return alert("Location check failed. Try again.");
+    if(userDistanceKm > MAX_KM){
+      alert(`Sorry! We deliver only within ${MAX_KM} KM of Sakoli.\nYou are ${userDistanceKm.toFixed(2)} KM away.`);
+      return;
+    }
 
+    // Save for next time
     localStorage.setItem("uName", n);
     localStorage.setItem("uMob", m);
     localStorage.setItem("uAddr", a);
 
-    const payBtn = document.getElementById("payBtn");
-    payBtn.innerText = "Processing...";
-    payBtn.disabled = true;
+    placeBtn.innerHTML = "<i class='bx bx-loader-alt bx-spin'></i> Processing...";
+    placeBtn.disabled = true;
 
-    const grouped = groupByStore(cart);
-    const storeNames = Object.keys(grouped);
-
-    const bill = renderGrandBill();
-
-    // Save in Firestore (1 order doc, with storeWise breakdown)
-    await addDoc(collection(db, "orders"), {
-      customer: { name:n, mobile:m, address:a, location:userLoc },
-      payMode,
-      storeWise: storeNames.map(storeName => ({
-        storeName,
-        items: grouped[storeName],
-        subtotal: calcSubtotal(grouped[storeName]),
-        deliveryFee: DELIVERY_FEE_PER_STORE,
-        total: calcSubtotal(grouped[storeName]) + DELIVERY_FEE_PER_STORE
-      })),
-      subtotal: bill.totalSub,
-      deliveryFee: bill.totalDelivery,
-      discount,
-      total: bill.totalPay,
-      status: "Pending",
-      timestamp: serverTimestamp()
-    });
-
-    // WhatsApp message (Store wise)
-    let msg = `*NEW ORDER* 🔥%0a`;
-    msg += `👤 ${encodeURIComponent(n)}%0a`;
-    msg += `📞 ${encodeURIComponent(m)}%0a`;
-    msg += `🏠 ${encodeURIComponent(a)}%0a`;
-    msg += `📍 Map: ${encodeURIComponent(userLoc)}%0a%0a`;
-    msg += `💳 Payment: *${encodeURIComponent(payMode)}*%0a%0a`;
-
-    storeNames.forEach((storeName, idx)=>{
-      const items = grouped[storeName];
-      const sub = calcSubtotal(items);
-      const del = DELIVERY_FEE_PER_STORE;
-      const total = sub + del;
-
-      msg += `*STORE ${idx+1}: ${encodeURIComponent(storeName)}*%0a`;
-      items.forEach(i=>{
-        const v = i.variant || "Regular";
-        msg += `▪ ${i.qty}x ${encodeURIComponent(i.name)} (${encodeURIComponent(v)})%0a`;
+    try {
+      await addDoc(collection(db, "orders"), {
+        customer: {
+          name: n,
+          mobile: m,
+          address: a,
+          location: userLoc,
+          distanceKm: Number(userDistanceKm.toFixed(2))
+        },
+        items: cart,
+        bill: { subtotal, delivery: DELIVERY_FEE, total },
+        payment: paymentMethod,
+        status: "Pending",
+        timestamp: serverTimestamp()
       });
-      msg += `Subtotal: ₹${sub}%0aDelivery: ₹${del}%0aStore Total: ₹${total}%0a%0a`;
-    });
 
-    msg += `--------------------------------%0a`;
-    msg += `Total Subtotal: ₹${bill.totalSub}%0a`;
-    msg += `Total Delivery: ₹${bill.totalDelivery}%0a`;
-    msg += `Discount: -₹${discount}%0a`;
-    msg += `💰 *TOTAL PAY: ₹${bill.totalPay}*%0a`;
+      if(paymentMethod === "UPI") {
+        const upiID = "9422559168@ybl";
+        const note = `Order-${n}`;
+        const upiLink = `upi://pay?pa=${upiID}&pn=SANGHX&am=${total}&tn=${note}&cu=INR`;
 
-    localStorage.removeItem("cart");
-    window.location.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`;
+        window.location.href = upiLink;
+        document.getElementById("payModal").classList.add("show");
+      } else {
+        finishWhatsApp();
+      }
+
+    } catch(e) {
+      alert("Error placing order: " + e.message);
+      placeBtn.disabled = false;
+      placeBtn.innerHTML = "Place Order";
+    }
   };
 
-  // INIT
-  renderStoreWiseCart();
-  renderGrandBill();
+  // =========================
+  // SEND WHATSAPP (ONLY IF <=10KM)
+  // =========================
+  window.finishWhatsApp = () => {
+    if(userDistanceKm === null || userDistanceKm > MAX_KM){
+      alert(`Delivery not available. Only within ${MAX_KM} KM of Sakoli.`);
+      return;
+    }
+
+    const n = localStorage.getItem("uName");
+    const m = localStorage.getItem("uMob");
+    const a = localStorage.getItem("uAddr");
+
+    const itemsList = cart.map(i => `▪ ${i.qty} x ${i.name} (${i.variantLabel})`).join("%0a");
+
+    const msg =
+      `*NEW ORDER ALERT* 🔥%0a%0a` +
+      `👤 *${n}* (${m})%0a` +
+      `🏠 ${a}%0a%0a` +
+      `📍 Distance: *${userDistanceKm.toFixed(2)} KM* (Sakoli)%0a` +
+      `🗺 Map: ${userLoc}%0a%0a` +
+      `*ORDER:*%0a${itemsList}%0a%0a` +
+      `💰 *Total: ₹${total}* (${paymentMethod})`;
+
+    localStorage.removeItem("cart");
+    window.location.href = `https://wa.me/919322586177?text=${msg}`;
+  };
 </script>
+
 </body>
 </html>
