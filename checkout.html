@@ -122,7 +122,7 @@
 
       <div style="margin-top:15px;">
         <div class="bill-row"><span>Item Total</span> <span id="subtotal">₹0</span></div>
-        <div class="bill-row"><span>Delivery Charge</span> <span>₹10</span></div>
+        <div class="bill-row"><span>Delivery Charge</span> <span id="deliveryFee">₹10</span></div>
         <div class="total-row"><span>To Pay</span> <span id="grandTotal">₹0</span></div>
       </div>
     </div>
@@ -215,7 +215,12 @@
   const MAX_KM = 10;
   const SAKOLI_LAT = 21.0819;
   const SAKOLI_LNG = 79.9814;
-  const DELIVERY_FEE = 10;
+
+  // 🔥 NEW SLABS
+  // 0–3km => 10
+  // 4–6km => 30
+  // 6–10km => 40
+  let DELIVERY_FEE = 10;
 
   document.getElementById("name").value = localStorage.getItem("uName") || "";
   document.getElementById("mobile").value = localStorage.getItem("uMob") || "";
@@ -235,19 +240,30 @@
     document.body.innerHTML = "<div style='text-align:center; padding:50px;'><h2>Cart Empty 🛒</h2><br><a href='index.html' style='color:blue;'>Go Back</a></div>";
   }
 
-  let subtotal = cart.reduce((a,b)=>a+(Number(b.price||0)*Number(b.qty||0)),0);
-  let total = subtotal + DELIVERY_FEE;
+  // 🔥 DELIVERY FEE FUNCTION
+  function getDeliveryFee(km){
+    if(km <= 3) return 10;
+    if(km > 3 && km <= 6) return 30;
+    if(km > 6 && km <= 10) return 40;
+    return null; // >10 block
+  }
 
-  // ✅ FIXED (no undefined)
+  let subtotal = cart.reduce((a,b)=>a+(Number(b.price||0)*Number(b.qty||0)),0);
+
+  function updateBillUI(){
+    document.getElementById("subtotal").innerText = `₹${subtotal}`;
+    document.getElementById("deliveryFee").innerText = `₹${DELIVERY_FEE}`;
+    document.getElementById("grandTotal").innerText = `₹${subtotal + DELIVERY_FEE}`;
+  }
+
+  updateBillUI();
+
   document.getElementById("orderItems").innerHTML = cart.map(i => `
     <div class="order-item">
-      <span>${i.qty}x ${i.name} <small>(${i.variantLabel || i.variant || "Regular"})</small></span>
-      <b>₹${(Number(i.price)||0) * (Number(i.qty)||0)}</b>
+      <span>${i.qty}x ${i.name} <small>(${i.variantLabel || i.variant || ""})</small></span>
+      <b>₹${Number(i.price||0)*Number(i.qty||0)}</b>
     </div>
   `).join("");
-
-  document.getElementById("subtotal").innerText = `₹${subtotal}`;
-  document.getElementById("grandTotal").innerText = `₹${total}`;
 
   function toRad(v){ return (v * Math.PI) / 180; }
 
@@ -312,16 +328,22 @@
         gpsBtn.innerHTML = "<i class='bx bxs-check-circle'></i> Location Attached";
         gpsBtn.classList.add("active");
 
-        if(userDistanceKm <= MAX_KM){
-          allowOrder();
-          showKm(true, userDistanceKm);
-        } else {
+        const fee = getDeliveryFee(userDistanceKm);
+
+        if(fee === null){
           blockOrder();
           showKm(false, userDistanceKm);
+          return;
         }
+
+        DELIVERY_FEE = fee;
+        updateBillUI();
+
+        allowOrder();
+        showKm(true, userDistanceKm);
       },
       () => {
-        gpsBtn.innerHTML = "<i class='bx bxs-map'></i> Use Current Location";
+        gpsBtn.innerHTML = "❌ Permission Denied";
         blockOrder();
         gpsStatus.innerText = "❌ Location required (Allow GPS)";
         gpsStatus.style.color = "red";
@@ -347,6 +369,8 @@
     localStorage.setItem("uName", n);
     localStorage.setItem("uMob", m);
     localStorage.setItem("uAddr", a);
+
+    const total = subtotal + DELIVERY_FEE;
 
     placeBtn.innerHTML = "<i class='bx bx-loader-alt bx-spin'></i> Processing...";
     placeBtn.disabled = true;
@@ -395,16 +419,16 @@
     const m = localStorage.getItem("uMob");
     const a = localStorage.getItem("uAddr");
 
-    // ✅ FIXED (no undefined)
-    const itemsList = cart
-      .map(i => `▪ ${i.qty} x ${i.name} (${i.variantLabel || i.variant || "Regular"})`)
-      .join("%0a");
+    const total = subtotal + DELIVERY_FEE;
+
+    const itemsList = cart.map(i => `▪ ${i.qty} x ${i.name} (${i.variantLabel || i.variant || ""})`).join("%0a");
 
     const msg =
       `*NEW ORDER ALERT* 🔥%0a%0a` +
       `👤 *${n}* (${m})%0a` +
       `🏠 ${a}%0a%0a` +
       `📍 Distance: *${userDistanceKm.toFixed(2)} KM* (Sakoli)%0a` +
+      `🚚 Delivery Fee: *₹${DELIVERY_FEE}*%0a` +
       `🗺 Map: ${userLoc}%0a%0a` +
       `*ORDER:*%0a${itemsList}%0a%0a` +
       `💰 *Total: ₹${total}* (${paymentMethod})`;
