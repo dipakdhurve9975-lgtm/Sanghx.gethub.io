@@ -17,142 +17,57 @@
     * { margin:0; padding:0; box-sizing:border-box; font-family:'Outfit', sans-serif; -webkit-tap-highlight-color:transparent; }
     body { background: var(--gray); padding: 20px; max-width: 600px; margin: auto; padding-bottom: 100px; }
 
-    /* Header */
     .header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
     .header i { font-size: 28px; color: var(--dark); cursor: pointer; }
-    .header h2 { font-size: 22px; font-weight: 900; }
+    .header h2 { font-size: 22px; font-weight: 800; }
 
-    /* Cards */
     .card {
-      background: rgba(255,255,255,0.95);
-      border-radius: 22px;
-      padding: 20px;
-      margin-bottom: 18px;
-      box-shadow: 0 14px 40px -20px rgba(0,0,0,0.18);
-      position: relative;
-      overflow: hidden;
-      border: 1px solid rgba(0,0,0,0.05);
+      background: white; border-radius: 20px; padding: 20px; margin-bottom: 20px;
+      box-shadow: 0 10px 40px -10px rgba(0,0,0,0.08); position: relative; overflow: hidden;
     }
-    .card-title {
-      font-size: 16px;
-      font-weight: 900;
-      margin-bottom: 15px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    .card-title { font-size: 16px; font-weight: 700; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
 
-    /* Order Items */
-    .order-item {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 12px;
-      font-size: 14px;
-      border-bottom: 1px solid #f5f5f5;
-      padding-bottom: 8px;
-    }
-    .order-item b { font-weight: 900; }
+    .order-item { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; border-bottom: 1px solid #f5f5f5; padding-bottom: 8px; }
+    .order-item b { font-weight: 700; }
 
-    /* Bill Summary */
-    .bill-row {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 8px;
-      font-size: 14px;
-      color: #666;
-      font-weight: 700;
-    }
-    .total-row {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 15px;
-      padding-top: 15px;
-      border-top: 2px dashed #eee;
-      font-size: 18px;
-      font-weight: 900;
-      color: var(--dark);
-    }
+    .bill-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; color: #666; }
+    .total-row { display: flex; justify-content: space-between; margin-top: 15px; padding-top: 15px; border-top: 2px dashed #eee; font-size: 18px; font-weight: 800; color: var(--dark); }
 
-    /* Inputs */
-    .input-group { position: relative; margin-bottom: 14px; }
+    .input-group { position: relative; margin-bottom: 15px; }
     .input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #888; font-size: 20px; }
     input, textarea {
-      width: 100%;
-      padding: 14px 14px 14px 45px;
-      border-radius: 14px;
-      border: 1px solid rgba(0,0,0,0.08);
-      background: rgba(249,249,249,0.95);
-      outline: none;
-      font-size: 15px;
-      font-weight: 600;
-      transition: 0.25s;
+      width: 100%; padding: 14px 14px 14px 45px; border-radius: 14px; border: 1px solid #eee;
+      background: #f9f9f9; outline: none; font-size: 15px; font-weight: 500; transition: 0.3s;
     }
-    input:focus, textarea:focus {
-      border-color: rgba(255,75,58,0.7);
-      background: white;
-      box-shadow: 0 14px 40px -28px rgba(255,75,58,0.45);
-    }
+    input:focus, textarea:focus { border-color: var(--primary); background: white; }
     textarea { height: 80px; padding-left: 15px; }
 
-    /* Buttons */
     .btn {
-      width: 100%;
-      padding: 16px;
-      border: none;
-      border-radius: 16px;
-      font-size: 16px;
-      font-weight: 900;
-      cursor: pointer;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 10px;
-      transition: 0.2s;
+      width: 100%; padding: 16px; border: none; border-radius: 16px; font-size: 16px; font-weight: 700;
+      cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; transition: 0.2s;
     }
     .btn-gps { background: var(--dark); color: white; margin-top: 10px; }
     .btn-gps.active { background: var(--green); }
 
-    /* Payment Options */
     .pay-opt {
-      display: flex;
-      align-items: center;
-      padding: 15px;
-      border: 2px solid #eee;
-      border-radius: 16px;
-      margin-bottom: 10px;
-      cursor: pointer;
-      transition: 0.3s;
+      display: flex; align-items: center; padding: 15px; border: 2px solid #eee; border-radius: 16px;
+      margin-bottom: 10px; cursor: pointer; transition: 0.3s;
       user-select: none;
-      background: rgba(255,255,255,0.92);
     }
     .pay-opt.active { border-color: var(--primary); background: #fff0f0; }
     .radio-circle { width: 20px; height: 20px; border: 2px solid #ccc; border-radius: 50%; margin-right: 15px; position: relative; }
     .pay-opt.active .radio-circle { border-color: var(--primary); }
     .pay-opt.active .radio-circle::after { content: ''; position: absolute; inset: 4px; background: var(--primary); border-radius: 50%; }
 
-    /* Bottom Bar */
     .bottom-bar {
-      position: fixed;
-      bottom: 0; left: 0;
-      width: 100%;
-      background: rgba(255,255,255,0.96);
-      padding: 15px 20px;
-      border-radius: 20px 20px 0 0;
-      box-shadow: 0 -14px 40px rgba(0,0,0,0.12);
+      position: fixed; bottom: 0; left: 0; width: 100%; background: white;
+      padding: 15px 20px; border-radius: 20px 20px 0 0; box-shadow: 0 -10px 30px rgba(0,0,0,0.1);
       z-index: 100;
-      border-top: 1px solid rgba(0,0,0,0.05);
     }
     .place-btn {
-      width: 100%;
-      padding: 16px;
-      background: linear-gradient(135deg, #FF4B3A, #ff7f50);
-      color: white;
-      border: none;
-      border-radius: 16px;
-      font-size: 18px;
-      font-weight: 900;
-      box-shadow: 0 16px 35px rgba(255, 75, 58, 0.25);
-      cursor: pointer;
+      width: 100%; padding: 16px; background: linear-gradient(135deg, #FF4B3A, #ff7f50);
+      color: white; border: none; border-radius: 16px; font-size: 18px; font-weight: 800;
+      box-shadow: 0 10px 20px rgba(255, 75, 58, 0.3); cursor: pointer;
       transition: 0.2s;
     }
     .place-btn:disabled {
@@ -162,27 +77,14 @@
       box-shadow: none;
     }
 
-    /* Modal */
     .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.6);
-      backdrop-filter: blur(5px);
-      z-index: 200;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
+      position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px);
+      z-index: 200; display: none; align-items: center; justify-content: center; padding: 20px;
     }
     .modal-overlay.show { display: flex; }
     .modal-card {
-      background: white;
-      padding: 28px;
-      border-radius: 24px;
-      text-align: center;
-      width: 100%;
-      max-width: 400px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+      background: white; padding: 30px; border-radius: 24px; text-align: center; width: 100%;
+      max-width: 400px; box-shadow: 0 20px 50px rgba(0,0,0,0.2);
     }
 
     .km-pill{
@@ -190,7 +92,7 @@
       align-items:center;
       gap:8px;
       font-size:12px;
-      font-weight:900;
+      font-weight:800;
       padding:8px 12px;
       border-radius:999px;
       border:1px solid #eee;
@@ -199,6 +101,9 @@
     }
     .km-pill.ok{ color: var(--green); border-color:#b8f0d0; background:#eafff2; }
     .km-pill.no{ color: var(--red); border-color:#ffd0d0; background:#fff1f1; }
+
+    @keyframes slideUp { from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1} }
+    .animate { animation: slideUp 0.4s ease forwards; }
   </style>
 </head>
 
@@ -209,63 +114,67 @@
     <h2>Checkout</h2>
   </div>
 
-  <div class="card">
-    <div class="card-title"><i class='bx bxs-receipt'></i> Order Summary</div>
-    <div id="orderItems"></div>
+  <div class="animate">
 
-    <div style="margin-top:15px;">
-      <div class="bill-row"><span>Item Total</span> <span id="subtotal">₹0</span></div>
-      <div class="bill-row"><span>Delivery Charge</span> <span id="deliveryCharge">₹0</span></div>
-      <div class="total-row"><span>To Pay</span> <span id="grandTotal">₹0</span></div>
-    </div>
-  </div>
+    <div class="card">
+      <div class="card-title"><i class='bx bxs-receipt'></i> Order Summary</div>
+      <div id="orderItems"></div>
 
-  <div class="card">
-    <div class="card-title"><i class='bx bxs-user-detail'></i> Delivery Details</div>
-
-    <div class="input-group">
-      <i class='bx bxs-user'></i>
-      <input id="name" placeholder="Full Name">
-    </div>
-
-    <div class="input-group">
-      <i class='bx bxs-phone'></i>
-      <input id="mobile" type="number" placeholder="Mobile Number">
-    </div>
-
-    <textarea id="address" placeholder="Full Address (House No, Area, Landmark)"></textarea>
-
-    <button class="btn btn-gps" onclick="getLocation()" id="gpsBtn">
-      <i class='bx bxs-map'></i> Use Current Location
-    </button>
-
-    <div id="gpsStatus" style="font-size:12px; margin-top:8px; text-align:center; color:gray;">
-      Location required for delivery (10KM limit)
-    </div>
-
-    <div id="kmPill" class="km-pill" style="display:none;"></div>
-  </div>
-
-  <div class="card">
-    <div class="card-title"><i class='bx bxs-wallet'></i> Payment Method</div>
-
-    <div class="pay-opt active" onclick="selectPay('UPI', event)">
-      <div class="radio-circle"></div>
-      <div style="flex:1;">
-        <b style="font-size:15px;">Pay via UPI (Fast)</b>
-        <div style="font-size:12px; color:#666;">Pay now, confirm on WhatsApp</div>
+      <div style="margin-top:15px;">
+        <div class="bill-row"><span>Item Total</span> <span id="subtotal">₹0</span></div>
+        <div class="bill-row"><span>Delivery Charge</span> <span id="deliveryFee">₹0</span></div>
+        <div class="total-row"><span>To Pay</span> <span id="grandTotal">₹0</span></div>
       </div>
-      <i class='bx bxs-bank' style="font-size:24px; color:#666;"></i>
     </div>
 
-    <div class="pay-opt" onclick="selectPay('COD', event)">
-      <div class="radio-circle"></div>
-      <div style="flex:1;">
-        <b style="font-size:15px;">Pay on Delivery</b>
-        <div style="font-size:12px; color:#666;">Cash / QR Scan on arrival</div>
+    <div class="card" style="animation-delay: 0.1s;">
+      <div class="card-title"><i class='bx bxs-user-detail'></i> Delivery Details</div>
+
+      <div class="input-group">
+        <i class='bx bxs-user'></i>
+        <input id="name" placeholder="Full Name">
       </div>
-      <i class='bx bxs-truck' style="font-size:24px; color:#666;"></i>
+
+      <div class="input-group">
+        <i class='bx bxs-phone'></i>
+        <input id="mobile" type="number" placeholder="Mobile Number">
+      </div>
+
+      <textarea id="address" placeholder="Full Address (House No, Area, Landmark)"></textarea>
+
+      <button class="btn btn-gps" onclick="getLocation()" id="gpsBtn">
+        <i class='bx bxs-map'></i> Use Current Location
+      </button>
+
+      <div id="gpsStatus" style="font-size:12px; margin-top:8px; text-align:center; color:gray;">
+        Location required for delivery (10KM limit)
+      </div>
+
+      <div id="kmPill" class="km-pill" style="display:none;"></div>
     </div>
+
+    <div class="card" style="animation-delay: 0.2s;">
+      <div class="card-title"><i class='bx bxs-wallet'></i> Payment Method</div>
+
+      <div class="pay-opt active" onclick="selectPay('UPI', event)">
+        <div class="radio-circle"></div>
+        <div style="flex:1;">
+          <b style="font-size:15px;">Pay via UPI (Fast)</b>
+          <div style="font-size:12px; color:#666;">Pay now, confirm on WhatsApp</div>
+        </div>
+        <i class='bx bxs-bank' style="font-size:24px; color:#666;"></i>
+      </div>
+
+      <div class="pay-opt" onclick="selectPay('COD', event)">
+        <div class="radio-circle"></div>
+        <div style="flex:1;">
+          <b style="font-size:15px;">Pay on Delivery</b>
+          <div style="font-size:12px; color:#666;">Cash / QR Scan on arrival</div>
+        </div>
+        <i class='bx bxs-truck' style="font-size:24px; color:#666;"></i>
+      </div>
+    </div>
+
   </div>
 
   <div class="bottom-bar">
@@ -308,18 +217,16 @@
   // =========================
   const MAX_KM = 10;
 
-  // 📍 Sakoli center point (CHANGE THIS to your exact location)
+  // Sakoli center (change if needed)
   const SAKOLI_LAT = 21.0819;
   const SAKOLI_LNG = 79.9814;
 
-  // =========================
-  // 🔥 DELIVERY SLABS (KM -> ₹)
-  // =========================
+  // Delivery slabs
   function getDeliveryFeeByKm(km){
     if(km <= 4) return 10;
-    if(km > 4 && km <= 7) return 25;
-    if(km > 7 && km <= 10) return 40;
-    return null; // out of range
+    if(km <= 7) return 25;
+    if(km <= 10) return 40;
+    return null;
   }
 
   // Auto-Fill
@@ -332,11 +239,7 @@
   let userDistanceKm = null;
   let paymentMethod = "UPI";
 
-  let subtotal = cart.reduce((a,b)=>a+(b.price*b.qty),0);
-
-  // Delivery fee will be calculated after GPS
   let deliveryFee = 0;
-  let total = subtotal + deliveryFee;
 
   const placeBtn = document.getElementById("placeBtn");
   const gpsStatus = document.getElementById("gpsStatus");
@@ -348,21 +251,18 @@
   }
 
   // Render Items
+  let subtotal = cart.reduce((a,b)=>a+(b.price*b.qty),0);
+
   document.getElementById("orderItems").innerHTML = cart.map(i => `
     <div class="order-item">
-      <span>${i.qty}x ${i.name} <small>(${i.variantLabel || i.variant || "Regular"})</small></span>
+      <span>${i.qty}x ${i.name} <small>(${i.variant || i.variantLabel || "Regular"})</small></span>
       <b>₹${i.price*i.qty}</b>
     </div>
   `).join("");
 
-  function renderBill(){
-    total = subtotal + deliveryFee;
-    document.getElementById("subtotal").innerText = `₹${subtotal}`;
-    document.getElementById("deliveryCharge").innerText = `₹${deliveryFee}`;
-    document.getElementById("grandTotal").innerText = `₹${total}`;
-  }
-
-  renderBill();
+  document.getElementById("subtotal").innerText = `₹${subtotal}`;
+  document.getElementById("deliveryFee").innerText = `₹${deliveryFee}`;
+  document.getElementById("grandTotal").innerText = `₹${subtotal + deliveryFee}`;
 
   // =========================
   // 🔥 DISTANCE CALCULATION
@@ -373,27 +273,33 @@
     const R = 6371;
     const dLat = toRad(lat2 - lat1);
     const dLon = toRad(lon2 - lon1);
-
     const a =
       Math.sin(dLat/2) * Math.sin(dLat/2) +
       Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
       Math.sin(dLon/2) * Math.sin(dLon/2);
-
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     return R * c;
+  }
+
+  function updateBillUI(){
+    document.getElementById("deliveryFee").innerText = `₹${deliveryFee}`;
+    document.getElementById("grandTotal").innerText = `₹${subtotal + deliveryFee}`;
   }
 
   function showKm(ok, km){
     kmPill.style.display = "inline-flex";
     kmPill.className = "km-pill " + (ok ? "ok" : "no");
-    kmPill.innerHTML = ok
-      ? `✅ Delivery Available • ${km.toFixed(2)} KM`
-      : `❌ Out of Range • ${km.toFixed(2)} KM`;
+
+    if(ok){
+      kmPill.innerHTML = `✅ ${km.toFixed(2)} KM • Delivery ₹${deliveryFee}`;
+    } else {
+      kmPill.innerHTML = `❌ ${km.toFixed(2)} KM • Out of Range`;
+    }
   }
 
   function allowOrder(){
     placeBtn.disabled = false;
-    gpsStatus.innerText = `✅ Location locked. Delivery available within ${MAX_KM}KM`;
+    gpsStatus.innerText = `✅ Location locked. Delivery within ${MAX_KM}KM`;
     gpsStatus.style.color = "green";
   }
 
@@ -403,7 +309,9 @@
     gpsStatus.style.color = "red";
   }
 
+  // =========================
   // Payment select
+  // =========================
   window.selectPay = (mode, ev) => {
     paymentMethod = mode;
     document.querySelectorAll(".pay-opt").forEach(el => el.classList.remove("active"));
@@ -411,7 +319,7 @@
   };
 
   // =========================
-  // GPS + 10KM CHECK + DELIVERY SLAB
+  // GPS + SLAB DELIVERY CHECK
   // =========================
   window.getLocation = () => {
     gpsBtn.innerHTML = "<i class='bx bx-loader-alt bx-spin'></i> Detecting...";
@@ -435,17 +343,18 @@
         gpsBtn.classList.add("active");
 
         if(userDistanceKm <= MAX_KM){
-          // ✅ calculate delivery fee slab
-          const fee = getDeliveryFeeByKm(userDistanceKm);
-          deliveryFee = fee ?? 0;
-          renderBill();
+          deliveryFee = getDeliveryFeeByKm(userDistanceKm) || 0;
 
+          // save for customer page cart
+          localStorage.setItem("deliveryFee", String(deliveryFee));
+          localStorage.setItem("distanceKm", String(userDistanceKm.toFixed(2)));
+
+          updateBillUI();
           allowOrder();
           showKm(true, userDistanceKm);
         } else {
           deliveryFee = 0;
-          renderBill();
-
+          updateBillUI();
           blockOrder();
           showKm(false, userDistanceKm);
         }
@@ -477,13 +386,14 @@
       return;
     }
 
-    // Save for next time
     localStorage.setItem("uName", n);
     localStorage.setItem("uMob", m);
     localStorage.setItem("uAddr", a);
 
     placeBtn.innerHTML = "<i class='bx bx-loader-alt bx-spin'></i> Processing...";
     placeBtn.disabled = true;
+
+    const total = subtotal + deliveryFee;
 
     try {
       await addDoc(collection(db, "orders"), {
@@ -502,7 +412,7 @@
       });
 
       if(paymentMethod === "UPI") {
-        const upiID = "9422559168@ybl";
+        const upiID = "9422559168@ybl"; // ✅ YES UPI ID IS HERE
         const note = `Order-${n}`;
         const upiLink = `upi://pay?pa=${upiID}&pn=SANGHX&am=${total}&tn=${note}&cu=INR`;
 
@@ -532,17 +442,18 @@
     const m = localStorage.getItem("uMob");
     const a = localStorage.getItem("uAddr");
 
-    const itemsList = cart.map(i => `▪ ${i.qty} x ${i.name} (${i.variantLabel || i.variant || "Regular"})`).join("%0a");
+    const total = subtotal + deliveryFee;
+
+    const itemsList = cart.map(i => `▪ ${i.qty} x ${i.name} (${i.variant || i.variantLabel || "Regular"})`).join("%0a");
 
     const msg =
       `*NEW ORDER ALERT* 🔥%0a%0a` +
       `👤 *${n}* (${m})%0a` +
       `🏠 ${a}%0a%0a` +
-      `📍 Distance: *${userDistanceKm.toFixed(2)} KM* (Sakoli)%0a` +
+      `📍 Distance: *${userDistanceKm.toFixed(2)} KM*%0a` +
       `🚚 Delivery: *₹${deliveryFee}*%0a` +
       `🗺 Map: ${userLoc}%0a%0a` +
       `*ORDER:*%0a${itemsList}%0a%0a` +
-      `💰 *Subtotal: ₹${subtotal}*%0a` +
       `💰 *Total: ₹${total}* (${paymentMethod})`;
 
     localStorage.removeItem("cart");
