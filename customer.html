@@ -220,7 +220,6 @@
 
   <div class="container">
     <div class="hero-banner">
-      <!-- ✅ Slider Image ID fixed -->
       <img id="heroImg" src="2.png" class="hero-img">
       <div class="hero-overlay">
         <h2 style="font-weight:800; font-size:28px; line-height:1;">Delicious<br>Deals 50% OFF</h2>
@@ -257,7 +256,11 @@
 
       <div class="bill-box">
         <div class="bill-row"><span>Subtotal</span> <span id="subtotal">₹0</span></div>
-        <div class="bill-row"><span>Delivery</span> <span>₹10</span></div>
+
+        <!-- ✅ FIXED: no more fake ₹10 -->
+        <div class="bill-row"><span>Delivery</span> <span id="deliveryText">Calculated at checkout</span></div>
+
+        <!-- ✅ Total = Subtotal only -->
         <div class="bill-total"><span>Total</span> <span id="total">₹0</span></div>
       </div>
 
@@ -303,7 +306,6 @@
   let STORES = [], MENU = [], ACTIVE_CATEGORY = "All", SEARCH = "";
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-  // Elements
   const els = {
     stores: document.getElementById("storesWrap"),
     chips: document.getElementById("categoryChips"),
@@ -334,7 +336,7 @@
     }, 300);
   }, 3000);
 
-  // --- 1. VOICE ENGINE (Hindi/Marathi Fix) ---
+  // --- 1. VOICE ENGINE ---
   let selectedVoice = null;
   function loadVoices() {
     const voices = window.speechSynthesis.getVoices();
@@ -375,7 +377,7 @@
       return;
     }
 
-    // ✅ online first, offline bottom (YOU WANTED THIS)
+    // ✅ online first, offline bottom
     const sortedStores = [...STORES].sort((a,b)=>{
       const ao = a.isOnline ? 1 : 0;
       const bo = b.isOnline ? 1 : 0;
@@ -487,10 +489,14 @@
     `).join("");
 
     const subtotal = cart.reduce((t,i)=>t + (i.price*i.qty),0);
+
     document.getElementById("subtotal").innerText = "₹" + subtotal;
 
-    // NOTE: Delivery here stays 10 (actual delivery will be calculated in checkout using GPS)
-    document.getElementById("total").innerText = "₹" + (subtotal + (cart.length ? 10 : 0));
+    // ✅ FIX: total = subtotal only (delivery calculated in checkout)
+    document.getElementById("total").innerText = "₹" + subtotal;
+
+    // optional but clean: if cart empty hide delivery text
+    document.getElementById("deliveryText").innerText = cart.length ? "Calculated at checkout" : "₹0";
   }
 
   window.upd = (key, delta) => updateQty(key, delta);
