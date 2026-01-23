@@ -17,27 +17,22 @@
     * { margin:0; padding:0; box-sizing:border-box; font-family:'Outfit', sans-serif; -webkit-tap-highlight-color:transparent; }
     body { background: var(--gray); padding: 20px; max-width: 600px; margin: auto; padding-bottom: 100px; }
 
-    /* Header */
     .header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
     .header i { font-size: 28px; color: var(--dark); cursor: pointer; }
     .header h2 { font-size: 22px; font-weight: 800; }
 
-    /* Cards */
     .card {
       background: white; border-radius: 20px; padding: 20px; margin-bottom: 20px;
       box-shadow: 0 10px 40px -10px rgba(0,0,0,0.08); position: relative; overflow: hidden;
     }
     .card-title { font-size: 16px; font-weight: 700; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
 
-    /* Order Items */
     .order-item { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; border-bottom: 1px solid #f5f5f5; padding-bottom: 8px; }
     .order-item b { font-weight: 700; }
 
-    /* Bill Summary */
     .bill-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; color: #666; }
     .total-row { display: flex; justify-content: space-between; margin-top: 15px; padding-top: 15px; border-top: 2px dashed #eee; font-size: 18px; font-weight: 800; color: var(--dark); }
 
-    /* Inputs */
     .input-group { position: relative; margin-bottom: 15px; }
     .input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #888; font-size: 20px; }
     input, textarea {
@@ -47,7 +42,6 @@
     input:focus, textarea:focus { border-color: var(--primary); background: white; }
     textarea { height: 80px; padding-left: 15px; }
 
-    /* Buttons */
     .btn {
       width: 100%; padding: 16px; border: none; border-radius: 16px; font-size: 16px; font-weight: 700;
       cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; transition: 0.2s;
@@ -55,7 +49,6 @@
     .btn-gps { background: var(--dark); color: white; margin-top: 10px; }
     .btn-gps.active { background: var(--green); }
 
-    /* Payment Options */
     .pay-opt {
       display: flex; align-items: center; padding: 15px; border: 2px solid #eee; border-radius: 16px;
       margin-bottom: 10px; cursor: pointer; transition: 0.3s;
@@ -66,7 +59,6 @@
     .pay-opt.active .radio-circle { border-color: var(--primary); }
     .pay-opt.active .radio-circle::after { content: ''; position: absolute; inset: 4px; background: var(--primary); border-radius: 50%; }
 
-    /* Bottom Bar */
     .bottom-bar {
       position: fixed; bottom: 0; left: 0; width: 100%; background: white;
       padding: 15px 20px; border-radius: 20px 20px 0 0; box-shadow: 0 -10px 30px rgba(0,0,0,0.1);
@@ -85,7 +77,6 @@
       box-shadow: none;
     }
 
-    /* Modals */
     .modal-overlay {
       position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px);
       z-index: 200; display: none; align-items: center; justify-content: center; padding: 20px;
@@ -221,18 +212,11 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  // =========================
-  // 🔥 DELIVERY LIMIT SETTINGS
-  // =========================
   const MAX_KM = 10;
-
-  // 📍 Sakoli center point (CHANGE THIS to your exact location)
   const SAKOLI_LAT = 21.0819;
   const SAKOLI_LNG = 79.9814;
-
   const DELIVERY_FEE = 10;
 
-  // Auto-Fill
   document.getElementById("name").value = localStorage.getItem("uName") || "";
   document.getElementById("mobile").value = localStorage.getItem("uMob") || "";
   document.getElementById("address").value = localStorage.getItem("uAddr") || "";
@@ -251,23 +235,20 @@
     document.body.innerHTML = "<div style='text-align:center; padding:50px;'><h2>Cart Empty 🛒</h2><br><a href='index.html' style='color:blue;'>Go Back</a></div>";
   }
 
-  // Render Bill
-  let subtotal = cart.reduce((a,b)=>a+(b.price*b.qty),0);
+  let subtotal = cart.reduce((a,b)=>a+(Number(b.price||0)*Number(b.qty||0)),0);
   let total = subtotal + DELIVERY_FEE;
 
+  // ✅ FIXED (no undefined)
   document.getElementById("orderItems").innerHTML = cart.map(i => `
     <div class="order-item">
-      <span>${i.qty}x ${i.name} <small>(${i.variantLabel})</small></span>
-      <b>₹${i.price*i.qty}</b>
+      <span>${i.qty}x ${i.name} <small>(${i.variantLabel || i.variant || "Regular"})</small></span>
+      <b>₹${(Number(i.price)||0) * (Number(i.qty)||0)}</b>
     </div>
   `).join("");
 
   document.getElementById("subtotal").innerText = `₹${subtotal}`;
   document.getElementById("grandTotal").innerText = `₹${total}`;
 
-  // =========================
-  // 🔥 DISTANCE CALCULATION
-  // =========================
   function toRad(v){ return (v * Math.PI) / 180; }
 
   function calcDistanceKm(lat1, lon1, lat2, lon2){
@@ -304,18 +285,12 @@
     gpsStatus.style.color = "red";
   }
 
-  // =========================
-  // Payment select
-  // =========================
   window.selectPay = (mode, ev) => {
     paymentMethod = mode;
     document.querySelectorAll(".pay-opt").forEach(el => el.classList.remove("active"));
     ev.currentTarget.classList.add("active");
   };
 
-  // =========================
-  // GPS + 10KM CHECK
-  // =========================
   window.getLocation = () => {
     gpsBtn.innerHTML = "<i class='bx bx-loader-alt bx-spin'></i> Detecting...";
     gpsBtn.classList.remove("active");
@@ -346,7 +321,7 @@
         }
       },
       () => {
-        gpsBtn.innerHTML = "❌ Permission Denied";
+        gpsBtn.innerHTML = "<i class='bx bxs-map'></i> Use Current Location";
         blockOrder();
         gpsStatus.innerText = "❌ Location required (Allow GPS)";
         gpsStatus.style.color = "red";
@@ -356,9 +331,6 @@
     );
   };
 
-  // =========================
-  // PLACE ORDER (BLOCK IF >10KM)
-  // =========================
   window.processOrder = async () => {
     const n = document.getElementById("name").value.trim();
     const m = document.getElementById("mobile").value.trim();
@@ -372,7 +344,6 @@
       return;
     }
 
-    // Save for next time
     localStorage.setItem("uName", n);
     localStorage.setItem("uMob", m);
     localStorage.setItem("uAddr", a);
@@ -414,9 +385,6 @@
     }
   };
 
-  // =========================
-  // SEND WHATSAPP (ONLY IF <=10KM)
-  // =========================
   window.finishWhatsApp = () => {
     if(userDistanceKm === null || userDistanceKm > MAX_KM){
       alert(`Delivery not available. Only within ${MAX_KM} KM of Sakoli.`);
@@ -427,7 +395,10 @@
     const m = localStorage.getItem("uMob");
     const a = localStorage.getItem("uAddr");
 
-    const itemsList = cart.map(i => `▪ ${i.qty} x ${i.name} (${i.variantLabel})`).join("%0a");
+    // ✅ FIXED (no undefined)
+    const itemsList = cart
+      .map(i => `▪ ${i.qty} x ${i.name} (${i.variantLabel || i.variant || "Regular"})`)
+      .join("%0a");
 
     const msg =
       `*NEW ORDER ALERT* 🔥%0a%0a` +
