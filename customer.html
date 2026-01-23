@@ -136,7 +136,10 @@
   }
   .modal-overlay.show .modal-card { transform: translateY(0); }
 
-  .ai-card { background: rgba(255, 255, 255, 0.95); border-top: 1px solid rgba(255,255,255,0.5); }
+  .ai-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-top: 1px solid rgba(255,255,255,0.5);
+  }
   .ai-bubble {
     background: #f0f0f5; padding: 16px; border-radius: 18px 18px 18px 4px;
     margin: 15px 0; font-size: 15px; line-height: 1.5; color: #333; font-weight: 500;
@@ -183,6 +186,7 @@
   .spark.active { animation: pop 0.6s ease-out; }
   @keyframes pop { 0%{transform:scale(0); opacity:1;} 50%{opacity:1} 100%{transform:scale(4); opacity:0;} }
   @keyframes fadeInUp { from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);} }
+
 </style>
 </head>
 
@@ -202,11 +206,8 @@
   </div>
 
   <div class="container">
-
-    <!-- 🔥 HERO BANNER (SLIDER SAME) -->
     <div class="hero-banner">
-      <!-- ✅ IMPORTANT FIX: add id="heroImg" -->
-      <img id="heroImg" src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=800&auto=format&fit=crop" class="hero-img">
+      <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=800&auto=format&fit=crop" class="hero-img">
       <div class="hero-overlay">
         <h2 style="font-weight:800; font-size:28px; line-height:1;">Delicious<br>Deals 50% OFF</h2>
       </div>
@@ -243,8 +244,8 @@
       <div class="bill-box">
         <div class="bill-row"><span>Subtotal</span> <span id="subtotal">₹0</span></div>
 
-        <!-- ✅ Dynamic delivery -->
-        <div class="bill-row"><span>Delivery</span> <span id="deliveryFeeText">₹10</span></div>
+        <!-- ✅ CHANGED: delivery text only (NOT fixed amount) -->
+        <div class="bill-row"><span>Delivery</span> <span id="deliveryText">Dynamic (based on KM)</span></div>
 
         <div class="bill-total"><span>Total</span> <span id="total">₹0</span></div>
       </div>
@@ -299,32 +300,13 @@
     cartModal: document.getElementById("cartModalBg"),
     cartItems: document.getElementById("cartItems"),
     aiModal: document.getElementById("aiPanelBg"),
+    aiLine: document.getElementById("aiLine"),
+    aiInput: document.getElementById("aiInput"),
     toast: document.getElementById("toast"),
     spark: document.getElementById("spark"),
-    deliveryFeeText: document.getElementById("deliveryFeeText")
+    deliveryText: document.getElementById("deliveryText")
   };
 
-  // -----------------------------
-  // ✅ HERO AUTO SLIDER (LOCAL IMAGES)
-  // -----------------------------
-  const heroImages = ["2.png", "price.jpeg", "new.png"];
-  let heroIndex = 0;
-  const heroImgEl = document.getElementById("heroImg");
-
-  if(heroImgEl){
-    setInterval(() => {
-      heroIndex = (heroIndex + 1) % heroImages.length;
-      heroImgEl.style.opacity = "0";
-      setTimeout(() => {
-        heroImgEl.src = heroImages[heroIndex];
-        heroImgEl.style.opacity = "1";
-      }, 250);
-    }, 3500);
-  }
-
-  // -----------------------------
-  // Voice (keep same)
-  // -----------------------------
   let selectedVoice = null;
   function loadVoices() {
     const voices = window.speechSynthesis.getVoices();
@@ -357,9 +339,6 @@
   }
   window.setCat = (c) => { ACTIVE_CATEGORY = c; renderCategoryChips(); renderStores(); };
 
-  // -----------------------------
-  // ✅ STORES RENDER (ONLINE TOP, OFFLINE BOTTOM)
-  // -----------------------------
   function renderStores() {
     els.stores.innerHTML = "";
     if(STORES.length === 0) {
@@ -367,6 +346,7 @@
       return;
     }
 
+    // ✅ Online first, Offline at bottom
     const sortedStores = [...STORES].sort((a,b)=>{
       const ao = a.isOnline ? 1 : 0;
       const bo = b.isOnline ? 1 : 0;
@@ -391,7 +371,7 @@
             ${store.isOnline ? 'Open Now' : 'Closed'}
           </div>
         </div>
-        <div class="h-scroll"></div>
+        <div class="h-scroll" id="list-${store.id}"></div>
       `;
 
       const list = section.querySelector(".h-scroll");
@@ -434,14 +414,19 @@
     });
   }
 
-  // -----------------------------
-  // CART SYSTEM
-  // -----------------------------
-  function addToCart(item, storeName, variant, price) {
-    const key = `${item.id}-${variant}`;
+  function addToCart(item, storeName, variantLabel, price) {
+    const key = `${item.id}-${variantLabel}`;
     const exist = cart.find(x => x.key === key);
     if(exist) exist.qty++;
-    else cart.push({ key, id:item.id, name:item.name, storeName, variant, price, qty:1 });
+    else cart.push({
+      key,
+      id: item.id,
+      name: item.name,
+      storeName,
+      variantLabel,   // ✅ keep this name (checkout uses it)
+      price,
+      qty: 1
+    });
 
     saveCart();
     speak(`${item.name} added`);
@@ -470,7 +455,7 @@
       <div class="cart-item">
         <div>
           <div style="font-weight:700; font-size:15px;">${safe(i.name)}</div>
-          <div style="font-size:12px;color:#888;">${safe(i.variant)} • ₹${i.price}</div>
+          <div style="font-size:12px;color:#888;">${safe(i.variantLabel || i.variant || "Regular")} • ₹${i.price}</div>
         </div>
         <div class="qty-ctrl">
           <i class='bx bx-minus' onclick="window.upd('${i.key}',-1)" style="cursor:pointer"></i>
@@ -483,12 +468,16 @@
     const subtotal = cart.reduce((t,i)=>t + (i.price*i.qty),0);
     document.getElementById("subtotal").innerText = "₹" + subtotal;
 
-    // ✅ DELIVERY dynamic from checkout
-    const savedDelivery = Number(localStorage.getItem("deliveryFee") || "10");
-    const delivery = cart.length ? savedDelivery : 0;
+    // ✅ customer page: no fixed delivery now
+    // show total only items (delivery calculated in checkout)
+    document.getElementById("total").innerText = "₹" + subtotal;
 
-    els.deliveryFeeText.innerText = "₹" + delivery;
-    document.getElementById("total").innerText = "₹" + (subtotal + delivery);
+    // small hint
+    if(cart.length){
+      els.deliveryText.innerText = "Calculated at Checkout (GPS)";
+    } else {
+      els.deliveryText.innerText = "Dynamic (based on KM)";
+    }
   }
 
   window.upd = (key, delta) => updateQty(key, delta);
@@ -507,22 +496,18 @@
     els.spark.classList.add("active");
   }
 
-  // Modals
   els.miniCart.onclick = () => els.cartModal.classList.add("show");
   document.getElementById("closeCartBtn").onclick = () => els.cartModal.classList.remove("show");
   document.getElementById("checkoutBtn").onclick = () => location.href="checkout.html";
 
-  // AI modal
   document.getElementById("aiBtn").onclick = () => els.aiModal.classList.add("show");
   document.getElementById("aiCloseBtn").onclick = () => els.aiModal.classList.remove("show");
 
-  // Search
   els.search.addEventListener("input", ()=>{
     SEARCH = (els.search.value || "").toLowerCase();
     renderStores();
   });
 
-  // Firestore listeners
   onSnapshot(collection(db, "stores"), (snapshot)=>{
     STORES = [];
     snapshot.forEach(d => STORES.push({ id:d.id, ...d.data() }));
@@ -531,7 +516,9 @@
 
   onSnapshot(collection(db, "menu"), (snapshot)=>{
     MENU = [];
-    snapshot.forEach((doc) => MENU.push({ id: doc.id, ...doc.data() }));
+    snapshot.forEach((doc) => {
+      MENU.push({ id: doc.id, ...doc.data() });
+    });
     renderCategoryChips();
     renderStores();
   });
