@@ -136,7 +136,7 @@
 
       <div style="margin-top:15px;">
         <div class="bill-row"><span>Item Total</span> <span id="subtotal">₹0</span></div>
-        <div class="bill-row"><span>Delivery Charge</span> <span id="deliveryFeeText">₹0</span></div>
+        <div class="bill-row"><span>Delivery Charge</span> <span id="deliveryFeeText">Attach GPS</span></div>
         <div class="total-row"><span>To Pay</span> <span id="grandTotal">₹0</span></div>
 
         <div id="feeRulePill" class="fee-pill" style="display:none;"></div>
@@ -229,23 +229,20 @@
   const db = getFirestore(app);
 
   // =========================
-  // 🔥 DELIVERY LIMIT SETTINGS
+  // DELIVERY LIMIT SETTINGS
   // =========================
   const MAX_KM = 10;
 
-  // 📍 Sakoli center point
+  // Sakoli center point
   const SAKOLI_LAT = 21.0819;
   const SAKOLI_LNG = 79.9814;
 
-  // 🔥 Delivery Fee Rule (Your final rule)
-  // 0-4km = 10
-  // 4-7km = 25
-  // 7-10km = 40
+  // Delivery Fee Rule
   function getDeliveryFeeByKm(km){
     if(km <= 4) return 10;
     if(km > 4 && km <= 7) return 25;
     if(km > 7 && km <= 10) return 40;
-    return null; // out of range
+    return null;
   }
 
   // Auto-Fill
@@ -269,9 +266,7 @@
     document.body.innerHTML = "<div style='text-align:center; padding:50px;'><h2>Cart Empty 🛒</h2><br><a href='index.html' style='color:blue;'>Go Back</a></div>";
   }
 
-  // =========================
   // Fix undefined variantLabel
-  // =========================
   cart = cart.map(i => ({
     ...i,
     variantLabel: i.variantLabel || i.variant || "Regular"
@@ -289,15 +284,10 @@
 
   document.getElementById("subtotal").innerText = `₹${subtotal}`;
 
-  // Until GPS locked, delivery unknown
   let deliveryFee = 0;
   let total = subtotal + deliveryFee;
-  deliveryFeeText.innerText = "Attach GPS";
   document.getElementById("grandTotal").innerText = `₹${total}`;
 
-  // =========================
-  // 🔥 DISTANCE CALCULATION
-  // =========================
   function toRad(v){ return (v * Math.PI) / 180; }
 
   function calcDistanceKm(lat1, lon1, lat2, lon2){
@@ -362,18 +352,12 @@
     feeRulePill.innerHTML = `🚚 Fee Rule: 0-4km ₹10 • 4-7km ₹25 • 7-10km ₹40`;
   }
 
-  // =========================
-  // Payment select
-  // =========================
   window.selectPay = (mode, ev) => {
     paymentMethod = mode;
     document.querySelectorAll(".pay-opt").forEach(el => el.classList.remove("active"));
     ev.currentTarget.classList.add("active");
   };
 
-  // =========================
-  // GPS + 10KM CHECK
-  // =========================
   window.getLocation = () => {
     gpsBtn.innerHTML = "<i class='bx bx-loader-alt bx-spin'></i> Detecting...";
     gpsBtn.classList.remove("active");
@@ -417,9 +401,6 @@
     );
   };
 
-  // =========================
-  // PLACE ORDER
-  // =========================
   window.processOrder = async () => {
     const n = document.getElementById("name").value.trim();
     const m = document.getElementById("mobile").value.trim();
@@ -465,7 +446,7 @@
       });
 
       if(paymentMethod === "UPI") {
-        const upiID = "9422559168@ybl"; // ✅ YES UPI ID IS HERE
+        const upiID = "samyaksangode0-2@okicici"; // ✅ NEW UPI ID
         const note = `Order-${n}`;
         const upiLink = `upi://pay?pa=${upiID}&pn=SANGHX&am=${total}&tn=${note}&cu=INR`;
 
@@ -482,9 +463,6 @@
     }
   };
 
-  // =========================
-  // SEND WHATSAPP
-  // =========================
   window.finishWhatsApp = () => {
     if(userDistanceKm === null || userDistanceKm > MAX_KM){
       alert(`Delivery not available. Only within ${MAX_KM} KM of Sakoli.`);
