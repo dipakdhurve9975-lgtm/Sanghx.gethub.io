@@ -102,6 +102,20 @@
     .km-pill.ok{ color: var(--green); border-color:#b8f0d0; background:#eafff2; }
     .km-pill.no{ color: var(--red); border-color:#ffd0d0; background:#fff1f1; }
 
+    .fee-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      font-size:12px;
+      font-weight:800;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid #eee;
+      background:#fff;
+      margin-top:10px;
+      color:#111;
+    }
+
     @keyframes slideUp { from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1} }
     .animate { animation: slideUp 0.4s ease forwards; }
   </style>
@@ -122,8 +136,10 @@
 
       <div style="margin-top:15px;">
         <div class="bill-row"><span>Item Total</span> <span id="subtotal">₹0</span></div>
-        <div class="bill-row"><span>Delivery Charge</span> <span id="deliveryFee">₹0</span></div>
+        <div class="bill-row"><span>Delivery Charge</span> <span id="deliveryFeeText">₹0</span></div>
         <div class="total-row"><span>To Pay</span> <span id="grandTotal">₹0</span></div>
+
+        <div id="feeRulePill" class="fee-pill" style="display:none;"></div>
       </div>
     </div>
 
@@ -217,16 +233,19 @@
   // =========================
   const MAX_KM = 10;
 
-  // Sakoli center (change if needed)
+  // 📍 Sakoli center point
   const SAKOLI_LAT = 21.0819;
   const SAKOLI_LNG = 79.9814;
 
-  // Delivery slabs
+  // 🔥 Delivery Fee Rule (Your final rule)
+  // 0-4km = 10
+  // 4-7km = 25
+  // 7-10km = 40
   function getDeliveryFeeByKm(km){
     if(km <= 4) return 10;
-    if(km <= 7) return 25;
-    if(km <= 10) return 40;
-    return null;
+    if(km > 4 && km <= 7) return 25;
+    if(km > 7 && km <= 10) return 40;
+    return null; // out of range
   }
 
   // Auto-Fill
@@ -239,30 +258,42 @@
   let userDistanceKm = null;
   let paymentMethod = "UPI";
 
-  let deliveryFee = 10;
-
   const placeBtn = document.getElementById("placeBtn");
   const gpsStatus = document.getElementById("gpsStatus");
   const gpsBtn = document.getElementById("gpsBtn");
   const kmPill = document.getElementById("kmPill");
+  const deliveryFeeText = document.getElementById("deliveryFeeText");
+  const feeRulePill = document.getElementById("feeRulePill");
 
   if(cart.length === 0) {
     document.body.innerHTML = "<div style='text-align:center; padding:50px;'><h2>Cart Empty 🛒</h2><br><a href='index.html' style='color:blue;'>Go Back</a></div>";
   }
+
+  // =========================
+  // Fix undefined variantLabel
+  // =========================
+  cart = cart.map(i => ({
+    ...i,
+    variantLabel: i.variantLabel || i.variant || "Regular"
+  }));
 
   // Render Items
   let subtotal = cart.reduce((a,b)=>a+(b.price*b.qty),0);
 
   document.getElementById("orderItems").innerHTML = cart.map(i => `
     <div class="order-item">
-      <span>${i.qty}x ${i.name} <small>(${i.variant || i.variantLabel || "Regular"})</small></span>
+      <span>${i.qty}x ${i.name} <small>(${i.variantLabel})</small></span>
       <b>₹${i.price*i.qty}</b>
     </div>
   `).join("");
 
   document.getElementById("subtotal").innerText = `₹${subtotal}`;
-  document.getElementById("deliveryFee").innerText = `₹${deliveryFee}`;
-  document.getElementById("grandTotal").innerText = `₹${subtotal + deliveryFee}`;
+
+  // Until GPS locked, delivery unknown
+  let deliveryFee = 0;
+  let total = subtotal + deliveryFee;
+  deliveryFeeText.innerText = "Attach GPS";
+  document.getElementById("grandTotal").innerText = `₹${total}`;
 
   // =========================
   // 🔥 DISTANCE CALCULATION
@@ -273,33 +304,27 @@
     const R = 6371;
     const dLat = toRad(lat2 - lat1);
     const dLon = toRad(lon2 - lon1);
+
     const a =
       Math.sin(dLat/2) * Math.sin(dLat/2) +
       Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
       Math.sin(dLon/2) * Math.sin(dLon/2);
+
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     return R * c;
-  }
-
-  function updateBillUI(){
-    document.getElementById("deliveryFee").innerText = `₹${deliveryFee}`;
-    document.getElementById("grandTotal").innerText = `₹${subtotal + deliveryFee}`;
   }
 
   function showKm(ok, km){
     kmPill.style.display = "inline-flex";
     kmPill.className = "km-pill " + (ok ? "ok" : "no");
-
-    if(ok){
-      kmPill.innerHTML = `✅ ${km.toFixed(2)} KM • Delivery ₹${deliveryFee}`;
-    } else {
-      kmPill.innerHTML = `❌ ${km.toFixed(2)} KM • Out of Range`;
-    }
+    kmPill.innerHTML = ok
+      ? `✅ Delivery Available • ${km.toFixed(2)} KM`
+      : `❌ Out of Range • ${km.toFixed(2)} KM`;
   }
 
   function allowOrder(){
     placeBtn.disabled = false;
-    gpsStatus.innerText = `✅ Location locked. Delivery within ${MAX_KM}KM`;
+    gpsStatus.innerText = `✅ Location locked. Delivery available within ${MAX_KM}KM`;
     gpsStatus.style.color = "green";
   }
 
@@ -307,6 +332,34 @@
     placeBtn.disabled = true;
     gpsStatus.innerText = `❌ We deliver only within ${MAX_KM}KM of Sakoli`;
     gpsStatus.style.color = "red";
+  }
+
+  function updateBillAfterGPS(){
+    if(userDistanceKm === null){
+      deliveryFeeText.innerText = "Attach GPS";
+      document.getElementById("grandTotal").innerText = `₹${subtotal}`;
+      return;
+    }
+
+    if(userDistanceKm > MAX_KM){
+      deliveryFeeText.innerText = "Out of Range";
+      document.getElementById("grandTotal").innerText = `₹${subtotal}`;
+      return;
+    }
+
+    deliveryFee = getDeliveryFeeByKm(userDistanceKm);
+    if(deliveryFee === null){
+      deliveryFeeText.innerText = "Out of Range";
+      document.getElementById("grandTotal").innerText = `₹${subtotal}`;
+      return;
+    }
+
+    total = subtotal + deliveryFee;
+    deliveryFeeText.innerText = `₹${deliveryFee}`;
+    document.getElementById("grandTotal").innerText = `₹${total}`;
+
+    feeRulePill.style.display = "inline-flex";
+    feeRulePill.innerHTML = `🚚 Fee Rule: 0-4km ₹10 • 4-7km ₹25 • 7-10km ₹40`;
   }
 
   // =========================
@@ -319,7 +372,7 @@
   };
 
   // =========================
-  // GPS + SLAB DELIVERY CHECK
+  // GPS + 10KM CHECK
   // =========================
   window.getLocation = () => {
     gpsBtn.innerHTML = "<i class='bx bx-loader-alt bx-spin'></i> Detecting...";
@@ -343,21 +396,14 @@
         gpsBtn.classList.add("active");
 
         if(userDistanceKm <= MAX_KM){
-          deliveryFee = getDeliveryFeeByKm(userDistanceKm) || 0;
-
-          // save for customer page cart
-          localStorage.setItem("deliveryFee", String(deliveryFee));
-          localStorage.setItem("distanceKm", String(userDistanceKm.toFixed(2)));
-
-          updateBillUI();
           allowOrder();
           showKm(true, userDistanceKm);
         } else {
-          deliveryFee = 0;
-          updateBillUI();
           blockOrder();
           showKm(false, userDistanceKm);
         }
+
+        updateBillAfterGPS();
       },
       () => {
         gpsBtn.innerHTML = "❌ Permission Denied";
@@ -365,6 +411,7 @@
         gpsStatus.innerText = "❌ Location required (Allow GPS)";
         gpsStatus.style.color = "red";
         alert("Please allow location access for delivery.");
+        updateBillAfterGPS();
       },
       { enableHighAccuracy: true, timeout: 12000 }
     );
@@ -386,14 +433,20 @@
       return;
     }
 
+    deliveryFee = getDeliveryFeeByKm(userDistanceKm);
+    if(deliveryFee === null){
+      alert("Delivery not available for your distance.");
+      return;
+    }
+
+    total = subtotal + deliveryFee;
+
     localStorage.setItem("uName", n);
     localStorage.setItem("uMob", m);
     localStorage.setItem("uAddr", a);
 
     placeBtn.innerHTML = "<i class='bx bx-loader-alt bx-spin'></i> Processing...";
     placeBtn.disabled = true;
-
-    const total = subtotal + deliveryFee;
 
     try {
       await addDoc(collection(db, "orders"), {
@@ -438,22 +491,29 @@
       return;
     }
 
+    deliveryFee = getDeliveryFeeByKm(userDistanceKm);
+    if(deliveryFee === null){
+      alert("Delivery not available for your distance.");
+      return;
+    }
+
+    total = subtotal + deliveryFee;
+
     const n = localStorage.getItem("uName");
     const m = localStorage.getItem("uMob");
     const a = localStorage.getItem("uAddr");
 
-    const total = subtotal + deliveryFee;
-
-    const itemsList = cart.map(i => `▪ ${i.qty} x ${i.name} (${i.variant || i.variantLabel || "Regular"})`).join("%0a");
+    const itemsList = cart.map(i => `▪ ${i.qty} x ${i.name} (${i.variantLabel})`).join("%0a");
 
     const msg =
       `*NEW ORDER ALERT* 🔥%0a%0a` +
       `👤 *${n}* (${m})%0a` +
       `🏠 ${a}%0a%0a` +
-      `📍 Distance: *${userDistanceKm.toFixed(2)} KM*%0a` +
-      `🚚 Delivery: *₹${deliveryFee}*%0a` +
+      `📍 Distance: *${userDistanceKm.toFixed(2)} KM* (Sakoli)%0a` +
       `🗺 Map: ${userLoc}%0a%0a` +
       `*ORDER:*%0a${itemsList}%0a%0a` +
+      `🧾 Subtotal: ₹${subtotal}%0a` +
+      `🚚 Delivery: ₹${deliveryFee}%0a` +
       `💰 *Total: ₹${total}* (${paymentMethod})`;
 
     localStorage.removeItem("cart");
@@ -463,4 +523,3 @@
 
 </body>
 </html>
-
