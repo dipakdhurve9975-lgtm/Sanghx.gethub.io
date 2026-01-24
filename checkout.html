@@ -446,7 +446,7 @@
       });
 
       if(paymentMethod === "UPI") {
-        const upiID = "samyaksangode0-2@okicici"; // ✅ NEW UPI ID
+        const upiID = "samyaksangode0-2@okicici";
         const note = `Order-${n}`;
         const upiLink = `upi://pay?pa=${upiID}&pn=SANGHX&am=${total}&tn=${note}&cu=INR`;
 
@@ -481,7 +481,24 @@
     const m = localStorage.getItem("uMob");
     const a = localStorage.getItem("uAddr");
 
-    const itemsList = cart.map(i => `▪ ${i.qty} x ${i.name} (${i.variantLabel})`).join("%0a");
+    // ==============================
+    // ✅ ONLY ADDON: STORE/VENDOR NAME
+    // ==============================
+    const grouped = {};
+    cart.forEach(i => {
+      const store = i.storeName || "Unknown Store";
+      if(!grouped[store]) grouped[store] = [];
+      grouped[store].push(i);
+    });
+
+    let itemsList = "";
+    Object.keys(grouped).forEach(store => {
+      itemsList += `🏪 *${store}*%0a`;
+      grouped[store].forEach(i => {
+        itemsList += `▪ ${i.qty} x ${i.name} (${i.variantLabel})%0a`;
+      });
+      itemsList += `%0a`;
+    });
 
     const msg =
       `*NEW ORDER ALERT* 🔥%0a%0a` +
@@ -489,7 +506,7 @@
       `🏠 ${a}%0a%0a` +
       `📍 Distance: *${userDistanceKm.toFixed(2)} KM* (Sakoli)%0a` +
       `🗺 Map: ${userLoc}%0a%0a` +
-      `*ORDER:*%0a${itemsList}%0a%0a` +
+      `*ORDER (Store Wise):*%0a${itemsList}%0a` +
       `🧾 Subtotal: ₹${subtotal}%0a` +
       `🚚 Delivery: ₹${deliveryFee}%0a` +
       `💰 *Total: ₹${total}* (${paymentMethod})`;
