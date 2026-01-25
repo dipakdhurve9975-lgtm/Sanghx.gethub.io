@@ -3,14 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>SANGHX • Welcome</title>
+  <title>SANGHX • Jai Hind</title>
   <link rel="manifest" href="manifest.json">
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
   <style>
+    :root {
+      --saffron: #FF9933;
+      --white: #FFFFFF;
+      --green: #138808;
+      --navy: #000080;
+      --dark-bg: #050505;
+    }
+
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
     
     body {
-      background-color: #000;
+      background-color: var(--dark-bg);
       height: 100vh;
       display: flex;
       justify-content: center;
@@ -19,95 +29,100 @@
       perspective: 1000px;
     }
 
-    /* Container */
+    /* Container for the 3D Zoom */
     .splash-container {
       position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      animation: zoomThrough 3.5s cubic-bezier(0.7, 0, 0.3, 1) forwards;
+      /* The Zoom Through Animation */
+      animation: zoomThrough 4s cubic-bezier(0.7, 0, 0.3, 1) forwards;
     }
 
-    /* Text Styling */
+    /* --- ASHOKA CHAKRA ANIMATION --- */
+    .chakra-bg {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 280px; /* Large background element */
+      color: var(--navy);
+      opacity: 0;
+      z-index: 1;
+      filter: drop-shadow(0 0 20px rgba(0, 0, 128, 0.6));
+      animation: spinChakra 10s linear infinite, fadeInChakra 1s ease-out forwards;
+    }
+
+    @keyframes spinChakra { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+    @keyframes fadeInChakra { 0%{opacity:0; scale:0.5;} 100%{opacity:0.25; scale:1;} }
+
+    /* --- AMBIENT TRICOLOR GLOWS --- */
+    .glow-saffron {
+      position: absolute; top: -50px; width: 200px; height: 100px;
+      background: var(--saffron); filter: blur(80px); opacity: 0.6; z-index: 0;
+      animation: pulseFlag 2s infinite alternate;
+    }
+    .glow-green {
+      position: absolute; bottom: -50px; width: 200px; height: 100px;
+      background: var(--green); filter: blur(80px); opacity: 0.6; z-index: 0;
+      animation: pulseFlag 2s infinite alternate 1s;
+    }
+
+    @keyframes pulseFlag { 0%{opacity:0.4; transform:scale(1);} 100%{opacity:0.7; transform:scale(1.2);} }
+
+    /* --- TEXT STYLING --- */
     .logo-text {
-      font-size: 60px;
+      font-size: 70px;
       font-weight: 900;
       letter-spacing: -2px;
       display: flex;
-      gap: 5px;
+      gap: 2px;
       z-index: 10;
+      text-transform: uppercase;
+      line-height: 1;
     }
 
-    .white-part {
-      color: #ffffff;
-      text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+    /* Tricolor Gradient Text */
+    .char {
       animation: dropIn 0.8s ease-out forwards;
       opacity: 0;
+      text-shadow: 0 5px 15px rgba(0,0,0,0.5);
     }
 
-    .red-part {
-      color: #e50914;
-      position: relative;
-      animation: dropIn 0.8s ease-out 0.2s forwards;
-      opacity: 0;
-    }
-    
-    .red-part::after {
-      content: attr(data-text);
-      position: absolute;
-      left: 0;
-      top: 0;
-      z-index: -1;
-      color: #b20710;
-      transform: translateX(2px) translateY(2px);
-      filter: blur(4px);
-    }
-
-    /* Glow Effect */
-    .glow-effect {
-      position: absolute;
-      width: 150px;
-      height: 150px;
-      background: radial-gradient(circle, rgba(229, 9, 20, 0.6) 0%, rgba(0,0,0,0) 70%);
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 1;
-      opacity: 0;
-      animation: pulseGlow 2s ease-in-out infinite 0.5s;
-    }
+    .t-saffron { color: var(--saffron); animation-delay: 0.1s; }
+    .t-white   { color: var(--white); animation-delay: 0.2s; text-shadow: 0 0 20px rgba(255,255,255,0.6); }
+    .t-green   { color: var(--green); animation-delay: 0.3s; }
 
     /* Tagline */
     .tagline {
-      margin-top: 15px;
-      color: #888;
-      font-size: 10px;
+      margin-top: 20px;
+      color: #aaa;
+      font-size: 12px;
       letter-spacing: 6px;
       text-transform: uppercase;
+      font-weight: 700;
       opacity: 0;
-      animation: fadeIn 1s ease forwards 1s;
+      animation: fadeIn 1s ease forwards 1.2s;
+      z-index: 10;
+      background: linear-gradient(90deg, var(--saffron), var(--white), var(--green));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
-    /* Animations */
+    /* --- ANIMATIONS --- */
     @keyframes dropIn {
-      0% { transform: scale(3); opacity: 0; filter: blur(10px); }
-      100% { transform: scale(1); opacity: 1; filter: blur(0); }
-    }
-
-    @keyframes pulseGlow {
-      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
-      50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.5); }
-      100% { opacity: 0; transform: translate(-50%, -50%) scale(2); }
+      0% { transform: translateY(-50px) scale(1.5); opacity: 0; filter: blur(10px); }
+      100% { transform: translateY(0) scale(1); opacity: 1; filter: blur(0); }
     }
 
     @keyframes fadeIn { to { opacity: 1; } }
 
+    /* The Cinematic Zoom Through */
     @keyframes zoomThrough {
       0% { transform: scale(1); }
-      75% { transform: scale(1); opacity: 1; }
-      90% { transform: scale(1.2); opacity: 1; }
-      100% { transform: scale(50); opacity: 0; }
+      70% { transform: scale(1); opacity: 1; }
+      85% { transform: scale(0.9); opacity: 1; } /* Pull back anticipation */
+      100% { transform: scale(60); opacity: 0; } /* Zoom into the void */
     }
 
   </style>
@@ -115,14 +130,17 @@
 <body>
 
   <div class="splash-container">
-    <div class="glow-effect"></div>
-    
+    <div class="glow-saffron"></div>
+    <div class="glow-green"></div>
+
+    <i class='bx bx-hive chakra-bg'></i> 
     <div class="logo-text">
-      <span class="white-part">SAN</span>
-      <span class="red-part" data-text="GHX">GHX</span>
+      <span class="char t-saffron">SAN</span>
+      <span class="char t-white">G</span>
+      <span class="char t-green">HX</span>
     </div>
 
-    <div class="tagline">SAKOLI'S FINEST</div>
+    <div class="tagline">REPUBLIC DAY EDITION</div>
   </div>
 
   <script>
@@ -130,11 +148,11 @@
       navigator.serviceWorker.register('sw.js').catch(() => {});
     }
 
-    // Redirect to page2.html after animation
+    // Redirect to page2.html after animation ends
     setTimeout(() => {
-      document.body.style.backgroundColor = "#000"; 
-      window.location.href = "page2.html"; // ✅ Updated Redirect
-    }, 3200);
+      document.body.style.backgroundColor = "#fff"; // Flash white for transition
+      window.location.href = "page2.html"; 
+    }, 3600); // 3.6s matches animation timing
   </script>
 
 </body>
