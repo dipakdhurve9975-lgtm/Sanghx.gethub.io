@@ -1,221 +1,483 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>SANGHX • Secure Checkout</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SANGHX • Secure Checkout 🔥</title>
 
-  <style>
-    :root {
-      --primary: #FF4B3A;
-      --dark: #0d0d0d;
-      --gray: #f2f2f5;
-      --green: #2ecc71;
-      --red: #ff3b3b;
-    }
-    * { margin:0; padding:0; box-sizing:border-box; font-family:'Outfit', sans-serif; -webkit-tap-highlight-color:transparent; }
-    body { background: var(--gray); padding: 20px; max-width: 600px; margin: auto; padding-bottom: 100px; }
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+<link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 
-    .header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
-    .header i { font-size: 28px; color: var(--dark); cursor: pointer; }
-    .header h2 { font-size: 22px; font-weight: 800; }
+<style>
+  :root{
+    --primary:#FF4B3A;
+    --dark:#121212;
+    --gray:#F5F5F8;
+    --white:#ffffff;
 
-    .card {
-      background: white; border-radius: 20px; padding: 20px; margin-bottom: 20px;
-      box-shadow: 0 10px 40px -10px rgba(0,0,0,0.08); position: relative; overflow: hidden;
-    }
-    .card-title { font-size: 16px; font-weight: 700; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+    --saffron:#FF9933;
+    --green:#138808;
+    --chakra:#000080;
 
-    .order-item { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; border-bottom: 1px solid #f5f5f5; padding-bottom: 8px; }
-    .order-item b { font-weight: 700; }
+    --shadow-sm:0 6px 14px rgba(0,0,0,0.06);
+    --shadow-md:0 12px 28px rgba(0,0,0,0.10);
+    --shadow-lg:0 22px 60px rgba(0,0,0,0.16);
+  }
 
-    .bill-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; color: #666; }
-    .total-row { display: flex; justify-content: space-between; margin-top: 15px; padding-top: 15px; border-top: 2px dashed #eee; font-size: 18px; font-weight: 800; color: var(--dark); }
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Outfit',sans-serif;-webkit-tap-highlight-color:transparent;}
+  body{
+    background:var(--gray);
+    color:var(--dark);
+    padding-bottom:140px;
+    overflow-x:hidden;
+    position:relative;
+  }
 
-    .input-group { position: relative; margin-bottom: 15px; }
-    .input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #888; font-size: 20px; }
-    input, textarea {
-      width: 100%; padding: 14px 14px 14px 45px; border-radius: 14px; border: 1px solid #eee;
-      background: #f9f9f9; outline: none; font-size: 15px; font-weight: 500; transition: 0.3s;
-    }
-    input:focus, textarea:focus { border-color: var(--primary); background: white; }
-    textarea { height: 80px; padding-left: 15px; }
+  /* 🇮🇳 Flag background */
+  .flag-bg{
+    position:fixed; inset:0; z-index:-10; overflow:hidden;
+  }
+  .flag-bg::before{
+    content:"";
+    position:absolute; inset:-60px;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(255,153,51,0.22) 0%, transparent 42%),
+      radial-gradient(circle at 80% 80%, rgba(19,136,8,0.22) 0%, transparent 42%),
+      radial-gradient(circle at 50% 50%, rgba(0,0,128,0.14) 0%, transparent 50%),
+      linear-gradient(
+        to bottom,
+        rgba(255,153,51,0.18) 0%,
+        rgba(255,153,51,0.10) 33%,
+        rgba(255,255,255,0.10) 33%,
+        rgba(255,255,255,0.10) 66%,
+        rgba(19,136,8,0.10) 66%,
+        rgba(19,136,8,0.18) 100%
+      );
+    animation: waveFlag 7s ease-in-out infinite;
+    transform-origin:center;
+  }
+  @keyframes waveFlag{
+    0%{transform:skewX(0deg) translateX(0px) scale(1.1);}
+    25%{transform:skewX(-2deg) translateX(-10px) scale(1.1);}
+    50%{transform:skewX(2deg) translateX(10px) scale(1.1);}
+    75%{transform:skewX(-2deg) translateX(-8px) scale(1.1);}
+    100%{transform:skewX(0deg) translateX(0px) scale(1.1);}
+  }
 
-    .btn {
-      width: 100%; padding: 16px; border: none; border-radius: 16px; font-size: 16px; font-weight: 700;
-      cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; transition: 0.2s;
-    }
-    .btn-gps { background: var(--dark); color: white; margin-top: 10px; }
-    .btn-gps.active { background: var(--green); }
+  .chakra{
+    position:absolute;
+    left:50%; top:50%;
+    transform:translate(-50%,-50%);
+    width:520px; height:520px;
+    border-radius:50%;
+    border:18px solid rgba(0,0,128,0.07);
+    opacity:0.35;
+    animation: megaSpin 18s linear infinite;
+  }
+  @keyframes megaSpin{
+    from{transform:translate(-50%,-50%) rotate(0deg);}
+    to{transform:translate(-50%,-50%) rotate(360deg);}
+  }
 
-    .pay-opt {
-      display: flex; align-items: center; padding: 15px; border: 2px solid #eee; border-radius: 16px;
-      margin-bottom: 10px; cursor: pointer; transition: 0.3s;
-      user-select: none;
-    }
-    .pay-opt.active { border-color: var(--primary); background: #fff0f0; }
-    .radio-circle { width: 20px; height: 20px; border: 2px solid #ccc; border-radius: 50%; margin-right: 15px; position: relative; }
-    .pay-opt.active .radio-circle { border-color: var(--primary); }
-    .pay-opt.active .radio-circle::after { content: ''; position: absolute; inset: 4px; background: var(--primary); border-radius: 50%; }
+  header{
+    position:sticky; top:0; z-index:100;
+    background:rgba(255,255,255,0.88);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+    padding:16px 18px;
+    border-bottom:1px solid rgba(0,0,0,0.06);
+    display:flex; align-items:center; justify-content:space-between;
+    box-shadow:0 12px 30px rgba(255,153,51,0.10);
+  }
+  .brand{
+    font-size:24px;
+    font-weight:900;
+    letter-spacing:-1px;
+  }
+  .brand span{color:var(--primary);}
+  .back-btn{
+    width:44px;height:44px;border-radius:16px;
+    display:flex;align-items:center;justify-content:center;
+    background:#111;color:white;
+    text-decoration:none;
+    box-shadow:0 16px 45px rgba(0,0,0,0.25);
+  }
+  .back-btn:active{transform:scale(.92);}
 
-    .bottom-bar {
-      position: fixed; bottom: 0; left: 0; width: 100%; background: white;
-      padding: 15px 20px; border-radius: 20px 20px 0 0; box-shadow: 0 -10px 30px rgba(0,0,0,0.1);
-      z-index: 100;
-    }
-    .place-btn {
-      width: 100%; padding: 16px; background: linear-gradient(135deg, #FF4B3A, #ff7f50);
-      color: white; border: none; border-radius: 16px; font-size: 18px; font-weight: 800;
-      box-shadow: 0 10px 20px rgba(255, 75, 58, 0.3); cursor: pointer;
-      transition: 0.2s;
-    }
-    .place-btn:disabled {
-      opacity: 0.55;
-      cursor: not-allowed;
-      background: #999;
-      box-shadow: none;
-    }
+  .container{
+    max-width:620px;
+    margin:0 auto;
+    padding:18px;
+  }
 
-    .modal-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px);
-      z-index: 200; display: none; align-items: center; justify-content: center; padding: 20px;
-    }
-    .modal-overlay.show { display: flex; }
-    .modal-card {
-      background: white; padding: 30px; border-radius: 24px; text-align: center; width: 100%;
-      max-width: 400px; box-shadow: 0 20px 50px rgba(0,0,0,0.2);
-    }
+  .title{
+    font-size:26px;
+    font-weight:900;
+    margin-bottom:10px;
+  }
+  .sub{
+    opacity:.75;
+    font-weight:700;
+    margin-bottom:18px;
+  }
 
-    .km-pill{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      font-size:12px;
-      font-weight:800;
-      padding:8px 12px;
-      border-radius:999px;
-      border:1px solid #eee;
-      background:#fff;
-      margin-top:10px;
-    }
-    .km-pill.ok{ color: var(--green); border-color:#b8f0d0; background:#eafff2; }
-    .km-pill.no{ color: var(--red); border-color:#ffd0d0; background:#fff1f1; }
+  .card{
+    background:white;
+    border-radius:26px;
+    box-shadow:var(--shadow-md);
+    padding:16px;
+    margin-bottom:16px;
+    border:2px solid rgba(0,0,0,0.04);
+  }
 
-    .fee-pill{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      font-size:12px;
-      font-weight:800;
-      padding:8px 12px;
-      border-radius:999px;
-      border:1px solid #eee;
-      background:#fff;
-      margin-top:10px;
-      color:#111;
-    }
+  .sec-title{
+    font-weight:900;
+    font-size:15px;
+    margin-bottom:12px;
+    display:flex;align-items:center;gap:8px;
+  }
 
-    @keyframes slideUp { from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1} }
-    .animate { animation: slideUp 0.4s ease forwards; }
-  </style>
+  .row{
+    display:flex;
+    gap:10px;
+  }
+
+  input, textarea, select{
+    width:100%;
+    padding:14px 14px;
+    border-radius:16px;
+    border:2px solid #eee;
+    outline:none;
+    font-weight:800;
+    background:#fff;
+    transition:.2s;
+    font-size:15px;
+  }
+  textarea{
+    min-height:84px;
+    resize:none;
+    font-weight:700;
+  }
+  input:focus, textarea:focus, select:focus{
+    border-color:var(--primary);
+    box-shadow:0 14px 40px rgba(255,75,58,0.18);
+  }
+
+  .gps-box{
+    display:flex;
+    gap:10px;
+    align-items:center;
+  }
+
+  .gps-btn{
+    flex:1;
+    border:none;
+    cursor:pointer;
+    border-radius:18px;
+    padding:14px 14px;
+    font-weight:900;
+    font-size:14px;
+    background:linear-gradient(135deg,#111,#2a2a2a);
+    color:#fff;
+    box-shadow:0 16px 45px rgba(0,0,0,0.18);
+    transition:.2s;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+  }
+  .gps-btn:active{transform:scale(.98);}
+  .gps-btn.active{
+    background:linear-gradient(135deg,#2ed573,#00d2a0);
+  }
+
+  .gps-status{
+    margin-top:10px;
+    font-weight:900;
+    font-size:12px;
+    opacity:.8;
+    text-align:center;
+  }
+
+  .km-pill{
+    display:none;
+    margin-top:10px;
+    padding:10px 14px;
+    border-radius:999px;
+    font-weight:900;
+    font-size:12px;
+    width:max-content;
+    max-width:100%;
+    border:2px solid #eee;
+  }
+  .km-pill.ok{
+    display:inline-flex;
+    background:#eafff2;
+    border-color:#b8f0d0;
+    color:#0f7a3b;
+  }
+  .km-pill.no{
+    display:inline-flex;
+    background:#fff1f1;
+    border-color:#ffd0d0;
+    color:#b10000;
+  }
+
+  .cart-box{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+
+  .store-block{
+    background:linear-gradient(135deg,#fff,#fafafa);
+    border-radius:22px;
+    padding:14px;
+    border:2px dashed rgba(255,153,51,0.22);
+  }
+
+  .store-head{
+    display:flex;justify-content:space-between;align-items:center;
+    margin-bottom:10px;
+  }
+  .store-name{
+    font-weight:900;
+    font-size:16px;
+  }
+  .pill{
+    font-size:11px;
+    font-weight:900;
+    padding:6px 12px;
+    border-radius:999px;
+    background:rgba(0,0,0,0.06);
+  }
+
+  .item-row{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:10px 0;
+    border-bottom:1px solid #f2f2f2;
+    gap:10px;
+  }
+  .item-row:last-child{border-bottom:none;}
+  .it-name{font-weight:900;}
+  .it-sub{opacity:.7;font-weight:800;font-size:12px;}
+  .it-price{font-weight:900;}
+
+  .bill{
+    background:#f9f9fb;
+    border-radius:22px;
+    padding:14px;
+    border:2px dashed rgba(19,136,8,0.25);
+  }
+  .bill-row{
+    display:flex;justify-content:space-between;
+    margin-bottom:8px;
+    font-weight:800;
+    color:#666;
+  }
+  .bill-total{
+    display:flex;justify-content:space-between;
+    font-weight:900;
+    font-size:18px;
+    margin-top:10px;
+    color:#111;
+  }
+
+  .btn{
+    width:100%;
+    padding:16px;
+    border:none;
+    border-radius:20px;
+    font-weight:900;
+    font-size:15px;
+    cursor:pointer;
+    letter-spacing:.5px;
+    box-shadow:0 18px 50px rgba(0,0,0,0.12);
+    transition:.18s;
+  }
+  .btn:active{transform:scale(.98);}
+  .btn-primary{
+    background:linear-gradient(135deg,#2ed573,#00d2a0);
+    color:white;
+  }
+  .btn-primary:disabled{
+    opacity:.55;
+    cursor:not-allowed;
+    filter:grayscale(1);
+    box-shadow:none;
+  }
+
+  /* toast */
+  .toast{
+    position:fixed;
+    top:92px;left:50%;
+    transform:translateX(-50%) scale(.92);
+    background:rgba(18,18,18,0.92);
+    color:white;
+    padding:14px 20px;
+    border-radius:999px;
+    font-weight:900;
+    opacity:0;
+    pointer-events:none;
+    transition:.28s cubic-bezier(.68,-0.55,.265,1.55);
+    z-index:9999;
+    display:flex;align-items:center;gap:10px;
+    box-shadow:0 16px 50px rgba(0,0,0,0.25);
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) scale(1);}
+
+  /* UPI QR Modal */
+  .modal{
+    position:fixed; inset:0;
+    display:none;
+    align-items:flex-end;
+    justify-content:center;
+    z-index:99999;
+    background:rgba(0,0,0,0.55);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+  }
+  .modal.show{display:flex;}
+  .modal-card{
+    width:100%;
+    max-width:620px;
+    background:white;
+    border-radius:28px 28px 0 0;
+    padding:18px;
+    box-shadow:0 -20px 80px rgba(0,0,0,0.25);
+    transform:translateY(110%);
+    animation:popUp .45s cubic-bezier(.68,-0.55,.265,1.55) forwards;
+  }
+  @keyframes popUp{ to{transform:translateY(0);} }
+
+  .qrbox{
+    background:linear-gradient(135deg,#fff,#fafafa);
+    border:2px dashed rgba(0,0,0,0.12);
+    border-radius:22px;
+    padding:16px;
+    text-align:center;
+  }
+  .qrbox img{
+    width:220px;
+    height:220px;
+    border-radius:20px;
+    object-fit:cover;
+    background:#eee;
+  }
+  .close-x{
+    width:42px;height:42px;border-radius:14px;
+    background:#111;color:white;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+  }
+</style>
 </head>
 
 <body>
 
-  <div class="header">
-    <i class='bx bx-left-arrow-alt' onclick="location.href='index.html'"></i>
-    <h2>Checkout</h2>
+<div class="flag-bg">
+  <div class="chakra"></div>
+</div>
+
+<header>
+  <a class="back-btn" href="customer.html" title="Back">
+    <i class='bx bx-left-arrow-alt' style="font-size:26px;"></i>
+  </a>
+  <div class="brand">SAN<span>GHX</span></div>
+  <a class="back-btn" href="https://wa.me/918087762813" target="_blank" title="Help">
+    <i class='bx bxl-whatsapp' style="font-size:22px;"></i>
+  </a>
+</header>
+
+<div class="container">
+  <div class="title">Checkout 🚀</div>
+  <div class="sub">GPS attach karo, tabhi order send hoga 🔥</div>
+
+  <div class="card">
+    <div class="sec-title"><i class='bx bxs-user'></i> Customer Details</div>
+    <div class="row">
+      <input id="cName" placeholder="Your Name">
+      <input id="cMobile" placeholder="Mobile Number" inputmode="numeric">
+    </div>
+    <div style="height:10px;"></div>
+    <textarea id="cAddress" placeholder="Full Address (House no, area, landmark)"></textarea>
   </div>
 
-  <div class="animate">
+  <div class="card">
+    <div class="sec-title"><i class='bx bxs-map'></i> Location (Required)</div>
 
-    <div class="card">
-      <div class="card-title"><i class='bx bxs-receipt'></i> Order Summary</div>
-      <div id="orderItems"></div>
-
-      <div style="margin-top:15px;">
-        <div class="bill-row"><span>Item Total</span> <span id="subtotal">₹0</span></div>
-        <div class="bill-row"><span>Delivery Charge</span> <span id="deliveryFeeText">Attach GPS</span></div>
-        <div class="total-row"><span>To Pay</span> <span id="grandTotal">₹0</span></div>
-
-        <div id="feeRulePill" class="fee-pill" style="display:none;"></div>
-      </div>
-    </div>
-
-    <div class="card" style="animation-delay: 0.1s;">
-      <div class="card-title"><i class='bx bxs-user-detail'></i> Delivery Details</div>
-
-      <div class="input-group">
-        <i class='bx bxs-user'></i>
-        <input id="name" placeholder="Full Name">
-      </div>
-
-      <div class="input-group">
-        <i class='bx bxs-phone'></i>
-        <input id="mobile" type="number" placeholder="Mobile Number">
-      </div>
-
-      <textarea id="address" placeholder="Full Address (House No, Area, Landmark)"></textarea>
-
-      <button class="btn btn-gps" onclick="getLocation()" id="gpsBtn">
-        <i class='bx bxs-map'></i> Use Current Location
+    <div class="gps-box">
+      <button class="gps-btn" id="gpsBtn">
+        <i class='bx bxs-navigation'></i> Detect My Location
       </button>
-
-      <div id="gpsStatus" style="font-size:12px; margin-top:8px; text-align:center; color:gray;">
-        Location required for delivery (10KM limit)
-      </div>
-
-      <div id="kmPill" class="km-pill" style="display:none;"></div>
     </div>
 
-    <div class="card" style="animation-delay: 0.2s;">
-      <div class="card-title"><i class='bx bxs-wallet'></i> Payment Method</div>
-
-      <div class="pay-opt active" onclick="selectPay('UPI', event)">
-        <div class="radio-circle"></div>
-        <div style="flex:1;">
-          <b style="font-size:15px;">Pay via UPI (Fast)</b>
-          <div style="font-size:12px; color:#666;">Pay now, confirm on WhatsApp</div>
-        </div>
-        <i class='bx bxs-bank' style="font-size:24px; color:#666;"></i>
-      </div>
-
-      <div class="pay-opt" onclick="selectPay('COD', event)">
-        <div class="radio-circle"></div>
-        <div style="flex:1;">
-          <b style="font-size:15px;">Pay on Delivery</b>
-          <div style="font-size:12px; color:#666;">Cash / QR Scan on arrival</div>
-        </div>
-        <i class='bx bxs-truck' style="font-size:24px; color:#666;"></i>
-      </div>
-    </div>
-
+    <div id="gpsStatus" class="gps-status">⚠️ Location required to place order (10KM limit)</div>
+    <div id="kmPill" class="km-pill"></div>
   </div>
 
-  <div class="bottom-bar">
-    <button class="place-btn" id="placeBtn" onclick="processOrder()" disabled>
-      Place Order <i class='bx bx-right-arrow-alt'></i>
+  <div class="card">
+    <div class="sec-title"><i class='bx bxs-wallet'></i> Payment Mode</div>
+    <select id="payMode">
+      <option value="UPI">UPI (Scan QR)</option>
+      <option value="COD">Cash On Delivery</option>
+    </select>
+    <div style="height:10px;"></div>
+    <button class="btn" style="background:linear-gradient(135deg,#111,#2a2a2a);color:#fff;" id="upiBtn">
+      Show UPI QR 🔥
     </button>
   </div>
 
-  <div class="modal-overlay" id="payModal">
-    <div class="modal-card">
-      <i class='bx bxs-time-five' style="font-size:60px; color:var(--primary); margin-bottom:15px;"></i>
-      <h2 style="margin-bottom:10px;">Completing Payment...</h2>
-      <p style="color:#666; font-size:14px; margin-bottom:20px;">
-        Please complete the payment on your UPI App. Once done, click the button below to send your order.
-      </p>
-      <button class="btn" style="background:#25D366; color:white;" onclick="finishWhatsApp()">
-        <i class='bx bxl-whatsapp'></i> Payment Done? Send Order
-      </button>
+  <div class="card">
+    <div class="sec-title"><i class='bx bxs-shopping-bag'></i> Your Items</div>
+    <div class="cart-box" id="cartBox"></div>
+  </div>
+
+  <div class="card">
+    <div class="sec-title"><i class='bx bxs-receipt'></i> Bill Summary</div>
+    <div class="bill">
+      <div class="bill-row"><span>Subtotal</span><span id="subTotal">₹0</span></div>
+      <div class="bill-row"><span>Delivery</span><span id="delFee">Attach GPS</span></div>
+      <div class="bill-total"><span>Total</span><span id="grandTotal">₹0</span></div>
+    </div>
+    <div style="margin-top:10px;font-weight:900;opacity:.75;font-size:12px;">
+      🚚 Fee Rule: 0-4km ₹10 • 4-7km ₹25 • 7-10km ₹40
     </div>
   </div>
+
+  <button class="btn btn-primary" id="placeOrderBtn" disabled>
+    Place Order on WhatsApp 🚀
+  </button>
+</div>
+
+<div class="toast" id="toast"><i class='bx bxs-check-circle'></i> Done</div>
+
+<!-- UPI MODAL -->
+<div class="modal" id="upiModal">
+  <div class="modal-card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <div style="font-weight:900;font-size:16px;">UPI Payment 🔥</div>
+      <div class="close-x" id="upiClose"><i class='bx bx-x' style="font-size:26px;"></i></div>
+    </div>
+
+    <div class="qrbox">
+      <img id="qrImg" src="" alt="UPI QR">
+      <div style="margin-top:10px;font-weight:900;">Scan & Pay</div>
+      <div style="opacity:.7;font-weight:800;font-size:12px;margin-top:6px;">
+        Payment done? Then click Place Order 🚀
+      </div>
+    </div>
+
+    <div style="height:12px;"></div>
+    <button class="btn" style="background:#111;color:#fff;" id="copyUpiBtn">Copy UPI ID</button>
+  </div>
+</div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
   import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+  // 🔥 Firebase Config (your same)
   const firebaseConfig = {
     apiKey: "AIzaSyC-igyzVwdH_4Jt1r64TtHSfYxIMw8UfzM",
     authDomain: "sanghx-foods.firebaseapp.com",
@@ -228,16 +490,16 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  // =========================
-  // DELIVERY LIMIT SETTINGS
-  // =========================
-  const MAX_KM = 10;
+  // ===== SETTINGS
+  const ADMIN_WA = "919322586177"; // 🔥 Your admin number (same as your old checkout)
+  const UPI_ID = "samyaksangode0-2@okicici"; // 🔥 Your UPI ID
+  const UPI_NAME = "SANGHX";
 
-  // Sakoli center point
+  // Delivery settings
+  const MAX_KM = 10;
   const SAKOLI_LAT = 21.0819;
   const SAKOLI_LNG = 79.9814;
 
-  // Delivery Fee Rule
   function getDeliveryFeeByKm(km){
     if(km <= 4) return 10;
     if(km > 4 && km <= 7) return 25;
@@ -245,51 +507,45 @@
     return null;
   }
 
-  // Auto-Fill
-  document.getElementById("name").value = localStorage.getItem("uName") || "";
-  document.getElementById("mobile").value = localStorage.getItem("uMob") || "";
-  document.getElementById("address").value = localStorage.getItem("uAddr") || "";
+  // ===== Refs
+  const cartBox = document.getElementById("cartBox");
+  const subTotalEl = document.getElementById("subTotal");
+  const delFeeEl = document.getElementById("delFee");
+  const grandTotalEl = document.getElementById("grandTotal");
 
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
-  let userLoc = "";
-  let userDistanceKm = null;
-  let paymentMethod = "UPI";
+  const cName = document.getElementById("cName");
+  const cMobile = document.getElementById("cMobile");
+  const cAddress = document.getElementById("cAddress");
 
-  const placeBtn = document.getElementById("placeBtn");
-  const gpsStatus = document.getElementById("gpsStatus");
+  const payMode = document.getElementById("payMode");
+  const upiBtn = document.getElementById("upiBtn");
+  const placeOrderBtn = document.getElementById("placeOrderBtn");
+
+  const toast = document.getElementById("toast");
+
+  const upiModal = document.getElementById("upiModal");
+  const upiClose = document.getElementById("upiClose");
+  const copyUpiBtn = document.getElementById("copyUpiBtn");
+
   const gpsBtn = document.getElementById("gpsBtn");
+  const gpsStatus = document.getElementById("gpsStatus");
   const kmPill = document.getElementById("kmPill");
-  const deliveryFeeText = document.getElementById("deliveryFeeText");
-  const feeRulePill = document.getElementById("feeRulePill");
 
-  if(cart.length === 0) {
-    document.body.innerHTML = "<div style='text-align:center; padding:50px;'><h2>Cart Empty 🛒</h2><br><a href='index.html' style='color:blue;'>Go Back</a></div>";
+  // ===== State
+  let deliveryFee = 0;
+  let userLocLink = "";
+  let userDistanceKm = null;
+
+  // ===== Helpers
+  function showToast(msg){
+    toast.innerHTML = `<i class='bx bxs-check-circle'></i> ${msg}`;
+    toast.classList.add("show");
+    setTimeout(()=>toast.classList.remove("show"), 1400);
   }
 
-  // Fix undefined variantLabel
-  cart = cart.map(i => ({
-    ...i,
-    variantLabel: i.variantLabel || i.variant || "Regular"
-  }));
-
-  // Render Items
-  let subtotal = cart.reduce((a,b)=>a+(b.price*b.qty),0);
-
-  document.getElementById("orderItems").innerHTML = cart.map(i => `
-    <div class="order-item">
-      <span>${i.qty}x ${i.name} <small>(${i.variantLabel})</small></span>
-      <b>₹${i.price*i.qty}</b>
-    </div>
-  `).join("");
-
-  document.getElementById("subtotal").innerText = `₹${subtotal}`;
-
-  let deliveryFee = 0;
-  let total = subtotal + deliveryFee;
-  document.getElementById("grandTotal").innerText = `₹${total}`;
+  function money(n){ return "₹" + Number(n||0).toFixed(0); }
 
   function toRad(v){ return (v * Math.PI) / 180; }
-
   function calcDistanceKm(lat1, lon1, lat2, lon2){
     const R = 6371;
     const dLat = toRad(lat2 - lat1);
@@ -304,6 +560,106 @@
     return R * c;
   }
 
+  function getCart(){
+    try{
+      const raw = localStorage.getItem("cart"); // 🔥 your existing cart key
+      if(!raw) return [];
+      return JSON.parse(raw) || [];
+    }catch(e){
+      return [];
+    }
+  }
+
+  function groupByStore(items){
+    const by = {};
+    items.forEach(it=>{
+      const st = it.storeName || it.vendor || it.shop || "SANGHX";
+      if(!by[st]) by[st]=[];
+      by[st].push(it);
+    });
+    return by;
+  }
+
+  function calcSubtotal(items){
+    return items.reduce((sum,it)=>sum + (Number(it.price||0) * Number(it.qty||0)), 0);
+  }
+
+  function renderCart(){
+    const items = getCart();
+    cartBox.innerHTML = "";
+
+    if(items.length===0){
+      cartBox.innerHTML = `<div style="font-weight:900;opacity:.7;">Cart is empty 😭</div>`;
+      subTotalEl.innerText = money(0);
+      delFeeEl.innerText = "Attach GPS";
+      grandTotalEl.innerText = money(0);
+      placeOrderBtn.disabled = true;
+      return;
+    }
+
+    const byStore = groupByStore(items);
+
+    Object.keys(byStore).forEach(store=>{
+      const storeItems = byStore[store];
+      const count = storeItems.reduce((a,b)=>a+b.qty,0);
+
+      const block = document.createElement("div");
+      block.className = "store-block";
+
+      block.innerHTML = `
+        <div class="store-head">
+          <div class="store-name">🏪 ${store}</div>
+          <div class="pill">${count} items</div>
+        </div>
+      `;
+
+      storeItems.forEach(it=>{
+        const row = document.createElement("div");
+        row.className = "item-row";
+        row.innerHTML = `
+          <div>
+            <div class="it-name">${it.name}</div>
+            <div class="it-sub">Qty: ${it.qty} • ${money(it.price)}</div>
+          </div>
+          <div class="it-price">${money(it.price * it.qty)}</div>
+        `;
+        block.appendChild(row);
+      });
+
+      cartBox.appendChild(block);
+    });
+
+    const sub = calcSubtotal(items);
+
+    subTotalEl.innerText = money(sub);
+
+    if(userDistanceKm === null){
+      delFeeEl.innerText = "Attach GPS";
+      grandTotalEl.innerText = money(sub);
+      placeOrderBtn.disabled = true;
+      return;
+    }
+
+    if(userDistanceKm > MAX_KM){
+      delFeeEl.innerText = "Out of Range";
+      grandTotalEl.innerText = money(sub);
+      placeOrderBtn.disabled = true;
+      return;
+    }
+
+    deliveryFee = getDeliveryFeeByKm(userDistanceKm);
+    if(deliveryFee === null){
+      delFeeEl.innerText = "Out of Range";
+      grandTotalEl.innerText = money(sub);
+      placeOrderBtn.disabled = true;
+      return;
+    }
+
+    delFeeEl.innerText = money(deliveryFee);
+    grandTotalEl.innerText = money(sub + deliveryFee);
+    placeOrderBtn.disabled = false;
+  }
+
   function showKm(ok, km){
     kmPill.style.display = "inline-flex";
     kmPill.className = "km-pill " + (ok ? "ok" : "no");
@@ -312,208 +668,189 @@
       : `❌ Out of Range • ${km.toFixed(2)} KM`;
   }
 
-  function allowOrder(){
-    placeBtn.disabled = false;
-    gpsStatus.innerText = `✅ Location locked. Delivery available within ${MAX_KM}KM`;
-    gpsStatus.style.color = "green";
-  }
-
-  function blockOrder(){
-    placeBtn.disabled = true;
-    gpsStatus.innerText = `❌ We deliver only within ${MAX_KM}KM of Sakoli`;
-    gpsStatus.style.color = "red";
-  }
-
-  function updateBillAfterGPS(){
-    if(userDistanceKm === null){
-      deliveryFeeText.innerText = "Attach GPS";
-      document.getElementById("grandTotal").innerText = `₹${subtotal}`;
-      return;
-    }
-
-    if(userDistanceKm > MAX_KM){
-      deliveryFeeText.innerText = "Out of Range";
-      document.getElementById("grandTotal").innerText = `₹${subtotal}`;
-      return;
-    }
-
-    deliveryFee = getDeliveryFeeByKm(userDistanceKm);
-    if(deliveryFee === null){
-      deliveryFeeText.innerText = "Out of Range";
-      document.getElementById("grandTotal").innerText = `₹${subtotal}`;
-      return;
-    }
-
-    total = subtotal + deliveryFee;
-    deliveryFeeText.innerText = `₹${deliveryFee}`;
-    document.getElementById("grandTotal").innerText = `₹${total}`;
-
-    feeRulePill.style.display = "inline-flex";
-    feeRulePill.innerHTML = `🚚 Fee Rule: 0-4km ₹10 • 4-7km ₹25 • 7-10km ₹40`;
-  }
-
-  window.selectPay = (mode, ev) => {
-    paymentMethod = mode;
-    document.querySelectorAll(".pay-opt").forEach(el => el.classList.remove("active"));
-    ev.currentTarget.classList.add("active");
-  };
-
-  window.getLocation = () => {
+  // ===== GPS
+  gpsBtn.addEventListener("click", ()=>{
     gpsBtn.innerHTML = "<i class='bx bx-loader-alt bx-spin'></i> Detecting...";
     gpsBtn.classList.remove("active");
 
-    if (!navigator.geolocation) {
-      alert("GPS not supported.");
-      gpsBtn.innerHTML = "<i class='bx bxs-map'></i> Use Current Location";
+    if(!navigator.geolocation){
+      showToast("GPS not supported 😭");
+      gpsBtn.innerHTML = "<i class='bx bxs-navigation'></i> Detect My Location";
       return;
     }
 
     navigator.geolocation.getCurrentPosition(
-      (pos) => {
+      (pos)=>{
         const lat = pos.coords.latitude;
         const lng = pos.coords.longitude;
 
-        userLoc = `https://www.google.com/maps?q=${lat},${lng}`;
+        userLocLink = `https://www.google.com/maps?q=${lat},${lng}`;
         userDistanceKm = calcDistanceKm(lat, lng, SAKOLI_LAT, SAKOLI_LNG);
 
         gpsBtn.innerHTML = "<i class='bx bxs-check-circle'></i> Location Attached";
         gpsBtn.classList.add("active");
 
         if(userDistanceKm <= MAX_KM){
-          allowOrder();
+          gpsStatus.innerText = `✅ Location locked. Delivery available within ${MAX_KM}KM`;
+          gpsStatus.style.color = "green";
           showKm(true, userDistanceKm);
-        } else {
-          blockOrder();
+          showToast("GPS attached 🔥");
+        }else{
+          gpsStatus.innerText = `❌ We deliver only within ${MAX_KM}KM of Sakoli`;
+          gpsStatus.style.color = "red";
           showKm(false, userDistanceKm);
+          showToast("Out of range 😭");
         }
 
-        updateBillAfterGPS();
+        renderCart();
       },
-      () => {
+      ()=>{
         gpsBtn.innerHTML = "❌ Permission Denied";
-        blockOrder();
         gpsStatus.innerText = "❌ Location required (Allow GPS)";
         gpsStatus.style.color = "red";
-        alert("Please allow location access for delivery.");
-        updateBillAfterGPS();
+        userLocLink = "";
+        userDistanceKm = null;
+        renderCart();
+        showToast("Allow GPS first ⚠️");
       },
-      { enableHighAccuracy: true, timeout: 12000 }
+      { enableHighAccuracy:true, timeout:12000 }
     );
-  };
+  });
 
-  window.processOrder = async () => {
-    const n = document.getElementById("name").value.trim();
-    const m = document.getElementById("mobile").value.trim();
-    const a = document.getElementById("address").value.trim();
+  // ===== UPI QR
+  function openUpiModal(){
+    const items = getCart();
+    const sub = calcSubtotal(items);
 
-    if(!n || !m || !a) return alert("Please fill all details!");
-    if(!userLoc) return alert("Please attach your current location first!");
-    if(userDistanceKm === null) return alert("Location check failed. Try again.");
+    if(userDistanceKm === null){
+      showToast("Attach GPS first ⚠️");
+      return;
+    }
     if(userDistanceKm > MAX_KM){
-      alert(`Sorry! We deliver only within ${MAX_KM} KM of Sakoli.\nYou are ${userDistanceKm.toFixed(2)} KM away.`);
+      showToast("Out of range 😭");
+      return;
+    }
+
+    deliveryFee = getDeliveryFeeByKm(userDistanceKm);
+    const total = sub + deliveryFee;
+
+    const upiUrl = `upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent(UPI_NAME)}&am=${encodeURIComponent(total)}&tn=${encodeURIComponent("SANGHX Order")}&cu=INR`;
+
+    document.getElementById("qrImg").src =
+      `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(upiUrl)}`;
+
+    upiModal.classList.add("show");
+  }
+
+  upiBtn.addEventListener("click", openUpiModal);
+  upiClose.addEventListener("click", ()=> upiModal.classList.remove("show"));
+  upiModal.addEventListener("click",(e)=>{ if(e.target===upiModal) upiModal.classList.remove("show"); });
+
+  copyUpiBtn.addEventListener("click", async ()=>{
+    try{
+      await navigator.clipboard.writeText(UPI_ID);
+      showToast("UPI copied 🔥");
+    }catch(e){
+      showToast("Copy not supported 😭");
+    }
+  });
+
+  // ===== Place Order
+  placeOrderBtn.addEventListener("click", async ()=>{
+    const items = getCart();
+    if(items.length===0){
+      showToast("Cart empty 😭");
+      return;
+    }
+
+    const name = cName.value.trim();
+    const mobile = cMobile.value.trim();
+    const addr = cAddress.value.trim();
+
+    if(!name || !mobile || !addr){
+      showToast("Fill all details ⚠️");
+      return;
+    }
+
+    if(!userLocLink || userDistanceKm === null){
+      showToast("Attach GPS first ⚠️");
+      return;
+    }
+
+    if(userDistanceKm > MAX_KM){
+      showToast(`Only within ${MAX_KM}KM 😭`);
       return;
     }
 
     deliveryFee = getDeliveryFeeByKm(userDistanceKm);
     if(deliveryFee === null){
-      alert("Delivery not available for your distance.");
+      showToast("Delivery not available 😭");
       return;
     }
 
-    total = subtotal + deliveryFee;
+    const sub = calcSubtotal(items);
+    const total = sub + deliveryFee;
 
-    localStorage.setItem("uName", n);
-    localStorage.setItem("uMob", m);
-    localStorage.setItem("uAddr", a);
+    const byStore = groupByStore(items);
 
-    placeBtn.innerHTML = "<i class='bx bx-loader-alt bx-spin'></i> Processing...";
-    placeBtn.disabled = true;
+    let msg = `*NEW ORDER ALERT* 🔥%0a%0a`;
+    msg += `👤 *${name}* (${mobile})%0a`;
+    msg += `🏠 ${addr}%0a%0a`;
+    msg += `📍 Distance: *${userDistanceKm.toFixed(2)} KM* (Sakoli)%0a`;
+    msg += `🗺 Map: ${userLocLink}%0a%0a`;
 
-    try {
+    msg += `*ORDER:*%0a`;
+    Object.keys(byStore).forEach(store=>{
+      msg += `🏪 *${store}*%0a`;
+      byStore[store].forEach(it=>{
+        const variantLabel = it.variantLabel || it.variant || "Regular";
+        msg += `▪ ${it.qty} x ${it.name} (${variantLabel})%0a`;
+      });
+      msg += `%0a`;
+    });
+
+    msg += `🧾 Subtotal: ₹${sub}%0a`;
+    msg += `🚚 Delivery: ₹${deliveryFee}%0a`;
+    msg += `💰 *Total: ₹${total}* (${payMode.value})%0a%0a`;
+    msg += `⚡ Please confirm 🙏🔥`;
+
+    // Save to Firebase
+    try{
       await addDoc(collection(db, "orders"), {
         customer: {
-          name: n,
-          mobile: m,
-          address: a,
-          location: userLoc,
+          name,
+          mobile,
+          address: addr,
+          location: userLocLink,
           distanceKm: Number(userDistanceKm.toFixed(2))
         },
-        items: cart,
-        bill: { subtotal, delivery: deliveryFee, total },
-        payment: paymentMethod,
+        items: items.map(it=>({
+          name: it.name,
+          qty: it.qty,
+          price: Number(it.price),
+          storeName: it.storeName || it.vendor || "SANGHX",
+          variantLabel: it.variantLabel || it.variant || "Regular"
+        })),
+        bill: { subtotal: sub, delivery: deliveryFee, total },
+        payment: payMode.value,
         status: "Pending",
         timestamp: serverTimestamp()
       });
 
-      if(paymentMethod === "UPI") {
-        const upiID = "samyaksangode0-2@okicici";
-        const note = `Order-${n}`;
-        const upiLink = `upi://pay?pa=${upiID}&pn=SANGHX&am=${total}&tn=${note}&cu=INR`;
-
-        window.location.href = upiLink;
-        document.getElementById("payModal").classList.add("show");
-      } else {
-        finishWhatsApp();
-      }
-
-    } catch(e) {
-      alert("Error placing order: " + e.message);
-      placeBtn.disabled = false;
-      placeBtn.innerHTML = "Place Order";
-    }
-  };
-
-  window.finishWhatsApp = () => {
-    if(userDistanceKm === null || userDistanceKm > MAX_KM){
-      alert(`Delivery not available. Only within ${MAX_KM} KM of Sakoli.`);
-      return;
+      showToast("Order saved ✅ Opening WhatsApp...");
+    }catch(e){
+      console.log(e);
+      showToast("Firebase error 😭 WhatsApp only");
     }
 
-    deliveryFee = getDeliveryFeeByKm(userDistanceKm);
-    if(deliveryFee === null){
-      alert("Delivery not available for your distance.");
-      return;
-    }
-
-    total = subtotal + deliveryFee;
-
-    const n = localStorage.getItem("uName");
-    const m = localStorage.getItem("uMob");
-    const a = localStorage.getItem("uAddr");
-
-    // ==============================
-    // ✅ ONLY ADDON: STORE/VENDOR NAME
-    // ==============================
-    const grouped = {};
-    cart.forEach(i => {
-      const store = i.storeName || "Unknown Store";
-      if(!grouped[store]) grouped[store] = [];
-      grouped[store].push(i);
-    });
-
-    let itemsList = "";
-    Object.keys(grouped).forEach(store => {
-      itemsList += `🏪 *${store}*%0a`;
-      grouped[store].forEach(i => {
-        itemsList += `▪ ${i.qty} x ${i.name} (${i.variantLabel})%0a`;
-      });
-      itemsList += `%0a`;
-    });
-
-    const msg =
-      `*NEW ORDER ALERT* 🔥%0a%0a` +
-      `👤 *${n}* (${m})%0a` +
-      `🏠 ${a}%0a%0a` +
-      `📍 Distance: *${userDistanceKm.toFixed(2)} KM* (Sakoli)%0a` +
-      `🗺 Map: ${userLoc}%0a%0a` +
-      `*ORDER (Store Wise):*%0a${itemsList}%0a` +
-      `🧾 Subtotal: ₹${subtotal}%0a` +
-      `🚚 Delivery: ₹${deliveryFee}%0a` +
-      `💰 *Total: ₹${total}* (${paymentMethod})`;
-
+    // Optional clear cart
     localStorage.removeItem("cart");
-    window.location.href = `https://wa.me/919322586177?text=${msg}`;
-  };
+
+    window.location.href = `https://wa.me/${ADMIN_WA}?text=${msg}`;
+  });
+
+  // Initial render
+  renderCart();
 </script>
 
 </body>
