@@ -518,8 +518,7 @@
   <div class="chakra"></div>
 
   <!-- 🔊 BACKGROUND MUSIC -->
-  <!-- Put your file as: republic.mp3 in same folder -->
-  <audio id="bgMusic" src="republic.mpeg" preload="auto" loop></audio>
+  <audio id="bgMusic" src="republic.mpeg" preload="auto" loop playsinline></audio>
 
   <div class="header">
     <div class="logo">SAN<span>GHX</span></div>
@@ -529,8 +528,8 @@
       </a>
 
       <!-- Music Toggle -->
-      <div class="top-icon music-off" id="musicBtn" title="Music">
-        <i class='bx bxs-music'></i>
+      <div class="top-icon music-on" id="musicBtn" title="Music">
+        <i class='bx bxs-volume-full'></i>
       </div>
 
       <div class="top-icon" id="themeBtn" title="Republic Mode">
@@ -541,9 +540,9 @@
 
   <div class="ticker-wrap">
     <div class="ticker">
-      <span>🇮🇳 Republic Day Special • SANGHX = fast • local • savage 😈🔥</span>
-      <span>🍔 भावा आज काय खायचं? BRO AI ला विचार 😭😂</span>
-      <span>⚡ Open stores first • closed stores bottom • no fake delivery charge</span>
+      <span>🇮🇳 Republic Day Special • SANGHX = fast • local • savage</span>
+      <span>🍔 भावा आज काय खायचं? BRO AI ला विचार</span>
+      <span>⚡ Open stores first • closed stores bottom</span>
     </div>
   </div>
 
@@ -568,7 +567,7 @@
 
     <div id="storesWrap"></div>
 
-    <div class="tiny-note">Tip: Tap 🎵 to control Republic Day bg music 🇮🇳</div>
+    <div class="tiny-note">Republic Day vibe music auto-start (first tap fallback) 🇮🇳🎵</div>
   </div>
 
   <div class="fab-cart" id="miniCartBtn">
@@ -608,13 +607,13 @@
           </div>
           <div>
             <b style="display:block; font-size:16px;">BRO AI V3</b>
-            <small style="color:var(--primary); font-weight:900; font-size:11px;">EMOTION + HUMOUR 🇮🇳</small>
+            <small style="color:var(--primary); font-weight:900; font-size:11px;">Marathi + Emotion 🇮🇳</small>
           </div>
         </div>
         <i class='bx bx-x' id="aiCloseBtn" style="font-size:28px; padding:5px; cursor:pointer;"></i>
       </div>
 
-      <div class="ai-bubble" id="aiLine">भावा… मी तयार आहे 😈🔥 “भूक लागली” असं टाईप कर!</div>
+      <div class="ai-bubble" id="aiLine">भावा… मी तयार आहे! “भूक लागली” असं टाईप कर 😄</div>
 
       <div class="input-group">
         <input id="aiInput" placeholder="Ask me (e.g. Best combo?)...">
@@ -665,7 +664,7 @@
   };
 
   // =========================
-  // 🔊 MUSIC ENGINE (AUTOPLAY + FALLBACK TAP)
+  // 🔊 MUSIC ENGINE (AUTO PLAY)
   // =========================
   let musicEnabled = (localStorage.getItem("musicEnabled") ?? "1") === "1";
 
@@ -683,13 +682,12 @@
 
   async function tryPlayMusic(){
     if(!musicEnabled) return;
-
     try{
-      els.music.volume = 0.25;   // soft bg
+      els.music.volume = 0.22;
       els.music.muted = false;
       await els.music.play();
     }catch(err){
-      // autoplay blocked -> will start on first tap
+      // autoplay blocked by browser (normal)
     }
   }
 
@@ -704,18 +702,16 @@
 
     if(musicEnabled){
       await tryPlayMusic();
-      showToast("Music ON 🇮🇳🎵");
+      showToast("Music ON 🇮🇳");
     }else{
       stopMusic();
       showToast("Music OFF 🔇");
     }
   });
 
-  // Force start music on first user interaction if blocked
+  // If autoplay blocked, start on FIRST TAP ANYWHERE
   function oneTapStart(){
-    if(musicEnabled){
-      tryPlayMusic();
-    }
+    if(musicEnabled) tryPlayMusic();
     window.removeEventListener("pointerdown", oneTapStart);
     window.removeEventListener("touchstart", oneTapStart);
     window.removeEventListener("click", oneTapStart);
@@ -744,18 +740,18 @@
   }, 3000);
 
   // =========================
-  // VOICE ENGINE (Marathi Fix)
+  // 🔊 VOICE ENGINE (Marathi voice priority + emoji remove)
   // =========================
   let selectedVoice = null;
 
   function loadVoices() {
     const voices = window.speechSynthesis.getVoices();
-    // Prefer Marathi voice, then Hindi, then English India
-    selectedVoice =
-      voices.find(v => v.lang.toLowerCase().includes("mr-in")) ||
-      voices.find(v => v.lang.toLowerCase().includes("hi-in")) ||
-      voices.find(v => v.lang.toLowerCase().includes("en-in")) ||
+    const pick =
+      voices.find(v => v.lang && v.lang.toLowerCase().includes("mr-in")) ||
+      voices.find(v => v.lang && v.lang.toLowerCase().includes("hi-in")) ||
+      voices.find(v => v.lang && v.lang.toLowerCase().includes("en-in")) ||
       voices[0];
+    selectedVoice = pick || null;
   }
 
   if (window.speechSynthesis.onvoiceschanged !== undefined) {
@@ -764,9 +760,9 @@
   loadVoices();
 
   function cleanSpeakText(text){
-    // removes emojis so it won't say "smiling face" etc
     return String(text||"")
-      .replace(/[\u{1F300}-\u{1FAFF}]/gu, "")
+      .replace(/[\u{1F300}-\u{1FAFF}]/gu, "")  // emojis
+      .replace(/[\u{2600}-\u{26FF}]/gu, "")    // misc symbols
       .replace(/🇮🇳/g, "")
       .replace(/\s+/g, " ")
       .trim();
@@ -780,8 +776,11 @@
     window.speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(clean);
     if(selectedVoice) u.voice = selectedVoice;
-    u.rate = 1;
-    u.pitch = 1;
+
+    u.lang = (selectedVoice && selectedVoice.lang) ? selectedVoice.lang : "mr-IN";
+    u.rate = 0.95;  // थोड़ा slow = Marathi feel better
+    u.pitch = 1.0;
+
     window.speechSynthesis.speak(u);
   }
 
@@ -954,7 +953,7 @@
   document.getElementById("closeCartBtn").onclick = ()=> els.cartModal.classList.remove("show");
 
   document.getElementById("checkoutBtn").onclick = ()=>{
-    if(cart.length===0){ showToast("Cart empty 😭"); return; }
+    if(cart.length===0){ showToast("Cart empty"); return; }
     location.href="checkout.html";
   };
 
@@ -973,33 +972,33 @@
   });
 
   // =========================
-  // BRO AI V3 (reply)
+  // BRO AI V3 (clean Marathi replies)
   // =========================
   function broReply(q){
     const text = (q||"").toLowerCase();
 
     if(!text.trim()){
-      return "भावा काहीतरी टाईप कर 😂 मी mind read नाही करू शकत!";
+      return "भावा काहीतरी टाईप कर… मी mind read नाही करू शकत!";
     }
     if(text.includes("bhook") || text.includes("भूक") || text.includes("hungry")){
-      return "भूक लागली ना? मग heavy combo घे: Biryani + Cold Drink… आणि शेवटी Gulab Jamun!";
+      return "भूक लागली ना? मग heavy combo घे: बिर्याणी + कोल्ड ड्रिंक… आणि शेवटी गुलाबजाम!";
     }
     if(text.includes("cheap") || text.includes("budget") || text.includes("स्वस्त")){
-      return "Budget tight आहे? Rolls / Fries / Maggie best! कमी पैशात full satisfaction 👌";
+      return "Budget tight आहे? मग रोल्स / मॅगी / फ्राईज बेस्ट. कमी पैशात full satisfaction!";
     }
     if(text.includes("spicy") || text.includes("tikka") || text.includes("तिखट")){
-      return "तिखट पाहिजे? मग spicy chicken / paneer tikka! पण पाणी जवळ ठेव 😂";
+      return "तिखट पाहिजे? मग spicy चिकन किंवा पनीर टिक्का. पण पाणी जवळ ठेव!";
     }
     if(text.includes("veg")){
-      return "Veg mode ON 🌱 Paneer + Cheese combo घे… full मजा!";
+      return "Veg mode ON. पनीर + चीज कॉम्बो घे… full मजा!";
     }
     if(text.includes("best") || text.includes("recommend") || text.includes("सुचव")){
-      return "Best combo: एक main dish + एक side + एक drink. राजा वाला order!";
+      return "Best combo: एक main dish + एक side + एक drink. पूर्ण राजा वाला order!";
     }
     if(text.includes("republic") || text.includes("26") || text.includes("flag")){
-      return "26 Jan special vibe चालू आहे! आज order कर… tricolor energy ready आहे 🔥";
+      return "26 जानेवारी special vibe चालू आहे. आज order कर… tricolor energy ready आहे!";
     }
-    return "समजलं भावा! सांग काय खायचं? मी combo set करतो 🔥";
+    return "समजलं भावा! सांग काय खायचं? मी तुझ्यासाठी combo set करतो!";
   }
 
   function sendAI(){
