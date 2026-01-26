@@ -2,228 +2,231 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>SANGHX • Republic Day</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SANGHX • Premium</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;600&display=swap" rel="stylesheet">
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 
   <style>
     :root {
+      --navy: #0F172A;
+      --accent: #3B82F6; /* Modern Blue */
       --saffron: #FF9933;
-      --white: #ffffff;
       --green: #138808;
-      --navy: #000080;
-      --glass: rgba(255, 255, 255, 0.7);
-      --glass-border: rgba(255, 255, 255, 0.6);
-      --shadow-premium: 0 25px 50px -12px rgba(0, 0, 128, 0.25);
+      --bg: #FAFAFA;
+      --card-bg: #FFFFFF;
+      --border: rgba(0, 0, 0, 0.06);
     }
 
-    * { margin:0; padding:0; box-sizing:border-box; font-family:'Outfit', sans-serif; -webkit-tap-highlight-color:transparent; }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; -webkit-font-smoothing: antialiased; }
 
     body {
       height: 100vh;
-      width: 100vw;
       display: flex;
       justify-content: center;
       align-items: center;
-      background: #f0f2f5;
-      overflow: hidden;
-      perspective: 1000px;
-    }
-
-    /* --- Dynamic Tricolor Mesh Background --- */
-    .mesh-bg {
-      position: absolute; inset: 0; z-index: -1;
-      background: radial-gradient(at 0% 0%, rgba(255, 153, 51, 0.4) 0px, transparent 50%),
-                  radial-gradient(at 100% 100%, rgba(19, 136, 8, 0.3) 0px, transparent 50%),
-                  radial-gradient(at 50% 50%, rgba(255, 255, 255, 0.8) 0px, transparent 50%);
-      filter: blur(60px);
-      animation: breathe 10s infinite alternate;
-    }
-    @keyframes breathe { 0%{transform:scale(1);} 100%{transform:scale(1.1);} }
-
-    /* --- CSS Confetti (Celebration) --- */
-    .confetti {
-      position: absolute; width: 10px; height: 10px; background: var(--saffron);
-      top: -10px; z-index: 0; animation: fall linear infinite;
-    }
-    .confetti:nth-child(2n) { background: var(--white); width: 7px; height: 14px; }
-    .confetti:nth-child(3n) { background: var(--green); width: 12px; height: 12px; }
-    .confetti:nth-child(4n) { background: var(--navy); border-radius: 50%; }
-
-    @keyframes fall {
-      to { transform: translateY(105vh) rotate(720deg); }
-    }
-
-    /* --- Ultra Glass Card --- */
-    .card {
-      position: relative; width: 90%; max-width: 400px;
-      background: rgba(255, 255, 255, 0.65);
-      backdrop-filter: blur(25px) saturate(180%);
-      -webkit-backdrop-filter: blur(25px) saturate(180%);
-      border: 1px solid var(--glass-border);
-      border-top: 1px solid rgba(255,255,255,0.9);
-      border-radius: 35px;
-      padding: 45px 30px;
-      text-align: center;
-      box-shadow: var(--shadow-premium), 
-                  0 0 0 1px rgba(255, 255, 255, 0.5) inset;
-      z-index: 10;
-      transform: translateY(30px);
-      animation: entrance 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-    }
-    
-    /* Tricolor Border Accent */
-    .card::before {
-      content:''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
-      width: 60px; height: 4px; border-radius: 0 0 10px 10px;
-      background: linear-gradient(to right, var(--saffron), var(--white), var(--green));
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-
-    @keyframes entrance { to { transform: translateY(0); opacity: 1; } }
-
-    /* --- Typography --- */
-    .logo {
-      font-size: 42px; font-weight: 900; letter-spacing: -1.5px; margin-bottom: 5px;
-      background: linear-gradient(135deg, var(--navy) 0%, #4a90e2 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 2px 4px rgba(0,0,128,0.2));
-    }
-
-    .greeting { font-size: 16px; font-weight: 700; color: var(--saffron); margin-bottom: 15px; letter-spacing: 1px; text-transform: uppercase; }
-
-    .description { font-size: 14px; color: #555; line-height: 1.6; margin-bottom: 30px; font-weight: 500; }
-    .description b { color: var(--navy); }
-
-    .divider {
-      height: 1px; width: 100%;
-      background: linear-gradient(90deg, transparent, rgba(0,0,128,0.1), transparent);
-      margin-bottom: 25px;
-    }
-
-    .label {
-      font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
-      font-weight: 800; color: #888; margin-bottom: 20px; display: block;
-    }
-
-    /* --- Premium Buttons --- */
-    .btn-container { display: flex; flex-direction: column; gap: 16px; }
-
-    .btn {
-      position: relative; display: flex; align-items: center; justify-content: center; gap: 15px;
-      padding: 18px; border-radius: 20px; text-decoration: none;
-      font-weight: 700; font-size: 16px; overflow: hidden;
-      transition: all 0.3s ease;
-    }
-
-    /* Primary: Tricolor Gradient */
-    .btn-primary {
-      background: white;
+      background: var(--bg);
       color: var(--navy);
-      box-shadow: 0 10px 25px rgba(255, 153, 51, 0.25);
-      border: 1px solid rgba(255, 153, 51, 0.2);
+      overflow: hidden;
+    }
+
+    /* Subtle Background Element */
+    body::before {
+      content: "";
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.05) 0%, rgba(250, 250, 250, 0) 70%);
+      top: -100px;
+      right: -100px;
+      z-index: -1;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 400px;
+      padding: 20px;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+
+    /* --- Logo Section --- */
+    .brand-section {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .logo-mark {
+      width: 48px;
+      height: 48px;
+      background: var(--navy);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      color: white;
+      font-size: 24px;
+      box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.1);
+    }
+
+    .brand-name {
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      margin-bottom: 4px;
+    }
+
+    .tagline {
+      font-size: 14px;
+      color: #64748B;
+      font-weight: 400;
+    }
+
+    /* --- Interactive Menu --- */
+    .menu-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 20px;
+      background: var(--card-bg);
+      border-radius: 20px;
+      text-decoration: none;
+      color: inherit;
+      border: 1px solid var(--border);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+
+    .menu-item:hover {
+      transform: translateY(-4px);
+      border-color: rgba(15, 23, 42, 0.1);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+    }
+
+    .menu-item:active { transform: scale(0.98); }
+
+    .icon-box {
+      width: 44px;
+      height: 44px;
+      background: #F1F5F9;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 16px;
+      font-size: 20px;
+      transition: background 0.3s;
+    }
+
+    .menu-item:hover .icon-box {
+      background: var(--navy);
+      color: white;
+    }
+
+    .item-content { flex: 1; }
+
+    .item-title {
+      font-size: 16px;
+      font-weight: 500;
+      display: block;
+    }
+
+    .item-subtitle {
+      font-size: 12px;
+      color: #94A3B8;
+    }
+
+    /* --- Special Features --- */
+    .primary-item {
+      background: var(--navy);
+      color: white;
+      border: none;
     }
     
-    /* Interactive Gradient Background on Hover */
-    .btn-primary::before {
-      content: ''; position: absolute; inset: 0; 
-      background: linear-gradient(135deg, var(--saffron), var(--green));
-      opacity: 0.1; transition: opacity 0.3s;
+    .primary-item .icon-box { background: rgba(255,255,255,0.1); color: white; }
+    .primary-item .item-subtitle { color: rgba(255,255,255,0.6); }
+
+    /* --- Republic Day subtle indicator --- */
+    .rd-indicator {
+      margin-top: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      color: #94A3B8;
     }
-    
-    .btn-primary:active { transform: scale(0.97); }
 
-    .btn-icon {
-      width: 32px; height: 32px; border-radius: 50%;
-      background: linear-gradient(135deg, var(--saffron), var(--green));
-      color: white; display: flex; justify-content: center; align-items: center; font-size: 18px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    .dot { width: 6px; height: 6px; border-radius: 50%; }
+
+    @keyframes fadeIn {
+      to { opacity: 1; transform: translateY(0); }
     }
-
-    /* Secondary */
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.5);
-      color: #666; border: 1px solid rgba(0,0,0,0.05);
-    }
-    .btn-secondary:active { transform: scale(0.97); background: rgba(0,0,0,0.05); }
-
-    /* Animations */
-    .stagger { opacity: 0; animation: fadeUp 0.6s ease forwards; }
-    .d1 { animation-delay: 0.1s; }
-    .d2 { animation-delay: 0.2s; }
-    .d3 { animation-delay: 0.3s; }
-    .d4 { animation-delay: 0.4s; }
-
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
   </style>
 </head>
 
 <body>
 
-  <div class="mesh-bg"></div>
-
-  <div id="confetti-container"></div>
-
-  <div class="card">
-    
-    <div class="stagger d1">
-      <div style="font-size:32px; color:var(--navy); animation:spin 12s linear infinite; margin-bottom:5px;">
-        <i class='bx bx-hive'></i>
+  <div class="wrapper">
+    <header class="brand-section">
+      <div class="logo-mark">
+        <i class='bx bxs-bolt'></i>
       </div>
-      <div class="logo">SANGHX</div>
-      <div class="greeting">Happy Republic Day! 🇮🇳</div>
-    </div>
+      <h1 class="brand-name">SANGHX</h1>
+      <p class="tagline">Desi Swad. Videshi Speed.</p>
+    </header>
 
-    <div class="description stagger d2">
-      Celebrating the Flavors of Freedom.<br>
-      <b>Desi Swad, Videshi Speed.</b>
-    </div>
-
-    <div class="divider stagger d3"></div>
-
-    <span class="label stagger d3">Who are you?</span>
-
-    <div class="btn-container stagger d4">
-      
-      <a href="customer.html" class="btn btn-primary">
-        <div class="btn-icon"><i class='bx bxs-dish'></i></div>
-        <span>Customer (ग्राहक)</span>
+    <nav class="menu-stack">
+      <a href="customer.html" class="menu-item primary-item">
+        <div class="icon-box"><i class='bx bx-shopping-bag'></i></div>
+        <div class="item-content">
+          <span class="item-title">Customer</span>
+          <span class="item-subtitle">Order food & essentials</span>
+        </div>
+        <i class='bx bx-chevron-right'></i>
       </a>
 
-      <a href="#" class="btn btn-secondary" onclick="alert('Coming Soon! 🏪')">
-        <i class='bx bxs-store' style="font-size:20px"></i>
-        <span>Store Partner</span>
+      <a href="#" class="menu-item" onclick="showToast('Store Portal Coming Soon')">
+        <div class="icon-box"><i class='bx bx-store'></i></div>
+        <div class="item-content">
+          <span class="item-title">Store Partner</span>
+          <span class="item-subtitle">Manage your business</span>
+        </div>
+        <i class='bx bx-chevron-right'></i>
       </a>
 
-      <a href="#" class="btn btn-secondary" onclick="alert('Coming Soon! 🚴‍♂️')">
-        <i class='bx bxs-package' style="font-size:20px"></i>
-        <span>Delivery Partner</span>
+      <a href="#" class="menu-item" onclick="showToast('Rider Portal Coming Soon')">
+        <div class="icon-box"><i class='bx bx-cycling'></i></div>
+        <div class="item-content">
+          <span class="item-title">Delivery Partner</span>
+          <span class="item-subtitle">Earn on your own schedule</span>
+        </div>
+        <i class='bx bx-chevron-right'></i>
       </a>
-    </div>
+    </nav>
 
+    <footer class="rd-indicator">
+      <div class="dot" style="background: var(--saffron);"></div>
+      <span>WELCOME TO SANGHX</span>
+      <div class="dot" style="background: var(--green);"></div>
+    </footer>
   </div>
 
   <script>
-    // Simple Confetti Generator
-    const container = document.getElementById('confetti-container');
-    const colors = ['#FF9933', '#FFFFFF', '#138808', '#000080'];
-    
-    for(let i=0; i<30; i++) {
-      const confetti = document.createElement('div');
-      confetti.classList.add('confetti');
-      confetti.style.left = Math.random() * 100 + 'vw';
-      confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
-      confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-      container.appendChild(confetti);
+    function showToast(msg) {
+      alert(msg); // Replace with a custom toast notification for better UX
     }
   </script>
-
-  <style>
-    @keyframes spin { 100% { transform: rotate(360deg); } }
-  </style>
 
 </body>
 </html>
