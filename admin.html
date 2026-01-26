@@ -1,165 +1,337 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>SANGHX • Admin Mobile</title>
-  
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>SANGHX • Admin Pro</title>
+
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 
   <style>
-    :root {
-      --primary: #4F46E5;
-      --success: #10B981;
-      --danger: #EF4444;
-      --warning: #F59E0B;
-      --dark: #111827;
-      --light: #F9FAFB;
-      --white: #ffffff;
-      --sidebar-width: 260px;
+    :root{
+      --primary:#4F46E5;
+      --success:#10B981;
+      --danger:#EF4444;
+      --warning:#F59E0B;
+      --dark:#111827;
+      --light:#F9FAFB;
+      --white:#ffffff;
+      --muted:#6B7280;
+      --border:#E5E7EB;
+      --shadow:0 12px 40px rgba(0,0,0,0.06);
+      --radius:16px;
+      --sidebar-width:260px;
     }
 
-    * { margin:0; padding:0; box-sizing:border-box; font-family:'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color:transparent; }
-    body { background: var(--light); color: var(--dark); display: flex; min-height: 100vh; overflow-x: hidden; }
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Plus Jakarta Sans',sans-serif;-webkit-tap-highlight-color:transparent}
+    body{background:var(--light);color:var(--dark);display:flex;min-height:100vh;overflow-x:hidden}
 
-    /* --- SIDEBAR (Mobile Optimized) --- */
-    .sidebar {
-      width: var(--sidebar-width); background: var(--white); position: fixed; height: 100%; top: 0; left: 0;
-      border-right: 1px solid #e5e7eb; padding: 20px; z-index: 1000;
-      transform: translateX(0); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Sidebar */
+    .sidebar{
+      width:var(--sidebar-width);
+      background:var(--white);
+      position:fixed;height:100%;top:0;left:0;
+      border-right:1px solid var(--border);
+      padding:20px;z-index:1000;
+      transition:transform .25s ease;
     }
-    
-    /* Overlay for mobile sidebar */
-    .sidebar-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999;
-      opacity: 0; visibility: hidden; transition: 0.3s;
+    .sidebar-overlay{
+      position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:999;
+      opacity:0;visibility:hidden;transition:.25s;
     }
-    .sidebar-overlay.show { opacity: 1; visibility: visible; }
+    .sidebar-overlay.show{opacity:1;visibility:visible}
 
-    .logo { font-size: 20px; font-weight: 800; color: var(--primary); margin-bottom: 30px; display: flex; align-items: center; gap: 10px; }
-    
-    .nav-item {
-      display: flex; align-items: center; gap: 12px; padding: 14px 15px; /* Larger touch area */
-      color: #6B7280; font-weight: 600; border-radius: 12px; cursor: pointer; transition: 0.2s; margin-bottom: 5px;
+    .logo{
+      display:flex;align-items:center;gap:10px;
+      font-size:18px;font-weight:900;color:var(--primary);
+      margin-bottom:18px;
     }
-    .nav-item:hover, .nav-item.active { background: #EEF2FF; color: var(--primary); }
-    .nav-item i { font-size: 22px; }
+    .logo small{
+      display:block;color:var(--muted);font-weight:800;font-size:11px;margin-top:2px
+    }
+    .nav-item{
+      display:flex;align-items:center;gap:12px;
+      padding:14px 14px;
+      border-radius:14px;
+      color:var(--muted);
+      font-weight:800;
+      cursor:pointer;
+      transition:.2s;
+      margin-bottom:8px;
+      user-select:none;
+    }
+    .nav-item:hover,.nav-item.active{
+      background:#EEF2FF;color:var(--primary)
+    }
+    .nav-item i{font-size:22px}
 
-    /* --- MAIN CONTENT --- */
-    .main { margin-left: var(--sidebar-width); flex: 1; padding: 20px; width: calc(100% - var(--sidebar-width)); transition: 0.3s; }
-    
-    /* Header Mobile */
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; position: sticky; top: 0; background: var(--light); z-index: 90; padding: 10px 0; }
-    .menu-toggle { display: none; font-size: 28px; cursor: pointer; color: var(--dark); }
-    .page-title { font-size: 22px; font-weight: 800; }
-    
-    /* Stats Grid (Scrollable on mobile) */
-    .stats-grid { 
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 25px; 
+    /* Main */
+    .main{
+      margin-left:var(--sidebar-width);
+      width:calc(100% - var(--sidebar-width));
+      padding:18px;
+      transition:.25s;
     }
-    .stat-card { background: var(--white); padding: 16px; border-radius: 16px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
-    .stat-val { font-size: 24px; font-weight: 800; margin-top: 4px; }
-    .stat-label { font-size: 11px; color: #9CA3AF; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .header{
+      position:sticky;top:0;z-index:90;
+      background:var(--light);
+      padding:10px 0 14px;
+      display:flex;align-items:center;justify-content:space-between;
+    }
+    .menu-toggle{display:none;font-size:28px;cursor:pointer}
+    .page-title{font-size:22px;font-weight:900}
+
+    .top-actions{
+      display:flex;align-items:center;gap:10px;
+    }
+
+    .btn{
+      border:none;border-radius:14px;
+      padding:10px 14px;
+      font-weight:900;
+      cursor:pointer;
+      display:flex;align-items:center;gap:8px;
+      transition:.15s;
+      user-select:none;
+    }
+    .btn:active{transform:scale(.98)}
+    .btn-primary{background:var(--primary);color:#fff}
+    .btn-ghost{background:#fff;border:1px solid var(--border);color:var(--dark)}
+    .btn-danger{background:#FEF2F2;color:var(--danger);border:1px solid #FECACA}
+
+    /* Stats */
+    .stats-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+      gap:12px;margin-bottom:18px;
+    }
+    .stat-card{
+      background:#fff;border:1px solid var(--border);
+      border-radius:18px;padding:14px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.03);
+    }
+    .stat-label{font-size:11px;color:#9CA3AF;font-weight:900;text-transform:uppercase;letter-spacing:.5px}
+    .stat-val{font-size:22px;font-weight:900;margin-top:4px}
 
     /* Sections */
-    .section { display: none; animation: fadeIn 0.3s ease; }
-    .section.active { display: block; }
-    @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+    .section{display:none;animation:fadeIn .2s ease}
+    .section.active{display:block}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
-    /* ORDER CARDS (Mobile Friendly) */
-    .orders-grid { display: flex; flex-direction: column; gap: 15px; padding-bottom: 80px; }
-    .order-card { background: var(--white); border-radius: 16px; padding: 16px; border: 1px solid #f3f4f6; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
-    
-    .order-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px dashed #e5e7eb; }
-    .cust-name { font-weight: 700; font-size: 16px; color: var(--dark); }
-    .order-time { font-size: 11px; color: #9CA3AF; font-weight: 500; }
-    
-    .order-items { margin: 10px 0; font-size: 13px; color: #4B5563; }
-    .order-item-row { display: flex; justify-content: space-between; margin-bottom: 6px; }
-    
-    .order-total { display: flex; justify-content: space-between; font-weight: 800; margin-top: 12px; padding-top: 10px; border-top: 1px solid #f3f4f6; font-size: 15px; }
-    
-    .status-badge {
-      display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 700; text-transform: uppercase; margin-top: 5px;
+    /* Orders */
+    .orders-grid{display:flex;flex-direction:column;gap:12px;padding-bottom:90px}
+    .order-card{
+      background:#fff;border:1px solid var(--border);
+      border-radius:18px;padding:14px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.03);
     }
-    .st-Pending { background: #FFF7ED; color: #C2410C; border: 1px solid #FED7AA; }
-    .st-Confirmed { background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE; }
-    .st-Completed { background: #ECFDF5; color: #047857; border: 1px solid #A7F3D0; }
-    .st-Cancelled { background: #FEF2F2; color: #B91C1C; border: 1px solid #FECACA; }
-
-    .action-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 15px; }
-    .act-btn { padding: 10px; border: none; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 5px; }
-    .btn-accept { background: var(--primary); color: white; }
-    .btn-complete { background: var(--success); color: white; }
-    .btn-reject { background: #F3F4F6; color: #374151; }
-    .btn-del { background: #FEF2F2; color: #DC2626; border: 1px solid #FEE2E2; }
-
-    /* MENU ITEM (List View) */
-    .menu-list-item {
-      display: flex; align-items: center; background: var(--white); padding: 12px;
-      border-radius: 14px; margin-bottom: 10px; gap: 12px; border: 1px solid #f3f4f6;
+    .order-header{
+      display:flex;justify-content:space-between;align-items:flex-start;
+      padding-bottom:10px;margin-bottom:10px;border-bottom:1px dashed var(--border);
     }
-    .menu-img { width: 60px; height: 60px; border-radius: 10px; object-fit: cover; background: #f3f4f6; }
-    .menu-info { flex: 1; overflow: hidden; }
-    .menu-title { font-weight: 700; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .menu-sub { font-size: 11px; color: #6B7280; margin-top: 2px; }
-    
-    .menu-actions { display: flex; flex-direction: column; gap: 5px; }
-    .btn-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; justify-content: center; align-items: center; border: none; font-size: 16px; cursor: pointer; }
-
-    /* MODALS (Mobile Full Width) */
-    .modal-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 2000;
-      display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(3px);
+    .cust-name{font-weight:900;font-size:16px}
+    .order-time{font-size:11px;color:#9CA3AF;font-weight:700}
+    .order-items{margin:8px 0;font-size:13px;color:#374151}
+    .order-item-row{display:flex;justify-content:space-between;margin-bottom:6px}
+    .order-total{display:flex;justify-content:space-between;font-weight:900;margin-top:10px;padding-top:10px;border-top:1px solid #f3f4f6}
+    .status-badge{
+      display:inline-block;padding:4px 10px;border-radius:8px;
+      font-size:10px;font-weight:900;text-transform:uppercase;
+      border:1px solid var(--border);
     }
-    .modal-overlay.open { display: flex; }
-    .modal-box { 
-      background: white; width: 100%; max-width: 100%; padding: 25px 20px; 
-      border-radius: 20px 20px 0 0; animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      max-height: 85vh; overflow-y: auto; 
-    }
-    @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+    .st-Pending{background:#FFF7ED;color:#C2410C;border-color:#FED7AA}
+    .st-Confirmed{background:#EFF6FF;color:#1D4ED8;border-color:#BFDBFE}
+    .st-Completed{background:#ECFDF5;color:#047857;border-color:#A7F3D0}
+    .st-Cancelled{background:#FEF2F2;color:#B91C1C;border-color:#FECACA}
 
-    /* Floating Add Button (Mobile) */
-    .fab {
-      position: fixed; bottom: 20px; right: 20px; width: 56px; height: 56px;
-      background: var(--dark); color: white; border-radius: 16px; display: none;
-      justify-content: center; align-items: center; font-size: 28px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2); z-index: 90; cursor: pointer; border: none;
+    .action-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+    .act-btn{
+      padding:10px;border:none;border-radius:12px;font-weight:900;
+      cursor:pointer;transition:.15s;
+    }
+    .btn-accept{background:var(--primary);color:#fff}
+    .btn-complete{background:var(--success);color:#fff}
+    .btn-reject{background:#F3F4F6;color:#374151}
+    .btn-del{background:#FEF2F2;color:var(--danger);border:1px solid #FECACA}
+
+    /* Menu */
+    .toolbar{
+      display:flex;gap:10px;flex-wrap:wrap;
+      background:#fff;border:1px solid var(--border);
+      border-radius:18px;padding:12px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.03);
+      margin-bottom:12px;
+    }
+    .tool-input{
+      flex:1;min-width:180px;
+      padding:12px 14px;border-radius:14px;
+      border:1px solid var(--border);
+      background:#F9FAFB;
+      outline:none;font-weight:800;
+    }
+    .tool-select{
+      padding:12px 14px;border-radius:14px;
+      border:1px solid var(--border);
+      background:#F9FAFB;
+      outline:none;font-weight:900;
     }
 
-    /* Form Elements */
-    input, select { width: 100%; padding: 14px; margin-bottom: 12px; border: 1px solid #e5e7eb; border-radius: 12px; outline: none; font-size: 14px; background: #F9FAFB; }
-    input:focus, select:focus { background: white; border-color: var(--primary); }
-    .btn-primary { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 700; font-size: 15px; cursor: pointer; }
-    .btn-ghost { background: transparent; color: #666; margin-top: 10px; border: 1px solid #e5e7eb; }
+    .menu-list-item{
+      display:flex;align-items:center;gap:12px;
+      background:#fff;border:1px solid var(--border);
+      border-radius:18px;padding:12px;
+      margin-bottom:10px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.03);
+    }
+    .menu-img{
+      width:62px;height:62px;border-radius:14px;object-fit:cover;background:#f3f4f6;
+      border:1px solid #f1f1f1;
+    }
+    .menu-info{flex:1;min-width:0}
+    .menu-title{
+      font-weight:900;font-size:14px;
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    }
+    .menu-sub{
+      font-size:11px;color:var(--muted);font-weight:800;margin-top:2px
+    }
+    .pill{
+      display:inline-flex;align-items:center;gap:6px;
+      font-size:10px;font-weight:900;
+      padding:5px 10px;border-radius:999px;
+      border:1px solid var(--border);
+      margin-top:6px;
+      background:#F9FAFB;
+      color:#111;
+    }
+    .pill.hide{background:#FEF2F2;border-color:#FECACA;color:#B91C1C}
+    .pill.show{background:#ECFDF5;border-color:#A7F3D0;color:#047857}
 
-    /* --- MOBILE RESPONSIVE QUERIES --- */
-    @media(max-width: 768px) {
-      .sidebar { transform: translateX(-100%); width: 280px; }
-      .sidebar.open { transform: translateX(0); }
-      .main { margin-left: 0; width: 100%; padding: 15px; }
-      .menu-toggle { display: block; }
-      
-      .header-add-btn { display: none; } /* Hide desktop add button */
-      .fab { display: flex; } /* Show mobile FAB */
-      
-      .stats-grid { grid-template-columns: 1fr 1fr; }
-      .stats-grid .stat-card:last-child { grid-column: 1 / -1; } /* Full width last card */
+    .menu-actions{
+      display:flex;flex-direction:column;gap:8px;
+      align-items:flex-end;
+    }
+    .btn-mini{
+      width:36px;height:36px;border-radius:12px;
+      border:none;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+      font-size:18px;
+      background:#F3F4F6;color:#111;
+    }
+    .btn-mini.danger{background:#FEF2F2;color:var(--danger);border:1px solid #FECACA}
+    .btn-mini.primary{background:#EEF2FF;color:var(--primary);border:1px solid #C7D2FE}
+    .btn-mini.success{background:#ECFDF5;color:var(--success);border:1px solid #A7F3D0}
+
+    .prio-ctrl{
+      display:flex;align-items:center;gap:6px;
+      background:#F9FAFB;border:1px solid var(--border);
+      border-radius:12px;padding:6px 8px;
+      font-weight:900;font-size:12px;color:#111;
+    }
+    .prio-ctrl button{
+      width:26px;height:26px;border-radius:10px;border:none;cursor:pointer;
+      background:#fff;border:1px solid var(--border);
+      font-weight:900;
+    }
+
+    /* Stores */
+    .store-row{
+      display:flex;align-items:center;justify-content:space-between;
+      background:#fff;border:1px solid var(--border);
+      border-radius:18px;padding:14px;margin-bottom:10px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.03);
+      gap:10px;
+    }
+    .store-name{font-weight:900}
+    .store-sub{font-size:11px;color:var(--muted);font-weight:800;margin-top:2px}
+    .store-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+    .toggle{
+      padding:8px 10px;border-radius:12px;border:1px solid var(--border);
+      background:#F9FAFB;font-weight:900;cursor:pointer;
+      display:flex;align-items:center;gap:6px;
+    }
+    .toggle.on{background:#ECFDF5;border-color:#A7F3D0;color:#047857}
+    .toggle.off{background:#FEF2F2;border-color:#FECACA;color:#B91C1C}
+
+    /* Modal */
+    .modal-overlay{
+      position:fixed;inset:0;background:rgba(0,0,0,.6);
+      display:none;align-items:flex-end;justify-content:center;
+      z-index:2000;
+      backdrop-filter: blur(3px);
+    }
+    .modal-overlay.open{display:flex}
+    .modal-box{
+      background:#fff;width:100%;max-width:100%;
+      border-radius:22px 22px 0 0;
+      padding:20px;
+      max-height:86vh;overflow:auto;
+      box-shadow:0 -16px 50px rgba(0,0,0,0.25);
+      animation:slideUp .25s ease;
+    }
+    @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+
+    .field{margin-bottom:12px}
+    .field label{display:block;font-size:11px;font-weight:900;color:#6B7280;margin-bottom:6px}
+    input,select{
+      width:100%;
+      padding:14px;border-radius:14px;
+      border:1px solid var(--border);
+      background:#F9FAFB;
+      outline:none;font-weight:800;
+    }
+    input:focus,select:focus{background:#fff;border-color:#C7D2FE}
+
+    .variantsBox{
+      background:#F9FAFB;border:1px dashed #D1D5DB;
+      border-radius:16px;padding:12px;
+    }
+    .variantRow{display:flex;gap:8px;margin-bottom:8px}
+    .variantRow input{margin:0}
+    .variantRow .trash{
+      width:44px;border:none;border-radius:14px;
+      background:#FEF2F2;color:var(--danger);
+      font-size:20px;cursor:pointer;
+    }
+
+    .fab{
+      position:fixed;bottom:18px;right:18px;
+      width:58px;height:58px;border-radius:18px;
+      background:var(--dark);color:#fff;
+      border:none;cursor:pointer;
+      display:none;align-items:center;justify-content:center;
+      font-size:30px;
+      box-shadow:0 16px 40px rgba(0,0,0,.25);
+      z-index:90;
+    }
+
+    /* Mobile */
+    @media(max-width:768px){
+      .sidebar{transform:translateX(-100%);width:280px}
+      .sidebar.open{transform:translateX(0)}
+      .main{margin-left:0;width:100%}
+      .menu-toggle{display:block}
+      .fab{display:flex}
+      .stats-grid{grid-template-columns:1fr 1fr}
+      .stats-grid .stat-card:last-child{grid-column:1/-1}
     }
   </style>
 </head>
-<body>
 
+<body>
   <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
 
   <div class="sidebar" id="sidebar">
     <div class="logo">
-      <i class='bx bxs-dashboard'></i> SANGHX Admin
+      <i class='bx bxs-dashboard'></i>
+      <div>
+        SANGHX Admin
+        <small>Pro Panel • Safe Mode</small>
+      </div>
       <i class='bx bx-x' onclick="toggleSidebar()" style="margin-left:auto; cursor:pointer; font-size:24px; color:#999;"></i>
     </div>
-    
+
     <div class="nav-item active" onclick="switchTab('orders')">
       <i class='bx bxs-shopping-bag'></i> Live Orders
     </div>
@@ -167,23 +339,25 @@
       <i class='bx bxs-food-menu'></i> Menu Items
     </div>
     <div class="nav-item" onclick="switchTab('stores')">
-      <i class='bx bxs-store'></i> Stores & Vendors
+      <i class='bx bxs-store'></i> Stores
     </div>
-    
-    <div class="nav-item" onclick="logout()" style="margin-top:auto; color:var(--danger); background:#FEF2F2;">
+
+    <div class="nav-item" onclick="logout()" style="margin-top:auto;color:var(--danger);background:#FEF2F2;">
       <i class='bx bxs-log-out'></i> Logout
     </div>
   </div>
 
   <div class="main">
     <div class="header">
-      <div style="display:flex; align-items:center; gap:15px;">
+      <div style="display:flex;align-items:center;gap:12px;">
         <i class='bx bx-menu menu-toggle' onclick="toggleSidebar()"></i>
-        <div class="page-title">Dashboard</div>
+        <div class="page-title" id="pageTitle">Dashboard</div>
       </div>
-      <button class="btn-primary header-add-btn" style="width:auto; padding:10px 20px;" onclick="openAddModal()">
-        + Add New
-      </button>
+
+      <div class="top-actions">
+        <button class="btn btn-ghost" onclick="refreshAll()"><i class='bx bx-refresh'></i> Refresh</button>
+        <button class="btn btn-primary" onclick="openAddModal()"><i class='bx bx-plus'></i> Add</button>
+      </div>
     </div>
 
     <div class="stats-grid">
@@ -196,19 +370,39 @@
         <div class="stat-val" style="color:var(--success)" id="totalRevenue">₹0</div>
       </div>
       <div class="stat-card">
-        <div class="stat-label">Total Items</div>
+        <div class="stat-label">Total Menu Items</div>
         <div class="stat-val" id="totalMenu">0</div>
       </div>
     </div>
 
+    <!-- ORDERS -->
     <div id="view-orders" class="section active">
       <div class="orders-grid" id="ordersList"></div>
     </div>
 
+    <!-- MENU -->
     <div id="view-menu" class="section">
+      <div class="toolbar">
+        <input class="tool-input" id="searchMenu" placeholder="Search item / store...">
+        <select class="tool-select" id="filterStore">
+          <option value="">All Stores</option>
+        </select>
+        <select class="tool-select" id="filterStatus">
+          <option value="all">All</option>
+          <option value="show">Only Active</option>
+          <option value="hide">Only Hidden</option>
+        </select>
+        <select class="tool-select" id="sortMenu">
+          <option value="priority">Sort: Priority</option>
+          <option value="name">Sort: Name</option>
+          <option value="store">Sort: Store</option>
+        </select>
+      </div>
+
       <div id="menuList"></div>
     </div>
 
+    <!-- STORES -->
     <div id="view-stores" class="section">
       <div id="storeList"></div>
     </div>
@@ -216,281 +410,627 @@
 
   <button class="fab" onclick="openAddModal()"><i class='bx bx-plus'></i></button>
 
+  <!-- MENU MODAL -->
   <div class="modal-overlay" id="menuModal">
     <div class="modal-box">
-      <h2 style="margin-bottom:20px;" id="modalTitle">Add Item</h2>
-      <input id="foodName" placeholder="Item Name (e.g. Chicken Biryani)">
-      <select id="storeSelect"><option>Select Store</option></select>
-      
-      <label style="font-size:12px; font-weight:700; color:#666; margin-bottom:5px; display:block;">Food Image</label>
-      <input type="file" id="foodImg" style="padding:10px;">
-      
-      <input type="number" id="priority" placeholder="Priority (1 = Top)">
-      
-      <div style="background:#F3F4F6; padding:15px; border-radius:12px; margin-bottom:15px;">
-        <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-          <small style="font-weight:800; color:#374151;">VARIANTS</small>
-          <small onclick="addVariantRow()" style="color:var(--primary); font-weight:700; cursor:pointer;">+ Add Row</small>
-        </div>
-        <div id="variantsWrap"></div>
+      <h2 style="margin-bottom:12px;font-weight:900;" id="modalTitle">Add Item</h2>
+
+      <div class="field">
+        <label>Item Name</label>
+        <input id="foodName" placeholder="Chicken Biryani">
       </div>
 
-      <button class="btn-primary" onclick="saveItem()">Save Item</button>
-      <button class="btn-primary btn-ghost" onclick="closeModal('menuModal')">Cancel</button>
-      <div id="status" style="margin-top:15px; text-align:center; font-size:13px; font-weight:600; color:var(--primary);"></div>
+      <div class="field">
+        <label>Store</label>
+        <select id="storeSelect">
+          <option value="">Select Store</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Priority (1 = top)</label>
+        <input id="priority" type="number" placeholder="1">
+      </div>
+
+      <div class="field">
+        <label>Image</label>
+        <input type="file" id="foodImg" style="padding:12px;">
+      </div>
+
+      <div class="field">
+        <label>Variants</label>
+        <div class="variantsBox">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <b style="font-size:12px;">Add price options</b>
+            <button class="btn btn-ghost" style="padding:8px 10px" onclick="addVariantRow()">
+              <i class='bx bx-plus'></i> Row
+            </button>
+          </div>
+          <div id="variantsWrap"></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Status</label>
+        <select id="isAvailable">
+          <option value="true">Active (Show in Customer)</option>
+          <option value="false">Hidden (Safe)</option>
+        </select>
+      </div>
+
+      <button class="btn btn-primary" style="width:100%;justify-content:center;padding:14px" onclick="saveItem()">
+        <i class='bx bxs-save'></i> Save Item
+      </button>
+      <button class="btn btn-ghost" style="width:100%;justify-content:center;padding:14px;margin-top:10px" onclick="closeModal('menuModal')">
+        Cancel
+      </button>
+
+      <div id="status" style="margin-top:12px;text-align:center;font-weight:900;color:var(--primary);"></div>
     </div>
   </div>
 
+  <!-- STORE MODAL -->
   <div class="modal-overlay" id="storeModal">
     <div class="modal-box">
-      <h2 style="margin-bottom:20px;">Manage Store</h2>
-      <input id="stName" placeholder="Store Name">
-      <div style="display:flex; gap:10px;">
-        <input id="stOpen" placeholder="Open (10 AM)">
-        <input id="stClose" placeholder="Close (10 PM)">
+      <h2 style="margin-bottom:12px;font-weight:900;" id="storeModalTitle">Manage Store</h2>
+
+      <div class="field">
+        <label>Store Name</label>
+        <input id="stName" placeholder="Makhan Foods">
       </div>
-      <input type="number" id="stPrio" placeholder="Priority Order">
-      <button class="btn-primary" onclick="saveStore()">Save Store</button>
-      <button class="btn-primary btn-ghost" onclick="closeModal('storeModal')">Cancel</button>
+
+      <div style="display:flex;gap:10px;">
+        <div class="field" style="flex:1">
+          <label>Open</label>
+          <input id="stOpen" placeholder="10 AM">
+        </div>
+        <div class="field" style="flex:1">
+          <label>Close</label>
+          <input id="stClose" placeholder="10 PM">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Priority (store order)</label>
+        <input id="stPrio" type="number" placeholder="1">
+      </div>
+
+      <button class="btn btn-primary" style="width:100%;justify-content:center;padding:14px" onclick="saveStore()">
+        <i class='bx bxs-save'></i> Save Store
+      </button>
+      <button class="btn btn-ghost" style="width:100%;justify-content:center;padding:14px;margin-top:10px" onclick="closeModal('storeModal')">
+        Cancel
+      </button>
     </div>
   </div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  import {
+    getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, updateDoc,
+    query, orderBy, getDocs
+  } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-  const app = initializeApp({ apiKey: "AIzaSyC-igyzVwdH_4Jt1r64TtHSfYxIMw8UfzM", projectId: "sanghx-foods" });
+  const firebaseConfig = {
+    apiKey: "AIzaSyC-igyzVwdH_4Jt1r64TtHSfYxIMw8UfzM",
+    authDomain: "sanghx-foods.firebaseapp.com",
+    projectId: "sanghx-foods",
+    storageBucket: "sanghx-foods.firebasestorage.app",
+    messagingSenderId: "491353757911",
+    appId: "1:491353757911:web:40752459b5b0049c71f892"
+  };
+
+  const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
   const auth = getAuth(app);
 
-  onAuthStateChanged(auth, u => { if(!u) location.href="login.html"; });
+  // Auth guard
+  onAuthStateChanged(auth, (u) => { if(!u) location.href="login.html"; });
 
-  let currentTab = 'orders';
+  // Cloudinary
+  const CLOUD_NAME = "dvbaqh8ja";
+  const UPLOAD_PRESET = "SANGHX";
+
+  // State
+  let currentTab = "orders";
   let editingId = null;
   let editingOldImg = null;
+  let STORES = [];
+  let MENU = [];
 
-  // --- MOBILE SIDEBAR ---
+  // UI helpers
+  const $ = (id) => document.getElementById(id);
+
+  // Sidebar
   window.toggleSidebar = () => {
-    document.getElementById('sidebar').classList.toggle('open');
-    document.querySelector('.sidebar-overlay').classList.toggle('show');
-  }
+    $("sidebar").classList.toggle("open");
+    document.querySelector(".sidebar-overlay").classList.toggle("show");
+  };
 
   window.switchTab = (tab) => {
     currentTab = tab;
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    
-    document.getElementById(`view-${tab}`).classList.add('active');
-    const idx = ['orders', 'menu', 'stores'].indexOf(tab);
-    document.querySelectorAll('.nav-item')[idx].classList.add('active');
-    
-    document.querySelector('.page-title').innerText = tab === 'orders' ? 'Live Orders' : (tab === 'menu' ? 'Menu' : 'Stores');
-    
-    // Auto close sidebar on mobile click
+    document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+    document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
+
+    $("view-"+tab).classList.add("active");
+    const idx = ["orders","menu","stores"].indexOf(tab);
+    document.querySelectorAll(".nav-item")[idx].classList.add("active");
+
+    $("pageTitle").innerText = tab === "orders" ? "Live Orders" : (tab === "menu" ? "Menu Items" : "Stores");
+
     if(window.innerWidth < 768) toggleSidebar();
-  }
+  };
 
-  // --- ORDERS ---
-  const q = query(collection(db, "orders"), orderBy("timestamp", "desc"));
-  onSnapshot(q, (snapshot) => {
-    const list = document.getElementById("ordersList");
+  window.refreshAll = async () => {
+    // just visual refresh (snapshots auto update)
+    alert("Refreshed ✅");
+  };
+
+  // ===== ORDERS =====
+  const qOrders = query(collection(db, "orders"), orderBy("timestamp", "desc"));
+  onSnapshot(qOrders, (snapshot) => {
+    const list = $("ordersList");
     list.innerHTML = "";
-    let pendingCount = 0, revenue = 0;
 
-    if(snapshot.empty) { list.innerHTML = "<div style='text-align:center; padding:40px; color:#999;'>No Orders Yet</div>"; return; }
+    let pendingCount = 0;
+    let revenue = 0;
+
+    if(snapshot.empty){
+      list.innerHTML = "<div style='text-align:center;padding:40px;color:#999;font-weight:900;'>No Orders Yet</div>";
+      $("countPending").innerText = "0";
+      $("totalRevenue").innerText = "₹0";
+      return;
+    }
 
     snapshot.forEach(docSnap => {
       const order = docSnap.data();
       const oid = docSnap.id;
+
       if(order.status === "Pending") pendingCount++;
       if(order.status === "Completed") revenue += (order.bill?.total || 0);
 
-      const itemsHtml = order.items.map(i => `
+      const itemsHtml = (order.items || []).map(i => `
         <div class="order-item-row">
-          <span>${i.qty}x ${i.name}</span>
-          <span>₹${i.price * i.qty}</span>
+          <span>${i.qty}x ${i.name} <small style="color:#9CA3AF;font-weight:800;">(${i.storeName || "Store"})</small></span>
+          <span>₹${(i.price||0) * (i.qty||0)}</span>
         </div>
       `).join("");
 
       let btns = "";
-      if(order.status === "Pending") {
-        btns = `<button class="act-btn btn-accept" onclick="updateStatus('${oid}','Confirmed')">Accept</button>
-                <button class="act-btn btn-del" onclick="updateStatus('${oid}','Cancelled')">Reject</button>`;
-      } else if(order.status === "Confirmed") {
-        btns = `<button class="act-btn btn-complete" style="grid-column:1/-1" onclick="updateStatus('${oid}','Completed')">Mark Delivered</button>`;
+      if(order.status === "Pending"){
+        btns = `
+          <button class="act-btn btn-accept" onclick="updateStatus('${oid}','Confirmed')">Accept</button>
+          <button class="act-btn btn-del" onclick="updateStatus('${oid}','Cancelled')">Reject</button>
+        `;
+      }else if(order.status === "Confirmed"){
+        btns = `
+          <button class="act-btn btn-complete" style="grid-column:1/-1" onclick="updateStatus('${oid}','Completed')">
+            Mark Delivered
+          </button>
+        `;
       }
+
+      const timeStr = order.timestamp?.toDate ? new Date(order.timestamp.toDate()).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : "";
 
       list.innerHTML += `
         <div class="order-card">
           <div class="order-header">
             <div>
-              <div class="cust-name">${order.customer.name}</div>
-              <div class="order-time">${new Date(order.timestamp?.toDate()).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>
+              <div class="cust-name">${order.customer?.name || "Customer"}</div>
+              <div class="order-time">${timeStr}</div>
             </div>
-            <a href="${order.customer.location}" target="_blank" style="background:#EEF2FF; width:36px; height:36px; display:flex; justify-content:center; align-items:center; border-radius:50%; color:var(--primary);"><i class='bx bxs-map'></i></a>
+            <a href="${order.customer?.location || "#"}" target="_blank"
+               style="background:#EEF2FF;width:36px;height:36px;display:flex;justify-content:center;align-items:center;border-radius:50%;color:var(--primary);">
+              <i class='bx bxs-map'></i>
+            </a>
           </div>
-          <div style="font-size:12px; margin-bottom:10px; color:#666;">
-             📞 <a href="tel:${order.customer.mobile}">${order.customer.mobile}</a> • ${order.customer.address}
+
+          <div style="font-size:12px;margin-bottom:10px;color:#666;font-weight:800;">
+            📞 <a href="tel:${order.customer?.mobile || ""}" style="color:var(--primary);font-weight:900;text-decoration:none;">
+              ${order.customer?.mobile || ""}
+            </a>
+            <div style="margin-top:6px;">🏠 ${order.customer?.address || ""}</div>
           </div>
+
           <div class="order-items">${itemsHtml}</div>
+
           <div class="order-total">
-            <span>Total (${order.payment})</span>
-            <span>₹${order.bill?.total}</span>
+            <span>Total (${order.payment || "NA"})</span>
+            <span>₹${order.bill?.total || 0}</span>
           </div>
-          <div style="text-align:right;"><span class="status-badge st-${order.status}">${order.status}</span></div>
+
+          <div style="text-align:right;margin-top:10px;">
+            <span class="status-badge st-${order.status || "Pending"}">${order.status || "Pending"}</span>
+          </div>
+
           <div class="action-btns">${btns}</div>
-        </div>`;
+        </div>
+      `;
     });
-    document.getElementById("countPending").innerText = pendingCount;
-    document.getElementById("totalRevenue").innerText = "₹" + revenue;
+
+    $("countPending").innerText = pendingCount;
+    $("totalRevenue").innerText = "₹" + revenue;
   });
 
-  window.updateStatus = async (id, st) => { if(confirm(`Mark ${st}?`)) await updateDoc(doc(db,"orders",id), {status:st}); }
-
-  // --- MENU ---
-  onSnapshot(collection(db, "menu"), snap => {
-    const list = document.getElementById("menuList");
-    list.innerHTML = "";
-    document.getElementById("totalMenu").innerText = snap.size;
-    const items = [];
-    snap.forEach(d => items.push({id:d.id, ...d.data()}));
-    
-    items.forEach(i => {
-      list.innerHTML += `
-        <div class="menu-list-item">
-          <img src="${i.img}" class="menu-img">
-          <div class="menu-info">
-            <div class="menu-title">${i.name}</div>
-            <div class="menu-sub">${i.storeName} • ₹${i.variants?.[0]?.price}</div>
-          </div>
-          <div class="menu-actions">
-            <button class="btn-icon" style="background:#F3F4F6;" onclick='editMenu("${i.id}", ${JSON.stringify(i).replace(/'/g,"")})'><i class='bx bxs-edit'></i></button>
-            <button class="btn-icon" style="background:#FEE2E2; color:red;" onclick="deleteMenu('${i.id}')"><i class='bx bxs-trash'></i></button>
-          </div>
-        </div>`;
-    });
-  });
-
-  // --- STORES ---
-  onSnapshot(collection(db, "stores"), snap => {
-    const list = document.getElementById("storeList");
-    const select = document.getElementById("storeSelect");
-    list.innerHTML = ""; select.innerHTML = "<option value=''>Select Store</option>";
-    
-    snap.forEach(doc => {
-      const s = doc.data(); s.id = doc.id;
-      select.innerHTML += `<option value="${s.name}">${s.name}</option>`;
-      list.innerHTML += `
-        <div class="menu-list-item">
-          <div class="menu-info">
-            <div class="menu-title">${s.name}</div>
-            <div class="menu-sub">${s.openTime} - ${s.closeTime}</div>
-            <span class="status-badge ${s.isOnline?'st-Completed':'st-Cancelled'}">${s.isOnline?'Online':'Offline'}</span>
-          </div>
-          <div class="menu-actions">
-            <button class="btn-icon" style="background:${s.isOnline?'#D1FAE5':'#F3F4F6'}" onclick="toggleStore('${s.id}',${s.isOnline})"><i class='bx bx-power-off'></i></button>
-            <button class="btn-icon" onclick='editStore("${s.id}", ${JSON.stringify(s).replace(/'/g,"")})'><i class='bx bxs-edit'></i></button>
-          </div>
-        </div>`;
-    });
-  });
-
-  // --- MODALS & CRUD ---
-  window.openAddModal = () => {
-    if(currentTab === 'menu') {
-        editingId = null;
-        document.getElementById('modalTitle').innerText = "Add New Item";
-        document.getElementById('foodName').value = "";
-        document.getElementById('variantsWrap').innerHTML = "";
-        addVariantRow();
-        document.getElementById('menuModal').classList.add('open');
-    } else if (currentTab === 'stores') {
-        editingId = null;
-        document.getElementById('stName').value = "";
-        document.getElementById('storeModal').classList.add('open');
-    } else {
-        alert("Switch to Menu or Store tab first!");
+  window.updateStatus = async (id, st) => {
+    if(confirm(`Mark ${st}?`)){
+      await updateDoc(doc(db,"orders",id), { status: st });
     }
+  };
+
+  // ===== STORES =====
+  onSnapshot(query(collection(db, "stores"), orderBy("priority","asc")), (snap) => {
+    STORES = [];
+    const list = $("storeList");
+    list.innerHTML = "";
+
+    const storeSelect = $("storeSelect");
+    const filterStore = $("filterStore");
+
+    storeSelect.innerHTML = "<option value=''>Select Store</option>";
+    filterStore.innerHTML = "<option value=''>All Stores</option>";
+
+    snap.forEach(d => {
+      const s = { id:d.id, ...d.data() };
+      STORES.push(s);
+
+      storeSelect.innerHTML += `<option value="${s.name}">${s.name}</option>`;
+      filterStore.innerHTML += `<option value="${s.name}">${s.name}</option>`;
+
+      list.innerHTML += `
+        <div class="store-row">
+          <div style="min-width:0;">
+            <div class="store-name">${s.name || "Store"}</div>
+            <div class="store-sub">${s.openTime || ""} - ${s.closeTime || ""}</div>
+            <div class="pill" style="margin-top:8px;">Priority: <b>${s.priority ?? 999}</b></div>
+          </div>
+
+          <div class="store-actions">
+            <button class="toggle ${s.isOnline ? "on" : "off"}" onclick="toggleStore('${s.id}', ${!!s.isOnline})">
+              <i class='bx bx-power-off'></i> ${s.isOnline ? "Online" : "Offline"}
+            </button>
+
+            <button class="btn-mini primary" title="Edit" onclick='editStore("${s.id}", ${JSON.stringify(s).replace(/'/g,"")})'>
+              <i class='bx bxs-edit'></i>
+            </button>
+
+            <div class="prio-ctrl" title="Change Store Position">
+              <button onclick="bumpStore('${s.id}', -1)">↑</button>
+              <span>${s.priority ?? 999}</span>
+              <button onclick="bumpStore('${s.id}', 1)">↓</button>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+  });
+
+  window.toggleStore = async (id, status) => {
+    await updateDoc(doc(db,"stores",id), { isOnline: !status });
+  };
+
+  window.bumpStore = async (id, delta) => {
+    const s = STORES.find(x=>x.id===id);
+    if(!s) return;
+    const newPrio = (Number(s.priority || 999) + delta);
+    await updateDoc(doc(db,"stores",id), { priority: newPrio });
+  };
+
+  // ===== MENU =====
+  onSnapshot(collection(db, "menu"), (snap) => {
+    MENU = [];
+    snap.forEach(d => MENU.push({ id:d.id, ...d.data() }));
+    $("totalMenu").innerText = MENU.length;
+    renderMenu();
+  });
+
+  // Filters
+  $("searchMenu").addEventListener("input", renderMenu);
+  $("filterStore").addEventListener("change", renderMenu);
+  $("filterStatus").addEventListener("change", renderMenu);
+  $("sortMenu").addEventListener("change", renderMenu);
+
+  function normalize(v){ return String(v||"").toLowerCase().trim(); }
+
+  function renderMenu(){
+    const list = $("menuList");
+    list.innerHTML = "";
+
+    const q = normalize($("searchMenu").value);
+    const st = $("filterStore").value;
+    const status = $("filterStatus").value;
+    const sort = $("sortMenu").value;
+
+    let items = [...MENU];
+
+    // Safe defaults
+    items = items.map(i => ({
+      ...i,
+      priority: Number(i.priority || 999),
+      isAvailable: (i.isAvailable ?? true)
+    }));
+
+    // Search
+    if(q){
+      items = items.filter(i =>
+        normalize(i.name).includes(q) ||
+        normalize(i.storeName).includes(q)
+      );
+    }
+
+    // Store filter
+    if(st){
+      items = items.filter(i => i.storeName === st);
+    }
+
+    // Status filter
+    if(status === "show") items = items.filter(i => i.isAvailable === true);
+    if(status === "hide") items = items.filter(i => i.isAvailable === false);
+
+    // Sort
+    if(sort === "priority") items.sort((a,b)=>a.priority - b.priority);
+    if(sort === "name") items.sort((a,b)=>String(a.name||"").localeCompare(String(b.name||"")));
+    if(sort === "store") items.sort((a,b)=>String(a.storeName||"").localeCompare(String(b.storeName||"")));
+
+    if(items.length === 0){
+      list.innerHTML = "<div style='text-align:center;padding:30px;color:#999;font-weight:900;'>No menu items found</div>";
+      return;
+    }
+
+    items.forEach(i => {
+      const firstPrice = i.variants?.[0]?.price ?? i.price ?? 0;
+      const pill = i.isAvailable ? `<span class="pill show">✅ Active</span>` : `<span class="pill hide">🙈 Hidden</span>`;
+
+      list.innerHTML += `
+        <div class="menu-list-item">
+          <img class="menu-img" src="${i.img || ""}" onerror="this.src='https://via.placeholder.com/120'">
+
+          <div class="menu-info">
+            <div class="menu-title">${i.name || "Item"}</div>
+            <div class="menu-sub">🏪 ${i.storeName || "Store"} • ₹${firstPrice}</div>
+            ${pill}
+            <div class="pill" style="margin-top:8px;">Priority: <b>${i.priority}</b></div>
+          </div>
+
+          <div class="menu-actions">
+            <div class="prio-ctrl" title="Change Item Position">
+              <button onclick="bumpItem('${i.id}', -1)">↑</button>
+              <span>${i.priority}</span>
+              <button onclick="bumpItem('${i.id}', 1)">↓</button>
+            </div>
+
+            <button class="btn-mini primary" title="Edit" onclick='editMenu("${i.id}", ${JSON.stringify(i).replace(/'/g,"")})'>
+              <i class='bx bxs-edit'></i>
+            </button>
+
+            <button class="btn-mini success" title="Duplicate to another store" onclick='duplicateItem("${i.id}")'>
+              <i class='bx bxs-copy'></i>
+            </button>
+
+            <button class="btn-mini" title="Hide/Show" onclick='toggleItem("${i.id}", ${!!i.isAvailable})'>
+              <i class='bx bxs-low-vision'></i>
+            </button>
+
+            <button class="btn-mini danger" title="Delete (Danger)" onclick="deleteMenu('${i.id}')">
+              <i class='bx bxs-trash'></i>
+            </button>
+          </div>
+        </div>
+      `;
+    });
   }
 
-  window.closeModal = (id) => document.getElementById(id).classList.remove('open');
-  
-  window.addVariantRow = (l="", p="") => {
-    const d = document.createElement("div"); d.style.cssText = "display:flex; gap:8px; margin-bottom:8px;";
-    d.innerHTML = `<input placeholder="Label (e.g. Half)" value="${l}" style="margin:0; flex:1;"><input type="number" placeholder="₹" value="${p}" style="margin:0; width:80px;"><i class='bx bxs-trash' onclick="this.parentElement.remove()" style="font-size:20px; color:red; margin-top:12px;"></i>`;
-    document.getElementById("variantsWrap").appendChild(d);
+  window.bumpItem = async (id, delta) => {
+    const item = MENU.find(x=>x.id===id);
+    if(!item) return;
+    const newPrio = (Number(item.priority || 999) + delta);
+    await updateDoc(doc(db,"menu",id), { priority: newPrio });
+  };
+
+  window.toggleItem = async (id, current) => {
+    await updateDoc(doc(db,"menu",id), { isAvailable: !current });
+  };
+
+  window.deleteMenu = async (id) => {
+    if(confirm("Delete Item? (This will remove from database)")){
+      await deleteDoc(doc(db,"menu",id));
+    }
+  };
+
+  // ===== MODALS =====
+  window.openAddModal = () => {
+    if(currentTab === "menu"){
+      editingId = null;
+      editingOldImg = null;
+
+      $("modalTitle").innerText = "Add New Item";
+      $("foodName").value = "";
+      $("storeSelect").value = "";
+      $("priority").value = "1";
+      $("foodImg").value = "";
+      $("variantsWrap").innerHTML = "";
+      $("isAvailable").value = "true";
+      addVariantRow("Regular", "");
+
+      $("status").innerText = "";
+      $("menuModal").classList.add("open");
+      return;
+    }
+
+    if(currentTab === "stores"){
+      editingId = null;
+      $("storeModalTitle").innerText = "Add Store";
+      $("stName").value = "";
+      $("stOpen").value = "";
+      $("stClose").value = "";
+      $("stPrio").value = "1";
+      $("storeModal").classList.add("open");
+      return;
+    }
+
+    alert("Switch to Menu or Stores tab first!");
+  };
+
+  window.closeModal = (id) => $(id).classList.remove("open");
+
+  window.addVariantRow = (label="", price="") => {
+    const wrap = $("variantsWrap");
+    const row = document.createElement("div");
+    row.className = "variantRow";
+    row.innerHTML = `
+      <input placeholder="Label (Half / Full)" value="${label}">
+      <input type="number" placeholder="₹" value="${price}">
+      <button class="trash" title="Remove" onclick="this.parentElement.remove()"><i class='bx bxs-trash'></i></button>
+    `;
+    wrap.appendChild(row);
+  };
+
+  async function uploadToCloudinary(file){
+    const fd = new FormData();
+    fd.append("file", file);
+    fd.append("upload_preset", UPLOAD_PRESET);
+
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+      method:"POST",
+      body: fd
+    });
+
+    const data = await res.json();
+    if(data.error) throw new Error(data.error.message);
+    return data.secure_url;
   }
 
   window.saveItem = async () => {
-    const name = document.getElementById("foodName").value;
-    const store = document.getElementById("storeSelect").value;
-    const prio = Number(document.getElementById("priority").value);
-    const file = document.getElementById("foodImg").files[0];
-    
+    const name = $("foodName").value.trim();
+    const store = $("storeSelect").value.trim();
+    const prio = Number($("priority").value || 999);
+    const isAvailable = $("isAvailable").value === "true";
+    const file = $("foodImg").files[0];
+
     const variants = [];
-    document.querySelectorAll("#variantsWrap div").forEach(r => {
-        const i = r.querySelectorAll("input");
-        if(i[0].value && i[1].value) variants.push({ label: i[0].value, price: Number(i[1].value) });
+    document.querySelectorAll("#variantsWrap .variantRow").forEach(r=>{
+      const inputs = r.querySelectorAll("input");
+      const l = inputs[0].value.trim();
+      const p = Number(inputs[1].value);
+      if(l && p) variants.push({ label:l, price:p });
     });
 
-    if(!name || variants.length === 0) return alert("Details missing");
-    document.getElementById("status").innerText = "Uploading Image...";
+    if(!name) return alert("Item name missing!");
+    if(!store) return alert("Select store!");
+    if(variants.length === 0) return alert("Add at least 1 variant!");
 
-    let imgUrl = editingOldImg;
-    if(file) {
-        const fd = new FormData(); fd.append("file", file); fd.append("upload_preset", "SANGHX");
-        const res = await fetch(`https://api.cloudinary.com/v1_1/dvbaqh8ja/image/upload`, { method:"POST", body:fd });
-        const data = await res.json();
-        imgUrl = data.secure_url;
+    $("status").innerText = "Uploading...";
+
+    try{
+      let imgUrl = editingOldImg || "";
+      if(file){
+        imgUrl = await uploadToCloudinary(file);
+      }
+
+      const payload = {
+        name,
+        storeName: store,
+        priority: prio,
+        variants,
+        img: imgUrl,
+        isAvailable,
+        updatedAt: Date.now()
+      };
+
+      if(editingId){
+        await updateDoc(doc(db,"menu",editingId), payload);
+      }else{
+        await addDoc(collection(db,"menu"), { ...payload, createdAt: Date.now() });
+      }
+
+      $("status").innerText = "Saved ✅";
+      setTimeout(()=>{ $("menuModal").classList.remove("open"); $("status").innerText=""; }, 600);
+
+    }catch(err){
+      alert("Error: " + err.message);
+      $("status").innerText = "";
+    }
+  };
+
+  window.editMenu = (id, item) => {
+    editingId = id;
+    editingOldImg = item.img || "";
+
+    $("modalTitle").innerText = "Edit Item";
+    $("foodName").value = item.name || "";
+    $("storeSelect").value = item.storeName || "";
+    $("priority").value = item.priority ?? 999;
+    $("foodImg").value = "";
+    $("isAvailable").value = String(item.isAvailable ?? true);
+
+    $("variantsWrap").innerHTML = "";
+    (item.variants || []).forEach(v => addVariantRow(v.label, v.price));
+
+    $("menuModal").classList.add("open");
+  };
+
+  window.duplicateItem = async (id) => {
+    const item = MENU.find(x=>x.id===id);
+    if(!item) return;
+
+    const targetStore = prompt("Duplicate to which store? (Exact store name)");
+    if(!targetStore) return;
+
+    const payload = {
+      ...item,
+      storeName: targetStore,
+      createdAt: Date.now(),
+      updatedAt: Date.now()
+    };
+    delete payload.id;
+
+    await addDoc(collection(db,"menu"), payload);
+    alert("Duplicated ✅");
+  };
+
+  // Store modal
+  window.saveStore = async () => {
+    const name = $("stName").value.trim();
+    const open = $("stOpen").value.trim();
+    const close = $("stClose").value.trim();
+    const prio = Number($("stPrio").value || 999);
+
+    if(!name) return alert("Store name missing!");
+
+    if(editingId){
+      await updateDoc(doc(db,"stores",editingId), {
+        name,
+        openTime: open,
+        closeTime: close,
+        priority: prio
+      });
+    }else{
+      await addDoc(collection(db,"stores"), {
+        name,
+        openTime: open,
+        closeTime: close,
+        priority: prio,
+        isOnline: true
+      });
     }
 
-    const payload = { name, storeName: store, priority: prio, variants, img: imgUrl || "" };
-    if(editingId) await updateDoc(doc(db,"menu",editingId), payload);
-    else await addDoc(collection(db,"menu"), payload);
-
-    document.getElementById("status").innerText = "";
-    closeModal('menuModal');
-  };
-
-  window.saveStore = async () => {
-    const name = document.getElementById("stName").value;
-    const open = document.getElementById("stOpen").value;
-    const close = document.getElementById("stClose").value;
-    const prio = Number(document.getElementById("stPrio").value);
-    
-    if(editingId) await updateDoc(doc(db,"stores",editingId), { name, openTime:open, closeTime:close, priority:prio });
-    else await addDoc(collection(db,"stores"), { name, openTime:open, closeTime:close, priority:prio, isOnline:true });
-    
-    closeModal('storeModal');
-  };
-
-  window.toggleStore = async (id, status) => await updateDoc(doc(db,"stores",id), { isOnline: !status });
-  
-  window.editMenu = (id, i) => {
-    editingId = id; editingOldImg = i.img;
-    document.getElementById('modalTitle').innerText = "Edit Item";
-    document.getElementById('foodName').value = i.name;
-    document.getElementById('storeSelect').value = i.storeName;
-    document.getElementById('priority').value = i.priority;
-    document.getElementById('variantsWrap').innerHTML = "";
-    i.variants.forEach(v => addVariantRow(v.label, v.price));
-    document.getElementById('menuModal').classList.add('open');
+    $("storeModal").classList.remove("open");
   };
 
   window.editStore = (id, s) => {
     editingId = id;
-    document.getElementById('stName').value = s.name;
-    document.getElementById('stOpen').value = s.openTime;
-    document.getElementById('stClose').value = s.closeTime;
-    document.getElementById('stPrio').value = s.priority;
-    document.getElementById('storeModal').classList.add('open');
+    $("storeModalTitle").innerText = "Edit Store";
+    $("stName").value = s.name || "";
+    $("stOpen").value = s.openTime || "";
+    $("stClose").value = s.closeTime || "";
+    $("stPrio").value = s.priority ?? 999;
+    $("storeModal").classList.add("open");
   };
 
-  window.deleteMenu = async (id) => { if(confirm("Delete Item?")) await deleteDoc(doc(db,"menu",id)); };
-  window.deleteStore = async (id) => { if(confirm("Delete Store?")) await deleteDoc(doc(db,"stores",id)); };
+  // Logout
   window.logout = () => signOut(auth).then(()=>location.href="login.html");
-
 </script>
+
 </body>
 </html>
