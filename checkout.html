@@ -370,6 +370,34 @@
     display:flex;align-items:center;justify-content:center;
     cursor:pointer;
   }
+
+  /* Delivery Fee Table */
+  .fee-table{
+    margin-top:12px;
+    background:linear-gradient(135deg,#fff8f0,#fff);
+    border-radius:16px;
+    padding:12px;
+    border:2px solid rgba(255,153,51,0.2);
+  }
+  .fee-row{
+    display:flex;
+    justify-content:space-between;
+    padding:8px 0;
+    border-bottom:1px dashed #eee;
+    font-weight:800;
+    font-size:13px;
+  }
+  .fee-row:last-child{border-bottom:none;}
+  .fee-row .km{color:#666;}
+  .fee-row .price{color:#0f7a3b;font-weight:900;}
+  .fee-row.active{
+    background:rgba(46,213,115,0.15);
+    border-radius:10px;
+    padding:8px 10px;
+    margin:0 -10px;
+  }
+  .fee-row.active .km,
+  .fee-row.active .price{color:#0f7a3b;}
 </style>
 </head>
 
@@ -414,6 +442,22 @@
 
     <div id="gpsStatus" class="gps-status">⚠️ Location required to place order (10KM limit)</div>
     <div id="kmPill" class="km-pill"></div>
+
+    <!-- Delivery Fee Table -->
+    <div class="fee-table">
+      <div class="fee-row" id="feeRow1">
+        <span class="km">📍 0 - 4 KM</span>
+        <span class="price">₹10</span>
+      </div>
+      <div class="fee-row" id="feeRow2">
+        <span class="km">📍 5 - 7 KM</span>
+        <span class="price">₹25</span>
+      </div>
+      <div class="fee-row" id="feeRow3">
+        <span class="km">📍 8 - 10 KM</span>
+        <span class="price">₹40</span>
+      </div>
+    </div>
   </div>
 
   <div class="card">
@@ -437,11 +481,8 @@
     <div class="sec-title"><i class='bx bxs-receipt'></i> Bill Summary</div>
     <div class="bill">
       <div class="bill-row"><span>Subtotal</span><span id="subTotal">₹0</span></div>
-      <div class="bill-row"><span>Delivery</span><span id="delFee">Attach GPS</span></div>
-      <div class="bill-total"><span>Total</span><span id="grandTotal">₹0</span></div>
-    </div>
-    <div style="margin-top:10px;font-weight:900;opacity:.75;font-size:12px;">
-      🚚 Fee Rule: 0-4km ₹10 • 4-7km ₹25 • 7-10km ₹40
+      <div class="bill-row"><span>Delivery Fee</span><span id="delFee">Attach GPS</span></div>
+      <div class="bill-total"><span>Grand Total</span><span id="grandTotal">₹0</span></div>
     </div>
   </div>
 
@@ -477,7 +518,7 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
   import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-  // 🔥 Firebase Config (your same)
+  // 🔥 Firebase Config
   const firebaseConfig = {
     apiKey: "AIzaSyC-igyzVwdH_4Jt1r64TtHSfYxIMw8UfzM",
     authDomain: "sanghx-foods.firebaseapp.com",
@@ -491,20 +532,30 @@
   const db = getFirestore(app);
 
   // ===== SETTINGS
-  const ADMIN_WA = "919322586177"; // 🔥 Your admin number (same as your old checkout)
-  const UPI_ID = "samyaksangode0-2@okicici"; // 🔥 Your UPI ID
+  const ADMIN_WA = "919322586177";
+  const UPI_ID = "samyaksangode0-2@okicici";
   const UPI_NAME = "SANGHX";
 
-  // Delivery settings
+  // 🔥 YOUR STORE/CENTER LOCATION - UPDATED!
+  const CENTER_LAT = 21.093938;
+  const CENTER_LNG = 80.001430;
   const MAX_KM = 10;
-  const SAKOLI_LAT = 21.0819;
-  const SAKOLI_LNG = 79.9814;
 
+  // 🔥 DELIVERY FEE ESTIMATOR FUNCTION
   function getDeliveryFeeByKm(km){
-    if(km <= 4) return 10;
-    if(km > 4 && km <= 7) return 25;
-    if(km > 7 && km <= 10) return 40;
-    return null;
+    // Round to nearest integer for cleaner calculation
+    const roundedKm = Math.round(km);
+    
+    if(roundedKm >= 0 && roundedKm <= 4){
+      return { fee: 10, slab: "0-4 KM", row: 1 };
+    }
+    if(roundedKm >= 5 && roundedKm <= 7){
+      return { fee: 25, slab: "5-7 KM", row: 2 };
+    }
+    if(roundedKm >= 8 && roundedKm <= 10){
+      return { fee: 40, slab: "8-10 KM", row: 3 };
+    }
+    return null; // Out of range
   }
 
   // ===== Refs
@@ -531,6 +582,10 @@
   const gpsStatus = document.getElementById("gpsStatus");
   const kmPill = document.getElementById("kmPill");
 
+  const feeRow1 = document.getElementById("feeRow1");
+  const feeRow2 = document.getElementById("feeRow2");
+  const feeRow3 = document.getElementById("feeRow3");
+
   // ===== State
   let deliveryFee = 0;
   let userLocLink = "";
@@ -546,8 +601,10 @@
   function money(n){ return "₹" + Number(n||0).toFixed(0); }
 
   function toRad(v){ return (v * Math.PI) / 180; }
+
+  // 🔥 Haversine Formula for accurate distance calculation
   function calcDistanceKm(lat1, lon1, lat2, lon2){
-    const R = 6371;
+    const R = 6371; // Earth's radius in km
     const dLat = toRad(lat2 - lat1);
     const dLon = toRad(lon2 - lon1);
 
@@ -562,7 +619,7 @@
 
   function getCart(){
     try{
-      const raw = localStorage.getItem("cart"); // 🔥 your existing cart key
+      const raw = localStorage.getItem("cart");
       if(!raw) return [];
       return JSON.parse(raw) || [];
     }catch(e){
@@ -582,6 +639,17 @@
 
   function calcSubtotal(items){
     return items.reduce((sum,it)=>sum + (Number(it.price||0) * Number(it.qty||0)), 0);
+  }
+
+  // 🔥 Highlight active fee row
+  function highlightFeeRow(rowNum){
+    feeRow1.classList.remove("active");
+    feeRow2.classList.remove("active");
+    feeRow3.classList.remove("active");
+
+    if(rowNum === 1) feeRow1.classList.add("active");
+    if(rowNum === 2) feeRow2.classList.add("active");
+    if(rowNum === 3) feeRow3.classList.add("active");
   }
 
   function renderCart(){
@@ -630,42 +698,50 @@
     });
 
     const sub = calcSubtotal(items);
-
     subTotalEl.innerText = money(sub);
 
     if(userDistanceKm === null){
       delFeeEl.innerText = "Attach GPS";
       grandTotalEl.innerText = money(sub);
       placeOrderBtn.disabled = true;
+      highlightFeeRow(0);
       return;
     }
 
     if(userDistanceKm > MAX_KM){
-      delFeeEl.innerText = "Out of Range";
+      delFeeEl.innerText = "Out of Range ❌";
       grandTotalEl.innerText = money(sub);
       placeOrderBtn.disabled = true;
+      highlightFeeRow(0);
       return;
     }
 
-    deliveryFee = getDeliveryFeeByKm(userDistanceKm);
-    if(deliveryFee === null){
-      delFeeEl.innerText = "Out of Range";
+    const feeData = getDeliveryFeeByKm(userDistanceKm);
+    if(feeData === null){
+      delFeeEl.innerText = "Out of Range ❌";
       grandTotalEl.innerText = money(sub);
       placeOrderBtn.disabled = true;
+      highlightFeeRow(0);
       return;
     }
 
-    delFeeEl.innerText = money(deliveryFee);
+    deliveryFee = feeData.fee;
+    delFeeEl.innerText = `${money(deliveryFee)} (${feeData.slab})`;
     grandTotalEl.innerText = money(sub + deliveryFee);
     placeOrderBtn.disabled = false;
+    highlightFeeRow(feeData.row);
   }
 
   function showKm(ok, km){
+    const feeData = getDeliveryFeeByKm(km);
     kmPill.style.display = "inline-flex";
     kmPill.className = "km-pill " + (ok ? "ok" : "no");
-    kmPill.innerHTML = ok
-      ? `✅ Delivery Available • ${km.toFixed(2)} KM`
-      : `❌ Out of Range • ${km.toFixed(2)} KM`;
+    
+    if(ok && feeData){
+      kmPill.innerHTML = `✅ ${km.toFixed(2)} KM • Delivery: ₹${feeData.fee}`;
+    }else{
+      kmPill.innerHTML = `❌ ${km.toFixed(2)} KM • Out of Range`;
+    }
   }
 
   // ===== GPS
@@ -685,18 +761,19 @@
         const lng = pos.coords.longitude;
 
         userLocLink = `https://www.google.com/maps?q=${lat},${lng}`;
-        userDistanceKm = calcDistanceKm(lat, lng, SAKOLI_LAT, SAKOLI_LNG);
+        userDistanceKm = calcDistanceKm(lat, lng, CENTER_LAT, CENTER_LNG);
 
         gpsBtn.innerHTML = "<i class='bx bxs-check-circle'></i> Location Attached";
         gpsBtn.classList.add("active");
 
         if(userDistanceKm <= MAX_KM){
-          gpsStatus.innerText = `✅ Location locked. Delivery available within ${MAX_KM}KM`;
+          const feeData = getDeliveryFeeByKm(userDistanceKm);
+          gpsStatus.innerHTML = `✅ Distance: <strong>${userDistanceKm.toFixed(2)} KM</strong> • Fee: <strong>₹${feeData.fee}</strong>`;
           gpsStatus.style.color = "green";
           showKm(true, userDistanceKm);
-          showToast("GPS attached 🔥");
+          showToast(`GPS attached! ${userDistanceKm.toFixed(1)}km 🔥`);
         }else{
-          gpsStatus.innerText = `❌ We deliver only within ${MAX_KM}KM of Sakoli`;
+          gpsStatus.innerText = `❌ Sorry! We deliver only within ${MAX_KM}KM`;
           gpsStatus.style.color = "red";
           showKm(false, userDistanceKm);
           showToast("Out of range 😭");
@@ -704,7 +781,8 @@
 
         renderCart();
       },
-      ()=>{
+      (err)=>{
+        console.log(err);
         gpsBtn.innerHTML = "❌ Permission Denied";
         gpsStatus.innerText = "❌ Location required (Allow GPS)";
         gpsStatus.style.color = "red";
@@ -713,7 +791,7 @@
         renderCart();
         showToast("Allow GPS first ⚠️");
       },
-      { enableHighAccuracy:true, timeout:12000 }
+      { enableHighAccuracy:true, timeout:15000, maximumAge:0 }
     );
   });
 
@@ -731,7 +809,13 @@
       return;
     }
 
-    deliveryFee = getDeliveryFeeByKm(userDistanceKm);
+    const feeData = getDeliveryFeeByKm(userDistanceKm);
+    if(!feeData){
+      showToast("Delivery not available 😭");
+      return;
+    }
+
+    deliveryFee = feeData.fee;
     const total = sub + deliveryFee;
 
     const upiUrl = `upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent(UPI_NAME)}&am=${encodeURIComponent(total)}&tn=${encodeURIComponent("SANGHX Order")}&cu=INR`;
@@ -782,37 +866,44 @@
       return;
     }
 
-    deliveryFee = getDeliveryFeeByKm(userDistanceKm);
-    if(deliveryFee === null){
+    const feeData = getDeliveryFeeByKm(userDistanceKm);
+    if(!feeData){
       showToast("Delivery not available 😭");
       return;
     }
 
+    deliveryFee = feeData.fee;
     const sub = calcSubtotal(items);
     const total = sub + deliveryFee;
 
     const byStore = groupByStore(items);
 
-    let msg = `*NEW ORDER ALERT* 🔥%0a%0a`;
-    msg += `👤 *${name}* (${mobile})%0a`;
+    let msg = `*🔥 NEW ORDER ALERT 🔥*%0a%0a`;
+    msg += `👤 *${name}*%0a`;
+    msg += `📞 ${mobile}%0a`;
     msg += `🏠 ${addr}%0a%0a`;
-    msg += `📍 Distance: *${userDistanceKm.toFixed(2)} KM* (Sakoli)%0a`;
-    msg += `🗺 Map: ${userLocLink}%0a%0a`;
+    msg += `📍 Distance: *${userDistanceKm.toFixed(2)} KM* (${feeData.slab})%0a`;
+    msg += `🗺 Location: ${userLocLink}%0a%0a`;
 
-    msg += `*ORDER:*%0a`;
+    msg += `━━━━━━━━━━━━━━━%0a`;
+    msg += `*📦 ORDER ITEMS:*%0a`;
+    msg += `━━━━━━━━━━━━━━━%0a`;
+    
     Object.keys(byStore).forEach(store=>{
-      msg += `🏪 *${store}*%0a`;
+      msg += `%0a🏪 *${store}*%0a`;
       byStore[store].forEach(it=>{
         const variantLabel = it.variantLabel || it.variant || "Regular";
-        msg += `▪ ${it.qty} x ${it.name} (${variantLabel})%0a`;
+        msg += `  • ${it.qty}x ${it.name} (${variantLabel}) - ₹${it.price * it.qty}%0a`;
       });
-      msg += `%0a`;
     });
 
+    msg += `%0a━━━━━━━━━━━━━━━%0a`;
     msg += `🧾 Subtotal: ₹${sub}%0a`;
-    msg += `🚚 Delivery: ₹${deliveryFee}%0a`;
-    msg += `💰 *Total: ₹${total}* (${payMode.value})%0a%0a`;
-    msg += `⚡ Please confirm 🙏🔥`;
+    msg += `🚚 Delivery (${feeData.slab}): ₹${deliveryFee}%0a`;
+    msg += `━━━━━━━━━━━━━━━%0a`;
+    msg += `💰 *TOTAL: ₹${total}*%0a`;
+    msg += `💳 Payment: *${payMode.value}*%0a%0a`;
+    msg += `⚡ Please confirm order 🙏`;
 
     // Save to Firebase
     try{
@@ -831,37 +922,35 @@
           storeName: it.storeName || it.vendor || "SANGHX",
           variantLabel: it.variantLabel || it.variant || "Regular"
         })),
-        bill: { subtotal: sub, delivery: deliveryFee, total },
+        bill: { 
+          subtotal: sub, 
+          delivery: deliveryFee, 
+          deliverySlab: feeData.slab,
+          total 
+        },
         payment: payMode.value,
         status: "Pending",
         timestamp: serverTimestamp()
       });
 
-      showToast("Order saved ✅ Opening WhatsApp...");
+      showToast("Order saved ✅");
     }catch(e){
       console.log(e);
-      showToast("Firebase error 😭 WhatsApp only");
+      showToast("Sending to WhatsApp...");
     }
 
-    // Optional clear cart
+    // Clear cart
     localStorage.removeItem("cart");
 
-    window.location.href = `https://wa.me/${ADMIN_WA}?text=${msg}`;
+    // Redirect to WhatsApp
+    setTimeout(()=>{
+      window.location.href = `https://wa.me/${ADMIN_WA}?text=${msg}`;
+    }, 500);
   });
 
   // Initial render
   renderCart();
 </script>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-48LXN26CXK"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-48LXN26CXK');
-</script>
 
 </body>
 </html>
-
