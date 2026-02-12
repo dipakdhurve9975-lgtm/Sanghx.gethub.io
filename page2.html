@@ -3,240 +3,87 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SANGHX • Premium</title>
-
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;600&display=swap" rel="stylesheet">
+  <title>TABEY • Select Mode</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-
   <style>
-    :root {
-      --navy: #0F172A;
-      --accent: #3B82F6; /* Modern Blue */
-      --saffron: #FF9933;
-      --green: #138808;
-      --bg: #FAFAFA;
-      --card-bg: #FFFFFF;
-      --border: rgba(0, 0, 0, 0.06);
-    }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; -webkit-font-smoothing: antialiased; }
-
-    body {
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: var(--bg);
-      color: var(--navy);
-      overflow: hidden;
-    }
-
-    /* Subtle Background Element */
-    body::before {
-      content: "";
-      position: absolute;
-      width: 400px;
-      height: 400px;
-      background: radial-gradient(circle, rgba(59, 130, 246, 0.05) 0%, rgba(250, 250, 250, 0) 70%);
-      top: -100px;
-      right: -100px;
-      z-index: -1;
-    }
-
-    .wrapper {
-      width: 100%;
-      max-width: 400px;
-      padding: 20px;
-      opacity: 0;
-      transform: translateY(20px);
-      animation: fadeIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-    }
-
-    /* --- Logo Section --- */
-    .brand-section {
-      text-align: center;
-      margin-bottom: 40px;
-    }
-
-    .logo-mark {
-      width: 48px;
-      height: 48px;
-      background: var(--navy);
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 16px;
-      color: white;
-      font-size: 24px;
-      box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.1);
-    }
-
-    .brand-name {
-      font-size: 24px;
-      font-weight: 600;
-      letter-spacing: -0.5px;
-      margin-bottom: 4px;
-    }
-
-    .tagline {
-      font-size: 14px;
-      color: #64748B;
-      font-weight: 400;
-    }
-
-    /* --- Interactive Menu --- */
-    .menu-stack {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .menu-item {
-      display: flex;
-      align-items: center;
-      padding: 20px;
-      background: var(--card-bg);
-      border-radius: 20px;
-      text-decoration: none;
-      color: inherit;
-      border: 1px solid var(--border);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-    }
-
-    .menu-item:hover {
-      transform: translateY(-4px);
-      border-color: rgba(15, 23, 42, 0.1);
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
-    }
-
-    .menu-item:active { transform: scale(0.98); }
-
-    .icon-box {
-      width: 44px;
-      height: 44px;
-      background: #F1F5F9;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-right: 16px;
-      font-size: 20px;
-      transition: background 0.3s;
-    }
-
-    .menu-item:hover .icon-box {
-      background: var(--navy);
-      color: white;
-    }
-
-    .item-content { flex: 1; }
-
-    .item-title {
-      font-size: 16px;
-      font-weight: 500;
-      display: block;
-    }
-
-    .item-subtitle {
-      font-size: 12px;
-      color: #94A3B8;
-    }
-
-    /* --- Special Features --- */
-    .primary-item {
-      background: var(--navy);
-      color: white;
-      border: none;
-    }
+    body { margin: 0; padding: 20px; font-family: 'Outfit', sans-serif; background: #0F172A; color: white; display: flex; flex-direction: column; min-height: 100vh; }
+    .bg-gradient { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at top right, #3B82F6 0%, transparent 40%), radial-gradient(circle at bottom left, #FF4B3A 0%, transparent 40%); opacity: 0.2; z-index: -1; }
     
-    .primary-item .icon-box { background: rgba(255,255,255,0.1); color: white; }
-    .primary-item .item-subtitle { color: rgba(255,255,255,0.6); }
+    h1 { font-size: 36px; font-weight: 900; line-height: 1.1; margin-bottom: 10px; }
+    p { color: #94A3B8; margin-bottom: 40px; font-size: 16px; }
 
-    /* --- Republic Day subtle indicator --- */
-    .rd-indicator {
-      margin-top: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      font-size: 12px;
-      font-weight: 500;
-      color: #94A3B8;
+    .card {
+      background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 20px; border-radius: 20px; display: flex; align-items: center; gap: 20px;
+      margin-bottom: 15px; cursor: pointer; transition: 0.2s; backdrop-filter: blur(10px);
     }
+    .card:active { transform: scale(0.96); background: rgba(255, 255, 255, 0.1); }
+    .icon-box { width: 50px; height: 50px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 24px; }
+    
+    .c-food { background: linear-gradient(135deg, #FF9966, #FF5E62); color: white; }
+    .c-store { background: linear-gradient(135deg, #56CCF2, #2F80ED); color: white; }
+    .c-rider { background: linear-gradient(135deg, #11998e, #38ef7d); color: white; }
+    .c-admin { background: #333; color: #999; }
 
-    .dot { width: 6px; height: 6px; border-radius: 50%; }
-
-    @keyframes fadeIn {
-      to { opacity: 1; transform: translateY(0); }
-    }
-
+    .title { font-weight: 700; font-size: 18px; display: block; }
+    .sub { font-size: 12px; color: #94A3B8; }
   </style>
 </head>
-
 <body>
+  <div class="bg-gradient"></div>
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+    <h1>Select<br>Mode</h1>
+    <p>Choose your role to continue.</p>
 
-  <div class="wrapper">
-    <header class="brand-section">
-      <div class="logo-mark">
-        <i class='bx bxs-bolt'></i>
-      </div>
-      <h1 class="brand-name">SANGHX</h1>
-      <p class="tagline">Desi Swad. Videshi Speed.</p>
-    </header>
+    <div class="card" onclick="go('customer')">
+      <div class="icon-box c-food"><i class='bx bxs-bowl-hot'></i></div>
+      <div><span class="title">Hungry Customer</span><span class="sub">Order food & essentials</span></div>
+      <i class='bx bx-chevron-right' style="margin-left:auto; font-size:24px; color:#666;"></i>
+    </div>
 
-    <nav class="menu-stack">
-      <a href="customer.html" class="menu-item primary-item">
-        <div class="icon-box"><i class='bx bx-shopping-bag'></i></div>
-        <div class="item-content">
-          <span class="item-title">Customer</span>
-          <span class="item-subtitle">Order food & essentials</span>
-        </div>
-        <i class='bx bx-chevron-right'></i>
-      </a>
+    <div class="card" onclick="go('vendor')">
+      <div class="icon-box c-store"><i class='bx bxs-store'></i></div>
+      <div><span class="title">Store Partner</span><span class="sub">Manage menu & orders</span></div>
+      <i class='bx bx-chevron-right' style="margin-left:auto; font-size:24px; color:#666;"></i>
+    </div>
 
-      <a href="#" class="menu-item" onclick="showToast('Store Portal Coming Soon')">
-        <div class="icon-box"><i class='bx bx-store'></i></div>
-        <div class="item-content">
-          <span class="item-title">Store Partner</span>
-          <span class="item-subtitle">Manage your business</span>
-        </div>
-        <i class='bx bx-chevron-right'></i>
-      </a>
+    <div class="card" onclick="go('rider')">
+      <div class="icon-box c-rider"><i class='bx bxs-cycling'></i></div>
+      <div><span class="title">Delivery Partner</span><span class="sub">Join the fleet</span></div>
+      <i class='bx bx-chevron-right' style="margin-left:auto; font-size:24px; color:#666;"></i>
+    </div>
 
-      <a href="#" class="menu-item" onclick="showToast('Rider Portal Coming Soon')">
-        <div class="icon-box"><i class='bx bx-cycling'></i></div>
-        <div class="item-content">
-          <span class="item-title">Delivery Partner</span>
-          <span class="item-subtitle">Earn on your own schedule</span>
-        </div>
-        <i class='bx bx-chevron-right'></i>
-      </a>
-    </nav>
-
-    <footer class="rd-indicator">
-      <div class="dot" style="background: var(--saffron);"></div>
-      <span>WELCOME TO SANGHX</span>
-      <div class="dot" style="background: var(--green);"></div>
-    </footer>
+    <div class="card" onclick="go('admin')" style="opacity:0.6; transform: scale(0.95); margin-top:20px;">
+      <div class="icon-box c-admin"><i class='bx bxs-lock-alt'></i></div>
+      <div><span class="title">Super Admin</span><span class="sub">HQ Access Only</span></div>
+    </div>
   </div>
+  
+  <div style="text-align:center; font-size:12px; color:#666; margin-top:20px;">v5.0 • Made with ❤️ in Sakoli</div>
 
   <script>
-    function showToast(msg) {
-      alert(msg); // Replace with a custom toast notification for better UX
+    function go(role) {
+    if (role === 'customer') {
+  // Go to Login first
+  window.location.href = 'customer-login.html'; 
+}
+      else if (role === 'vendor') {
+        // Goes to Shop Login
+        localStorage.setItem('tabey_role', 'vendor');
+        window.location.href = 'vendor-login.html';
+      }
+      else if (role === 'rider') {
+        // Goes to Rider Login
+        localStorage.setItem('tabey_role', 'rider');
+        window.location.href = 'rider-login.html';
+      }
+      else if (role === 'admin') {
+        // Goes to Super Admin Login
+        localStorage.setItem('tabey_role', 'admin');
+        window.location.href = 'login.html';
+      }
     }
   </script>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-48LXN26CXK"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-48LXN26CXK');
-</script>
-
 </body>
 </html>
-
