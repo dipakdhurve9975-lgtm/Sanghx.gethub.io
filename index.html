@@ -1,170 +1,290 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>TABEY • Delivery</title>
-  <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#ff5722">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SANGHX • Jai Hind</title>
 
-  
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
-  
-  <link rel="stylesheet" href="assets/css/theme.css">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
+<link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 
-  <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script>
+<style>
+:root {
+  --saffron: #FF9933;
+  --white: #FFFFFF;
+  --green: #138808;
+  --navy: #000080;
+  --dark-bg: #050505;
+}
 
-  <style>
-    :root {
-      --primary: #FF4B3A; /* Food Red */
-      --dark-bg: #050505;
-      --text: #ffffff;
-    }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Outfit', sans-serif;
+}
 
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
-    
-    body {
-      background-color: var(--dark-bg);
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-      perspective: 1000px;
-    }
+body {
+  background: var(--dark-bg);
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 1000px;
+}
 
-    /* Main Container */
-    .splash-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 10;
-      animation: zoomOutExit 0.8s ease-in forwards 3.5s; /* Exit animation */
-    }
+/* ================= SPLASH ================= */
 
-    /* --- Lottie Wrapper --- */
-    .lottie-wrap {
-      width: 280px;
-      height: 280px;
-      margin-bottom: 20px;
-      filter: drop-shadow(0 10px 30px rgba(255, 75, 58, 0.2));
-      animation: driveIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-      opacity: 0; transform: translateX(-50px);
-    }
+.splash-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  animation: zoomThrough 4s cubic-bezier(0.7,0,0.3,1) forwards;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
 
-    /* --- Typography --- */
-    .logo-text {
-      font-size: 56px;
-      font-weight: 900;
-      letter-spacing: -2px;
-      color: var(--text);
-      display: flex;
-      gap: 0px;
-      line-height: 1;
-      opacity: 0;
-      animation: fadeInUp 0.8s ease forwards 0.5s;
-    }
+/* ================= GLOWS ================= */
 
-    .logo-text span { color: var(--primary); }
+.glow-saffron, .glow-green {
+  position: absolute;
+  width: 240px;
+  height: 120px;
+  filter: blur(90px);
+  opacity: 0.6;
+  z-index: 0;
+}
 
-    .tagline {
-      margin-top: 10px;
-      color: #888;
-      font-size: 12px;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      font-weight: 700;
-      opacity: 0;
-      animation: fadeInUp 0.8s ease forwards 0.8s;
-    }
+.glow-saffron {
+  background: var(--saffron);
+  top: -60px;
+}
 
-    /* --- Glow Effect behind text --- */
-    .glow {
-      position: absolute;
-      width: 300px; height: 300px;
-      background: radial-gradient(circle, rgba(255, 75, 58, 0.15) 0%, transparent 70%);
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: -1;
-      animation: pulse 2s infinite alternate;
-    }
+.glow-green {
+  background: var(--green);
+  bottom: -60px;
+}
 
-    /* --- ANIMATIONS --- */
-    @keyframes driveIn {
-      to { opacity: 1; transform: translateX(0); }
-    }
+/* ================= CHAKRA ================= */
 
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+.chakra-bg {
+  position: absolute;
+  font-size: 280px;
+  color: var(--navy);
+  opacity: 0.25;
+  animation: spin 12s linear infinite;
+}
 
-    @keyframes pulse {
-      from { opacity: 0.5; transform: translate(-50%, -50%) scale(0.8); }
-      to { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
-    }
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
 
-    /* The Exit Zoom */
-    @keyframes zoomOutExit {
-      0% { transform: scale(1); opacity: 1; }
-      100% { transform: scale(5); opacity: 0; filter: blur(20px); }
-    }
+/* ================= DELIVERY SCENE ================= */
 
-  </style>
+.delivery-scene {
+  position: absolute;
+  bottom: 180px;
+  width: 100%;
+  height: 160px;
+  overflow: hidden;
+  z-index: 5;
+}
+
+.road {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 4px;
+  background: repeating-linear-gradient(
+    90deg,
+    #333 0,
+    #333 20px,
+    transparent 20px,
+    transparent 40px
+  );
+  animation: roadMove 0.5s linear infinite;
+}
+
+@keyframes roadMove {
+  to { background-position-x: -40px; }
+}
+
+.scooty {
+  position: absolute;
+  bottom: 10px;
+  left: -300px;
+  width: 220px;
+  height: 100px;
+  animation: scootyEnter 1.8s ease-out forwards;
+}
+
+@keyframes scootyEnter {
+  to {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+/* Scooty Body */
+.scooty-body {
+  position: absolute;
+  bottom: 20px;
+  width: 160px;
+  height: 30px;
+  background: var(--saffron);
+  border-radius: 20px;
+}
+
+.handle {
+  position: absolute;
+  width: 40px;
+  height: 6px;
+  background: #fff;
+  top: 28px;
+  left: 120px;
+  border-radius: 4px;
+}
+
+/* Wheels */
+.wheel {
+  position: absolute;
+  bottom: 0;
+  width: 28px;
+  height: 28px;
+  border: 4px solid #fff;
+  border-radius: 50%;
+  animation: wheelSpin 0.3s linear infinite;
+}
+
+.front { left: 120px; }
+.back { left: 20px; }
+
+@keyframes wheelSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* Rider */
+.rider {
+  position: absolute;
+  left: 70px;
+  bottom: 45px;
+}
+
+.rider .head {
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border-radius: 50%;
+}
+
+.rider .body {
+  width: 14px;
+  height: 25px;
+  background: #fff;
+  margin: auto;
+}
+
+/* Delivery Box */
+.box {
+  position: absolute;
+  left: 30px;
+  bottom: 52px;
+  background: var(--green);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 6px 8px;
+  border-radius: 4px;
+}
+
+/* ================= LOGO ================= */
+
+.logo-text {
+  font-size: 70px;
+  font-weight: 900;
+  letter-spacing: -2px;
+  display: flex;
+  gap: 2px;
+  opacity: 0;
+  animation: fadeIn 0.8s ease forwards 2s;
+  z-index: 10;
+}
+
+.t-saffron { color: var(--saffron); }
+.t-white { color: var(--white); }
+.t-green { color: var(--green); }
+
+.tagline {
+  margin-top: 18px;
+  font-size: 12px;
+  letter-spacing: 6px;
+  opacity: 0;
+  animation: fadeIn 1s ease forwards 2.6s;
+  background: linear-gradient(90deg, var(--saffron), var(--white), var(--green));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+/* ================= ZOOM ================= */
+
+@keyframes zoomThrough {
+  0% { transform: scale(1); }
+  80% { transform: scale(1); }
+  100% { transform: scale(60); opacity: 0; }
+}
+</style>
 </head>
+
 <body>
 
-  <div class="glow"></div>
+<div class="splash-container">
 
-  <div class="splash-container">
-    
-    <div class="lottie-wrap">
-      <dotlottie-player 
-        src="Delivery.lottie" 
-        background="transparent" 
-        speed="1" 
-        style="width: 100%; height: 100%;" 
-        loop 
-        autoplay>
-      </dotlottie-player>
+  <div class="glow-saffron"></div>
+  <div class="glow-green"></div>
+  <i class='bx bx-hive chakra-bg'></i>
+
+  <!-- DELIVERY -->
+  <div class="delivery-scene">
+    <div class="road"></div>
+
+    <div class="scooty">
+      <div class="box">SANGHX</div>
+      <div class="handle"></div>
+      <div class="scooty-body"></div>
+      <div class="wheel front"></div>
+      <div class="wheel back"></div>
+
+      <div class="rider">
+        <div class="head"></div>
+        <div class="body"></div>
+      </div>
     </div>
-
-    <div class="logo-text">
-      TA<span>BEY</span>
-    </div>
-
-    <div class="tagline">FASTEST DELIVERY</div>
   </div>
 
-  <script>
-    // Service Worker Registration (Standard)
-    if('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js').catch(() => {});
-    }
+  <!-- LOGO -->
+  <div class="logo-text">
+    <span class="t-saffron">SAN</span>
+    <span class="t-white">G</span>
+    <span class="t-green">HX</span>
+  </div>
 
-    // Redirect Logic
-    setTimeout(() => {
-      // Flash white effect for smooth transition to light/dark theme of next page
-      document.body.style.transition = "background-color 0.5s";
-      document.body.style.backgroundColor = "#ffffff"; 
-      
-      // Navigate
-      setTimeout(() => {
-        window.location.href = "page2.html"; 
-      }, 300);
-    }, 4000); // 4 seconds total duration
+  <div class="tagline">REPUBLIC DAY EDITION</div>
 
-    // service worker 
-   if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/service-worker.js')
-    .then(function(reg) {
-      console.log("Service Worker Registered", reg);
-    }).catch(function(err) {
-      console.log("Service Worker Failed", err);
-    });
-}
-  </script>
+</div>
+
+<script>
+setTimeout(() => {
+  document.body.style.background = "#fff";
+  window.location.href = "page2.html";
+}, 3800);
+</script>
 
 </body>
 </html>
